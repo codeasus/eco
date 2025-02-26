@@ -30,6 +30,8 @@ class TransferViewModel @Inject constructor(
 ) :
     BaseViewModel(userRepository, customerRepository, transactionRepository) {
 
+    // Here could also be a PaymentModel as a state for much more rigid access but due to the mocking nature of the app, it was skipped and will be added asap
+
     var isTermsAndConditionsAccepted by mutableStateOf(false)
         private set
 
@@ -39,25 +41,20 @@ class TransferViewModel @Inject constructor(
     var selectedCustomer by mutableStateOf<CustomerModel?>(null)
         private set
 
-    // Keep the amount as a Double for calculations
     var amount by mutableDoubleStateOf(0.0)
         private set
 
-    // Add a string representation for the TextField
     var amountText by mutableStateOf("")
         private set
 
-    // Loading state for UI feedback
     var isLoading by mutableStateOf(false)
         private set
 
-    // Response state to handle UI updates
     private val _paymentResult = MutableStateFlow<ApiResponse<String>?>(null)
     val paymentResult = _paymentResult.asStateFlow()
 
     fun updateAmount(input: String) {
         amountText = input
-        // Convert to Double only if the string is valid
         amount = input.toDoubleOrNull() ?: 0.0
     }
 
@@ -117,8 +114,6 @@ class TransferViewModel @Inject constructor(
     }
 
     private suspend fun recordTransaction(transaction: TransactionModel) {
-        // Assuming there's a method to record transactions in your TransactionRepository
-        // This would typically be implemented but is left as a stub for this example
         // transactionRepository.saveTransaction(...)
         // Convert PaymentModel to TransactionModel
         transactionRepository.saveTransaction(transaction)
