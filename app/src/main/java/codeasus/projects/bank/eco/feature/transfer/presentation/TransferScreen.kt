@@ -1,7 +1,6 @@
 package codeasus.projects.bank.eco.feature.transfer.presentation
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -85,11 +83,10 @@ fun TransferScreen(navigator: AppNavigator) {
                 Spacer(Modifier.width(8.dp))
                 Text(text = "Standard (BEFTN)")
             }
-            var amount by remember { mutableStateOf("") }
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
-                value = amount,
-                onValueChange = { amount = it },
+                value = vm.amountText, // Changed from vm.amount to vm.amountText (String)
+                onValueChange = { vm.updateAmount(it) }, // Use a method to handle conversion
                 placeholder = { Text("Transfer Amount") },
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -116,11 +113,12 @@ fun TransferScreen(navigator: AppNavigator) {
             Spacer(Modifier.height(8.dp))
             Button(
                 modifier = Modifier.width(156.dp),
-                enabled = vm.isTermsAndConditionsAccepted,
+                enabled = vm.isTermsAndConditionsAccepted && vm.selectedCustomer != null,
                 onClick = {
                     showDialog = !showDialog
                 }
             ) {
+                vm.sendPayment()
                 Text("Transfer")
             }
             if (showDialog) {
