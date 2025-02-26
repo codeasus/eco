@@ -9,8 +9,6 @@ import codeasus.projects.bank.eco.feature.home.presentation.HomeScreen
 import codeasus.projects.bank.eco.feature.info.presentation.InfoScreen
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreen
 import codeasus.projects.bank.eco.feature.reward.presentation.RewardScreen
-import codeasus.projects.bank.eco.feature.subgraphone.presentation.SubgraphOneScreen
-import codeasus.projects.bank.eco.feature.subgraphtwo.presentation.SubgraphTwoScreen
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
 
 @Composable
@@ -40,12 +38,6 @@ fun AppNavHost(
         }
         composable(Screen.Reward.route) {
             RewardScreen(navigator = appNavigator)
-        }
-        composable(Screen.SubgraphOne.route) {
-            SubgraphOneScreen(navigator = appNavigator)
-        }
-        composable(Screen.SubgraphTwo.route) {
-            SubgraphTwoScreen(navigator = appNavigator)
         }
     }
 }

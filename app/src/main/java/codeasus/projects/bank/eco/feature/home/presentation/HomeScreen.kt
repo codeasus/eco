@@ -55,9 +55,9 @@ fun HomeScreen(navigator: AppNavigator) {
         }
         Button(
             modifier = Modifier.width(156.dp),
-            onClick = { navigator.navigateTo(Screen.SubgraphOne) }
+            onClick = {  }
         ) {
-            Text("Subgraph 1")
+            Text("Empty")
         }
     }
 }

@@ -4,8 +4,6 @@ package codeasus.projects.bank.eco.core.navigation
 sealed class Screen(val route: String, val title: String) {
     data object Home : Screen("home", "Eco Ltd.")
     data object Transfer : Screen("transfer", "Money Transfer")
-    data object SubgraphOne : Screen("subgraph_one", "SubgraphOne Screen")
-    data object SubgraphTwo : Screen("subgraph_two", "SubgraphTwo Screen")
     data object Product : Screen("product", "Product")
     data object Info : Screen("info", "Info")
     data object Reward : Screen("reward", "Rewards")
@@ -27,8 +25,6 @@ sealed class Screen(val route: String, val title: String) {
                 Transfer.route -> Transfer
                 Info.route -> Info
                 Reward.route -> Reward
-                SubgraphOne.route -> SubgraphOne
-                SubgraphTwo.route -> SubgraphTwo
                 else -> Home
             }
         }
