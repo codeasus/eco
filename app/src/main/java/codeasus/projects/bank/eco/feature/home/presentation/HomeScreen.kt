@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -20,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import codeasus.projects.bank.eco.core.navigation.AppNavigator
-import codeasus.projects.bank.eco.core.navigation.Screen
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.Transactions
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -43,21 +39,6 @@ fun HomeScreen(navigator: AppNavigator) {
             ) {
                 Transactions(transactions)
             }
-        }
-        Spacer(Modifier.height(32.dp))
-        Button(
-            modifier = Modifier.width(156.dp),
-            onClick = {
-                navigator.navigateTo(Screen.Transfer)
-            }
-        ) {
-            Text("Transfer")
-        }
-        Button(
-            modifier = Modifier.width(156.dp),
-            onClick = {  }
-        ) {
-            Text("Empty")
         }
     }
 }

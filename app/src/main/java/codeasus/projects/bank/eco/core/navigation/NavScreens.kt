@@ -1,19 +1,18 @@
 package codeasus.projects.bank.eco.core.navigation
 
+import androidx.annotation.DrawableRes
+import codeasus.projects.bank.eco.R
+
 
 sealed class Screen(val route: String, val title: String) {
     data object Home : Screen("home", "Home")
-    data object Transfer : Screen("transfer", "Money Transfer")
+    data object Transfer : Screen("transfer", "Transfer")
     data object Product : Screen("product", "Product")
-    data object Info : Screen("info", "Info")
-    data object Reward : Screen("reward", "Rewards")
 
-    sealed class BottomNavbarScreen(screen: Screen, val navItemName: String) : Screen(screen.route, screen.title) {
-        data object Home : BottomNavbarScreen(Screen.Home, "Home")
-        data object Product : BottomNavbarScreen(Screen.Product, "Product")
-        data object Transfer : BottomNavbarScreen(Screen.Transfer, "Transfer")
-        data object Info : BottomNavbarScreen(Screen.Info, "Info")
-        data object Reward : BottomNavbarScreen(Screen.Reward, "Rewards")
+    sealed class BottomNavbarScreen(screen: Screen, val navItemName: String, @DrawableRes val icon: Int) : Screen(screen.route, screen.title) {
+        data object Home : BottomNavbarScreen(Screen.Home, "Home",  R.drawable.ic_home)
+        data object Product : BottomNavbarScreen(Screen.Product, "Product",  R.drawable.ic_product)
+        data object Transfer : BottomNavbarScreen(Screen.Transfer, "Transfer",  R.drawable.ic_transfer)
     }
 
     companion object {
@@ -22,8 +21,6 @@ sealed class Screen(val route: String, val title: String) {
                 Home.route -> Home
                 Product.route -> Product
                 Transfer.route -> Transfer
-                Info.route -> Info
-                Reward.route -> Reward
                 else -> Home
             }
         }

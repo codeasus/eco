@@ -1,5 +1,6 @@
 package codeasus.projects.bank.eco.core.navigation.ui
 
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -38,10 +39,11 @@ fun NotificationAction(onNotificationClick: () -> Unit) {
     BadgedBox(
         modifier = Modifier.size(48.dp),
         badge = {
-        Badge(
-            containerColor = MaterialTheme.colorScheme.primary
-        )
-    }) {
+            Badge(
+                modifier = Modifier.offset((-8).dp, 6.dp),
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        }) {
         IconButton(onClick = onNotificationClick) {
             Icon(
                 modifier = Modifier.size(24.dp),
