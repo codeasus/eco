@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.core.ui.shared.view.Profile
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.FakeDataSource
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.defineTransactionAmountColor
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatLocalDateTime
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatTransactionRate
@@ -81,6 +81,6 @@ fun Transaction(customerTransactionPair: Pair<CustomerModel, codeasus.projects.b
 @Composable
 fun TransactionPreview() {
     EcoTheme {
-        Transaction(Pair(FakeDataSource.getCustomers()[1], FakeDataSource.getTransactions()[1]))
+        Transaction(Pair(DataSourceDefaults.getCustomers()[1], DataSourceDefaults.getTransactions()[1]))
     }
 }

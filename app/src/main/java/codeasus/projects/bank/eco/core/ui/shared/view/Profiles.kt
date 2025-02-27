@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.FakeDataSource
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 
@@ -66,6 +66,6 @@ fun Profiles(customers: List<CustomerModel>, onProfileSelected: (CustomerModel) 
 @Composable
 fun ProfilesPreview() {
     EcoTheme {
-        Profiles(FakeDataSource.getCustomers()) {}
+        Profiles(DataSourceDefaults.getCustomers()) {}
     }
 }

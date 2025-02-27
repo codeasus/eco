@@ -5,7 +5,7 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import java.time.LocalDateTime
 
-object FakeDataSource {
+object DataSourceDefaults {
 
     val unknownUser = codeasus.projects.bank.eco.domain.local.model.user.UserModel(
         name = "Unknown",

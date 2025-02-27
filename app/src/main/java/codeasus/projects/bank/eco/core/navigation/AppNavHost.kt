@@ -54,5 +54,5 @@ class AppNavigator(private val navController: NavHostController) {
         navController.navigateUp()
     }
 
-    fun isHomeScreen(): Boolean = currentRoute == Screen.Home.route
+    fun isBottomNavScreen(): Boolean = Screen.fromRoute(currentRoute) is Screen.BottomNavbarScreen
 }

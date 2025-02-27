@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.FakeDataSource
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 
@@ -64,6 +64,6 @@ fun Transactions(customerTransactionPairs: List<Pair<CustomerModel, codeasus.pro
 @Composable
 fun TransactionsPreview() {
     EcoTheme {
-        Transactions(FakeDataSource.getCustomers().zip(FakeDataSource.getTransactions()))
+        Transactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions()))
     }
 }

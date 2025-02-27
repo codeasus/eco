@@ -20,9 +20,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.FakeDataSource
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
+import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 
 @Composable
 fun Profile(
@@ -61,26 +62,13 @@ fun Profile(
 }
 
 @Composable
-fun PersonalProfile(
-    containerModifier: Modifier? = null,
-    imageModifier: Modifier,
-    user: codeasus.projects.bank.eco.domain.local.model.user.UserModel,
-    withName: Boolean = false
-) {
-    Column(
-        modifier = containerModifier ?: Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            modifier = imageModifier,
-            painter = painterResource(user.profileImageResId),
-            contentScale = ContentScale.Crop,
-            contentDescription = "${user.name}'s photo"
-        )
-        if (withName) {
-            Text(text = user.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
+fun PersonalProfile(imageModifier: Modifier, profileImageResId: Int) {
+    Image(
+        modifier = imageModifier,
+        painter = painterResource(profileImageResId),
+        contentScale = ContentScale.Crop,
+        contentDescription = "User's photo"
+    )
 }
 
 @Preview(showSystemUi = false, showBackground = false)
@@ -91,7 +79,7 @@ fun ProfilePreview() {
             imageModifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape),
-            customer = FakeDataSource.getCustomers()[0],
+            customer = DataSourceDefaults.getCustomers()[0],
             withName = true
         ) {}
     }

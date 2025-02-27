@@ -16,7 +16,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import codeasus.projects.bank.eco.core.navigation.AppNavigator
 import codeasus.projects.bank.eco.core.navigation.ui.BottomNavBar
-import codeasus.projects.bank.eco.core.navigation.ui.SmartTopNavbar
+import codeasus.projects.bank.eco.core.navigation.ui.TopNavbarRouter
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +34,7 @@ inline fun <reified T : BaseViewModel> BaseScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SmartTopNavbar(
+            TopNavbarRouter(
                 scrollBehavior = scrollBehavior,
                 navigator = navigator
             )
