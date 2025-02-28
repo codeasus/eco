@@ -19,7 +19,7 @@ fun ItemsContainer(content: @Composable () -> Unit) {
             .fillMaxWidth()
             .padding(18.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25F))
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
