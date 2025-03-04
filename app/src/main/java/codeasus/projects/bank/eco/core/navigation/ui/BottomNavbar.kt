@@ -41,7 +41,7 @@ private fun getSelectedItemIndex(route: String?): BottomNavbarScreen {
 }
 
 @Composable
-fun BottomNavBar(navigator: AppNavigator) {
+fun BottomNavbar(navigator: AppNavigator) {
     val route = navigator.currentRoute
 
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
@@ -58,14 +58,14 @@ fun BottomNavBar(navigator: AppNavigator) {
                         painter = painterResource(item.screen.icon),
                         tint = if (getSelectedItemIndex(route) == item.screen) {
                             MaterialTheme.colorScheme.primary
-                        } else MaterialTheme.colorScheme.onSurfaceVariant,
+                        } else MaterialTheme.colorScheme.onSurface,
                         contentDescription = item.screen.title
                     )
                 },
                 label = {
                     Text(
                         item.screen.title,
-                        color = if (getSelectedItemIndex(route) == item.screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (getSelectedItemIndex(route) == item.screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     )
                 },
                 alwaysShowLabel = true,

@@ -37,6 +37,12 @@ import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatExpiryDate
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 
+object BankCardDefaults {
+    val WIDTH = 360.dp
+    val HEIGHT = 240.dp
+    val CORNER_RADIUS = 32.dp
+}
+
 @Composable
 fun BankCardDark(bankAccount: codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel) {
     val colorBackground = Color(31, 23, 80)
@@ -45,9 +51,9 @@ fun BankCardDark(bankAccount: codeasus.projects.bank.eco.domain.local.model.user
 
     Card(
         modifier = Modifier
-            .width(320.dp)
-            .height(200.dp),
-        shape = RoundedCornerShape(32.dp),
+            .width(BankCardDefaults.WIDTH)
+            .height(BankCardDefaults.HEIGHT),
+        shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS),
         colors = CardDefaults.cardColors(containerColor = colorBackground)
     ) {
         Box(
@@ -133,9 +139,9 @@ fun BankCardLight(bankAccount: codeasus.projects.bank.eco.domain.local.model.use
 
     Card(
         modifier = Modifier
-            .width(320.dp)
-            .height(200.dp),
-        shape = RoundedCornerShape(32.dp),
+            .width(BankCardDefaults.WIDTH)
+            .height(BankCardDefaults.HEIGHT),
+        shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS),
         colors = CardDefaults.cardColors(containerColor = colorBackground)
     ) {
         Box(
@@ -212,6 +218,7 @@ fun BankCardLight(bankAccount: codeasus.projects.bank.eco.domain.local.model.use
         }
     }
 }
+
 
 @Preview(showSystemUi = false, showBackground = false)
 @Composable

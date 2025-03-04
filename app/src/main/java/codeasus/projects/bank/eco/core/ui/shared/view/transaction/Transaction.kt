@@ -27,15 +27,16 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatTransactionRat
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatUITransactionAmount
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
+import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 
 @Composable
-fun Transaction(customerTransactionPair: Pair<CustomerModel, codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel>) {
+fun Transaction(customerTransactionPair: Pair<CustomerModel, TransactionModel>) {
     ListItem(
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         leadingContent = {
             Profile(
                 imageModifier = Modifier
-                    .size(36.dp)
+                    .size(48.dp)
                     .clip(CircleShape),
                 customer = customerTransactionPair.first
             ) {}
@@ -81,6 +82,11 @@ fun Transaction(customerTransactionPair: Pair<CustomerModel, codeasus.projects.b
 @Composable
 fun TransactionPreview() {
     EcoTheme {
-        Transaction(Pair(DataSourceDefaults.getCustomers()[1], DataSourceDefaults.getTransactions()[1]))
+        Transaction(
+            Pair(
+                DataSourceDefaults.getCustomers()[1],
+                DataSourceDefaults.getTransactions()[1]
+            )
+        )
     }
 }

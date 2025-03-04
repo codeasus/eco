@@ -24,8 +24,8 @@ val onErrorContainerLight = Color(0xFF93000A)
 
 val surfaceLight = Color(0xFFFFFFFF)
 val onSurfaceLight = Color(0xFF000000)
-val surfaceVariantLight = Color(0xFF9BCFE1)
-val onSurfaceVariantLight = Color(0xFF0D313F)
+val surfaceVariantLight = Color(0xFFD4E3F1)
+val onSurfaceVariantLight = Color(0xFF052234)
 
 // Dark Theme
 val primaryDark = Color(0xFF29A4DA)
@@ -50,5 +50,5 @@ val onErrorContainerDark = Color(0xFFFFDAD6)
 
 val surfaceDark = Color(0xFF000000)
 val onSurfaceDark = Color(0xFFFFFFFF)
-val surfaceVariantDark = Color(0xFF0D313F)
-val onSurfaceVariantDark = Color(0xFF9BCFE1)
+val surfaceVariantDark = Color(0xFF052234)
+val onSurfaceVariantDark = Color(0xFFD4E3F1)

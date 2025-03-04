@@ -30,9 +30,7 @@ fun TopNavbar(
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
         title = {
             Text(
                 text = currentScreen.title,

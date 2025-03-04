@@ -1,6 +1,5 @@
 package codeasus.projects.bank.eco.core.ui.shared.view.base
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,16 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import codeasus.projects.bank.eco.core.navigation.AppNavigator
-import codeasus.projects.bank.eco.core.navigation.ui.BottomNavBar
+import codeasus.projects.bank.eco.core.navigation.ui.BottomNavbar
 import codeasus.projects.bank.eco.core.navigation.ui.TopNavbarRouter
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-inline fun <reified T : BaseViewModel> BaseScreen(
-    navigator: AppNavigator,
-    crossinline content: @Composable (T) -> Unit
-) {
+inline fun <reified T : BaseViewModel> BaseScreen(navigator: AppNavigator, crossinline content: @Composable (T) -> Unit) {
     val viewModel: T = hiltViewModel()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
@@ -33,21 +29,14 @@ inline fun <reified T : BaseViewModel> BaseScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopNavbarRouter(
-                scrollBehavior = scrollBehavior,
-                navigator = navigator
-            )
-        },
-        bottomBar = {
-            BottomNavBar(navigator = navigator)
-        }
+        topBar = { TopNavbarRouter(scrollBehavior = scrollBehavior, navigator = navigator) },
+        containerColor = MaterialTheme.colorScheme.surface,
+        bottomBar = { BottomNavbar(navigator = navigator) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.surface),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content(viewModel)

@@ -6,14 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.unit.dp
+import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 
 @Composable
-fun TransactionStatusIndicator(transactionStatus: codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus) {
+fun TransactionStatusIndicator(transactionStatus: TransactionStatus) {
     val colorStatus = when (transactionStatus) {
-        codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.PENDING -> TransactionUIItemColors.COLOR_PENDING
-        codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.COMPLETED -> TransactionUIItemColors.COLOR_COMPLETED
-        codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.FAILED -> TransactionUIItemColors.COLOR_FAILED
-        codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.CANCELED -> TransactionUIItemColors.COLOR_CANCELED
+       TransactionStatus.PENDING -> TransactionUIItemColors.COLOR_PENDING
+        TransactionStatus.COMPLETED -> TransactionUIItemColors.COLOR_COMPLETED
+        TransactionStatus.FAILED -> TransactionUIItemColors.COLOR_FAILED
+        TransactionStatus.CANCELED -> TransactionUIItemColors.COLOR_CANCELED
     }
     Box(
         modifier = Modifier
