@@ -10,6 +10,7 @@ import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel(
@@ -30,8 +31,11 @@ abstract class BaseViewModel(
 
     private fun loadAllTransactionBySelectedPhoneNumber() {
         viewModelScope.launch {
-            val transactions = transactionRepository.getAllTransactions(cardNumber = _user.value?.bankAccounts?.get(0)?.number).map { Pair(it.value, it.key) }
-            _transactions.emit(transactions)
+            _user.collectLatest { user ->
+                val cardNumber =  user?.bankAccounts?.get(0)?.number
+                val transactions = transactionRepository.getAllTransactions(cardNumber = cardNumber).map { Pair(it.value, it.key) }
+                _transactions.emit(transactions)
+            }
         }
     }
 

@@ -74,6 +74,7 @@ class SearchTransactionViewModel @Inject constructor(
 
                     types.isNotEmpty() && searchKeyword.isNotEmpty() -> {
                         val transactions = transactionRepository.getTransactionsByKeywordAndType(
+                            cardNumber = null,
                             keyword = searchKeyword,
                             types = types
                         ).map { Pair(it.value, it.key) }
@@ -86,6 +87,7 @@ class SearchTransactionViewModel @Inject constructor(
 
                     types.isEmpty() && searchKeyword.isNotEmpty() -> {
                         val transactions = transactionRepository.getTransactionsByKeyword(
+                            cardNumber = null,
                             keyword = searchKeyword
                         ).map { Pair(it.value, it.key) }
                         _transactions.emit(transactions)
@@ -97,14 +99,14 @@ class SearchTransactionViewModel @Inject constructor(
 
     private fun getAllTransactions() {
         viewModelScope.launch {
-            val transactions = transactionRepository.getAllTransactions().map { Pair(it.value, it.key) }
+            val transactions = transactionRepository.getAllTransactions(cardNumber = null).map { Pair(it.value, it.key) }
             _transactions.emit(transactions)
         }
     }
 
     private fun getTransactionByType(types: List<String>) {
         viewModelScope.launch {
-            val transactions = transactionRepository.getTransactionsByType(types = types).map { Pair(it.value, it.key) }
+            val transactions = transactionRepository.getTransactionsByType(cardNumber = null, types = types).map { Pair(it.value, it.key) }
             _transactions.emit(transactions)
         }
     }
@@ -123,9 +125,10 @@ class SearchTransactionViewModel @Inject constructor(
                 val searchText = uiSearchState.searchText
 
                 val transactions = if (types.isEmpty()) {
-                    transactionRepository.getTransactionsByKeyword(keyword = searchText)
+                    transactionRepository.getTransactionsByKeyword(cardNumber = null, keyword = searchText)
                 } else {
                     transactionRepository.getTransactionsByKeywordAndType(
+                        cardNumber = null,
                         keyword = searchText,
                         types = types
                     )
