@@ -19,7 +19,7 @@ data class BottomNavBarItem(
     val screen: BottomNavbarScreen,
 )
 
-object BottomNavBar {
+object BottomNavBarScreens {
     val items = mapOf(
         Pair(
             BottomNavbarScreen.Home.route,
@@ -37,7 +37,7 @@ object BottomNavBar {
 }
 
 private fun getSelectedItemIndex(route: String?): BottomNavbarScreen {
-    return BottomNavBar.items[route]?.screen ?: BottomNavbarScreen.Home
+    return BottomNavBarScreens.items[route]?.screen ?: BottomNavbarScreen.Home
 }
 
 @Composable
@@ -45,7 +45,7 @@ fun BottomNavbar(navigator: NavigationManager) {
     val route = navigator.currentRoute
 
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-        BottomNavBar.items.values.forEachIndexed { _, item ->
+        BottomNavBarScreens.items.values.forEachIndexed { _, item ->
             NavigationBarItem(
                 selected = getSelectedItemIndex(route) == item.screen,
                 onClick = {

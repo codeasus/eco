@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.Screen
 import codeasus.projects.bank.eco.core.navigation.ui.BaseTopNavbar
+import codeasus.projects.bank.eco.core.navigation.ui.BottomNavbar
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
@@ -59,6 +60,9 @@ fun HomeScreen(navigationManager: NavigationManager) {
 
                     }
                 )
+            },
+            bottomBar = {
+                BottomNavbar(navigationManager)
             }
         ) {
             Column(
