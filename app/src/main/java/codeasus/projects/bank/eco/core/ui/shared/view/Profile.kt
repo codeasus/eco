@@ -23,7 +23,10 @@ import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
-import codeasus.projects.bank.eco.domain.local.model.user.UserModel
+
+private fun Modifier.withName(withName: Boolean): Modifier {
+    return if (withName) this.width(64.dp) else this
+}
 
 @Composable
 fun Profile(
@@ -35,7 +38,7 @@ fun Profile(
 ) {
     Column(
         modifier = Modifier
-            .width(64.dp)
+            .withName(withName = withName)
             .clickable(onClick = { onProfileSelected() })
                 then (
                 if (isSelected) {
@@ -62,7 +65,7 @@ fun Profile(
 }
 
 @Composable
-fun PersonalProfile(imageModifier: Modifier, profileImageResId: Int) {
+fun ImgProfile(imageModifier: Modifier, profileImageResId: Int) {
     Image(
         modifier = imageModifier,
         painter = painterResource(profileImageResId),
@@ -79,8 +82,8 @@ fun ProfilePreview() {
             imageModifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape),
-            customer = DataSourceDefaults.getCustomers()[0],
-            withName = true
+            customer = DataSourceDefaults.getCustomers()[1],
+            withName = true,
         ) {}
     }
 }

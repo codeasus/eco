@@ -4,13 +4,13 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import codeasus.projects.bank.eco.core.navigation.AppNavigator
+import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 
 @Composable
-fun TransferScreen(navigator: AppNavigator) {
-    BaseScreen<TransferViewModel>(navigator = navigator) { vm ->
+fun TransferScreen(navigationManager: NavigationManager) {
+    BaseScreen<TransferViewModel> { vm ->
 
     }
 }
@@ -23,7 +23,7 @@ fun TransferScreen(navigator: AppNavigator) {
 @Composable
 fun TransferScreenPreview() {
     EcoTheme {
-        val nav = AppNavigator(rememberNavController())
+        val nav = NavigationManager(rememberNavController())
         TransferScreen(nav)
     }
 }

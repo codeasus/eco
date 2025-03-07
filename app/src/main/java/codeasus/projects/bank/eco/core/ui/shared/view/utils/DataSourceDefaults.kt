@@ -94,8 +94,8 @@ object DataSourceDefaults {
         val customers = getCustomers()
         return listOf(
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[0].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[0].bankAccount.number,
                 amount = 45.23,
                 currency = Currency.USD,
                 rate = 2.4,
@@ -105,8 +105,8 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[1].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[1].bankAccount.number,
                 amount = 28.0,
                 currency = Currency.EUR,
                 rate = 2.0,
@@ -116,8 +116,8 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[2].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[2].bankAccount.number,
                 amount = 5.2,
                 currency = Currency.AZN,
                 rate = 0.5,
@@ -127,8 +127,8 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[3].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[3].bankAccount.number,
                 amount = 0.45,
                 currency = Currency.USD,
                 rate = 4.0,
@@ -138,8 +138,8 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(4)
             ),
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[4].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[4].bankAccount.number,
                 amount = 100.99,
                 currency = Currency.EUR,
                 rate = 2.5,
@@ -149,8 +149,8 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(87)
             ),
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[5].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[5].bankAccount.number,
                 amount = 1000.0,
                 currency = Currency.USD,
                 rate = 10.0,
@@ -160,8 +160,8 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(148)
             ),
             codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
-                fromAccountNumber = unknownUser.bankAccounts[0].number,
-                toAccountNumber = customers[6].bankAccount.number,
+                externalAccountNumber = unknownUser.bankAccounts[0].number,
+                internalAccountNumber = customers[6].bankAccount.number,
                 amount = 400.0,
                 currency = Currency.AZN,
                 rate = 1.4,

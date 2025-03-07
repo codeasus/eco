@@ -8,6 +8,7 @@ sealed class Screen(val route: String, val title: String) {
     data object Home : Screen("home", "Home")
     data object Transfer : Screen("transfer", "Transfer")
     data object Product : Screen("product", "Product")
+    data object SearchTransaction : Screen("search_transaction", "Transactions")
 
     sealed class BottomNavbarScreen(screen: Screen, val navItemName: String, @DrawableRes val icon: Int) : Screen(screen.route, screen.title) {
         data object Home : BottomNavbarScreen(Screen.Home, "Home",  R.drawable.ic_home)
@@ -18,9 +19,10 @@ sealed class Screen(val route: String, val title: String) {
     companion object {
         fun fromRoute(route: String?): Screen {
             return when (route) {
-                Home.route -> Home
-                Product.route -> Product
-                Transfer.route -> Transfer
+                Home.route -> BottomNavbarScreen.Home
+                Product.route -> BottomNavbarScreen.Product
+                Transfer.route -> BottomNavbarScreen.Transfer
+                SearchTransaction.route -> SearchTransaction
                 else -> Home
             }
         }

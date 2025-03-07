@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import codeasus.projects.bank.eco.feature.home.presentation.HomeScreen
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreen
+import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreen
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
 
 @Composable
@@ -14,8 +15,8 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: Screen = Screen.Home
 ) {
-    val appNavigator = remember(navController) {
-        AppNavigator(navController)
+    val navigationManager = remember(navController) {
+        NavigationManager(navController)
     }
 
     NavHost(
@@ -23,18 +24,21 @@ fun AppNavHost(
         startDestination = startDestination.route
     ) {
         composable(Screen.Home.route) {
-            HomeScreen(navigator = appNavigator)
+            HomeScreen(navigationManager = navigationManager)
         }
         composable(Screen.Product.route) {
-            ProductScreen(navigator = appNavigator)
+            ProductScreen(navigationManager = navigationManager)
         }
         composable(Screen.Transfer.route) {
-            TransferScreen(navigator = appNavigator)
+            TransferScreen(navigationManager = navigationManager)
+        }
+        composable(Screen.SearchTransaction.route) {
+            SearchTransactionScreen(navigationManager = navigationManager)
         }
     }
 }
 
-class AppNavigator(private val navController: NavHostController) {
+class NavigationManager(private val navController: NavHostController) {
     val currentRoute: String?
         get() = navController.currentDestination?.route
 

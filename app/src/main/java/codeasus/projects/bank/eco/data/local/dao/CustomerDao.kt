@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import codeasus.projects.bank.eco.data.local.entity.CustomerEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CustomerDao {
@@ -16,5 +15,8 @@ interface CustomerDao {
     suspend fun getCustomerByName(name: String): CustomerEntity?
 
     @Query("SELECT * FROM customers")
-    fun getAllCustomers(): Flow<List<CustomerEntity>>
+    suspend fun getAllCustomers(): List<CustomerEntity>
+
+    @Query("DELETE FROM customers")
+    suspend fun deleteCustomers()
 }

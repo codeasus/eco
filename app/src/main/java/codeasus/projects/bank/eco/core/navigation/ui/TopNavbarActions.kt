@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -17,15 +18,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
-import codeasus.projects.bank.eco.core.ui.shared.view.PersonalProfile
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
+import codeasus.projects.bank.eco.core.ui.shared.view.ImgProfile
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 
+@Composable
+fun SearchAction(onSearchClick: () -> Unit) {
+    IconButton(onClick = onSearchClick) {
+        Icon(
+            painter = painterResource(R.drawable.ic_search),
+            tint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = Icons.Outlined.Search.name
+        )
+    }
+}
 
 @Composable
 fun ProfileAction(user: UserModel, onProfileClick: () -> Unit) {
     IconButton(onClick = onProfileClick) {
-        PersonalProfile(
+        ImgProfile(
             imageModifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape),
@@ -43,11 +53,12 @@ fun NotificationAction(onNotificationClick: () -> Unit) {
                 modifier = Modifier.offset((-8).dp, 6.dp),
                 containerColor = MaterialTheme.colorScheme.primary
             )
-        }) {
+        }
+    ) {
         IconButton(onClick = onNotificationClick) {
             Icon(
-                modifier = Modifier.size(24.dp),
                 painter = painterResource(R.drawable.ic_notification),
+                tint = MaterialTheme.colorScheme.onSurface,
                 contentDescription = Icons.Outlined.Notifications.name
             )
         }
@@ -57,6 +68,5 @@ fun NotificationAction(onNotificationClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ActionPreview() {
-    NotificationAction { }
-    ProfileAction(DataSourceDefaults.unknownUser) { }
+    SearchAction { }
 }

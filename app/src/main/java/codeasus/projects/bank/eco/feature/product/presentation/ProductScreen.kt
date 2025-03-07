@@ -4,13 +4,13 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import codeasus.projects.bank.eco.core.navigation.AppNavigator
+import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 
 @Composable
-fun ProductScreen(navigator: AppNavigator) {
-    BaseScreen<ProductViewModel>(navigator = navigator) {
+fun ProductScreen(navigationManager: NavigationManager) {
+    BaseScreen<ProductViewModel> {
 
     }
 }
@@ -23,7 +23,7 @@ fun ProductScreen(navigator: AppNavigator) {
 @Composable
 fun ProductScreenPreview() {
     EcoTheme {
-        val nav = AppNavigator(rememberNavController())
+        val nav = NavigationManager(rememberNavController())
         ProductScreen(nav)
     }
 }

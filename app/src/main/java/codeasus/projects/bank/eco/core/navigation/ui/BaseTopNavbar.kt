@@ -7,26 +7,22 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.TextStyle
-import androidx.hilt.navigation.compose.hiltViewModel
-import codeasus.projects.bank.eco.core.navigation.AppNavigator
+import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.Screen
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
-import codeasus.projects.bank.eco.core.ui.shared.viewmodel.user.UserViewModel
+import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopNavbar(
+fun BaseTopNavbar(
     scrollBehavior: TopAppBarScrollBehavior,
-    viewModel: UserViewModel = hiltViewModel(),
-    navigator: AppNavigator,
+    user: UserModel?,
+    navigationManager: NavigationManager,
     onNotificationClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
-    val user by viewModel.userState.collectAsState()
-    val currentScreen = Screen.fromRoute(navigator.currentRoute)
+    val currentScreen = Screen.fromRoute(navigationManager.currentRoute)
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -39,7 +35,7 @@ fun TopNavbar(
         },
         actions = {
             NotificationAction { onNotificationClick() }
-            ProfileAction(if (user != null) user!! else DataSourceDefaults.unknownUser) { onProfileClick() }
+            ProfileAction(user ?: DataSourceDefaults.unknownUser) { onProfileClick() }
         }
     )
 }

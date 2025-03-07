@@ -13,4 +13,4 @@ class ProductViewModel @Inject constructor(
     customerRepository: CustomerRepository,
     transactionRepository: TransactionRepository
 ) :
-    BaseViewModel(userRepository, customerRepository, transactionRepository)
+    BaseViewModel(userRepository, transactionRepository)

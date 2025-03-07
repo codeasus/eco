@@ -2,8 +2,12 @@ package codeasus.projects.bank.eco.data.local.mappers
 
 import codeasus.projects.bank.eco.data.local.entity.CustomerEntity
 import codeasus.projects.bank.eco.data.local.entity.TransactionEntity
+import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
+import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -22,7 +26,7 @@ fun CustomerEntity.toCustomerModel(): CustomerModel {
     return CustomerModel(
         name = this.name,
         profileImgResId = this.profileImgResourceId,
-        bankAccount = codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+        bankAccount = CustomerBankAccountModel(
             name = this.name,
             number = this.bankAccountNumber
         )
@@ -30,12 +34,12 @@ fun CustomerEntity.toCustomerModel(): CustomerModel {
 }
 
 // Transaction Mappers
-fun codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel.toTransactionEntity(): TransactionEntity {
+fun TransactionModel.toTransactionEntity(): TransactionEntity {
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return TransactionEntity(
         id = this.id.toString(),
-        fromAccountNumber = this.fromAccountNumber,
-        toAccountNumber = this.toAccountNumber,
+        internalAccountNumber = this.internalAccountNumber,
+        externalAccountNumber = this.externalAccountNumber,
         amount = this.amount,
         currency = this.currency.name,
         rate = this.rate,
@@ -46,17 +50,17 @@ fun codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel.t
     )
 }
 
-fun TransactionEntity.toTransactionModel(): codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel {
+fun TransactionEntity.toTransactionModel(): TransactionModel {
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-    return codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+    return TransactionModel(
         id = UUID.fromString(this.id),
-        fromAccountNumber = this.fromAccountNumber,
-        toAccountNumber = this.toAccountNumber,
+        externalAccountNumber = this.externalAccountNumber,
+        internalAccountNumber = this.internalAccountNumber,
         amount = this.amount,
         currency = Currency.valueOf(this.currency),
         rate = this.rate,
-        type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.valueOf(this.type),
-        status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.valueOf(this.status),
+        type = TransactionType.valueOf(this.type),
+        status = TransactionStatus.valueOf(this.status),
         createdAt = LocalDateTime.parse(this.createdAt, formatter),
         updatedAt = LocalDateTime.parse(this.updatedAt, formatter)
     )

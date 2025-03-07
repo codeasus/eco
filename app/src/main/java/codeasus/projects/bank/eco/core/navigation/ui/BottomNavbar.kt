@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import codeasus.projects.bank.eco.core.navigation.AppNavigator
+import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.Screen.BottomNavbarScreen
 
 data class BottomNavBarItem(
@@ -41,7 +41,7 @@ private fun getSelectedItemIndex(route: String?): BottomNavbarScreen {
 }
 
 @Composable
-fun BottomNavbar(navigator: AppNavigator) {
+fun BottomNavbar(navigator: NavigationManager) {
     val route = navigator.currentRoute
 
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {

@@ -3,6 +3,9 @@ package codeasus.projects.bank.eco.data.di
 import android.content.Context
 import androidx.room.Room
 import codeasus.projects.bank.eco.core.database.AppDatabase
+import codeasus.projects.bank.eco.core.database.MIGRATION_1_2
+import codeasus.projects.bank.eco.core.database.MIGRATION_2_3
+import codeasus.projects.bank.eco.core.database.MIGRATION_3_4
 import codeasus.projects.bank.eco.data.local.dao.CustomerDao
 import codeasus.projects.bank.eco.data.local.dao.TransactionDao
 import codeasus.projects.bank.eco.data.local.repository.customer.CustomerRepositoryImpl
@@ -27,7 +30,9 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "banking_database"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .build()
     }
 
     @Provides
