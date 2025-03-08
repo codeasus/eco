@@ -15,57 +15,43 @@ import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.Screen.BottomNavbarScreen
 
-data class BottomNavBarItem(
-    val screen: BottomNavbarScreen,
-)
-
 object BottomNavBarScreens {
     val items = mapOf(
-        Pair(
-            BottomNavbarScreen.Home.route,
-            BottomNavBarItem(screen = BottomNavbarScreen.Home)
-        ),
-        Pair(
-            BottomNavbarScreen.Transfer.route,
-            BottomNavBarItem(screen = BottomNavbarScreen.Transfer)
-        ),
-        Pair(
-            BottomNavbarScreen.Product.route,
-            BottomNavBarItem(screen = BottomNavbarScreen.Product)
-        )
+        Pair(BottomNavbarScreen.Home.route, BottomNavbarScreen.Home),
+        Pair(BottomNavbarScreen.Transfer.route, BottomNavbarScreen.Transfer),
+        Pair(BottomNavbarScreen.Product.route, BottomNavbarScreen.Product)
     )
 }
 
 private fun getSelectedItemIndex(route: String?): BottomNavbarScreen {
-    return BottomNavBarScreens.items[route]?.screen ?: BottomNavbarScreen.Home
+    return BottomNavBarScreens.items[route] ?: BottomNavbarScreen.Home
 }
 
 @Composable
 fun BottomNavbar(navigator: NavigationManager) {
-    val route = navigator.currentRoute
-
+    val currentScreen = getSelectedItemIndex(navigator.currentRoute)
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-        BottomNavBarScreens.items.values.forEachIndexed { _, item ->
+        BottomNavBarScreens.items.values.forEachIndexed { _, screen ->
             NavigationBarItem(
-                selected = getSelectedItemIndex(route) == item.screen,
+                selected = currentScreen == screen,
                 onClick = {
-                    if (getSelectedItemIndex(route) == item.screen) return@NavigationBarItem
-                    navigator.navigateTo(item.screen)
+                    if (currentScreen == screen) return@NavigationBarItem
+                    navigator.navigateTo(screen)
                 },
                 icon = {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(item.screen.icon),
-                        tint = if (getSelectedItemIndex(route) == item.screen) {
+                        painter = painterResource(screen.icon),
+                        tint = if (currentScreen == screen) {
                             MaterialTheme.colorScheme.primary
                         } else MaterialTheme.colorScheme.onSurface,
-                        contentDescription = item.screen.title
+                        contentDescription = screen.title
                     )
                 },
                 label = {
                     Text(
-                        item.screen.title,
-                        color = if (getSelectedItemIndex(route) == item.screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        screen.title,
+                        color = if (currentScreen == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     )
                 },
                 alwaysShowLabel = true,

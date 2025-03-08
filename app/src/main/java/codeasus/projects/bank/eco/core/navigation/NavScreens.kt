@@ -3,7 +3,6 @@ package codeasus.projects.bank.eco.core.navigation
 import androidx.annotation.DrawableRes
 import codeasus.projects.bank.eco.R
 
-
 sealed class Screen(val route: String, val title: String) {
     data object Home : Screen("home", "Home")
     data object Transfer : Screen("transfer", "Transfer")
