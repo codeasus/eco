@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "codeasus.projects.bank.eco"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "codeasus.projects.bank.eco"
@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.identity.jvm)
+    implementation(libs.androidx.adaptive.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -116,4 +117,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Compose Foundation
+    implementation(libs.compose.foundation)
 }

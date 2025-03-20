@@ -1,19 +1,35 @@
 package codeasus.projects.bank.eco.core.ui.shared.view.utils
 
 import codeasus.projects.bank.eco.R
+import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
+import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
+import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
+import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
+import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 import java.time.LocalDateTime
 
 object DataSourceDefaults {
 
-    val unknownUser = codeasus.projects.bank.eco.domain.local.model.user.UserModel(
+    val unknownUser = UserModel(
         name = "Unknown",
         profileImageResId = R.drawable.unknown,
         bankAccounts = listOf(
-            codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel(
+            UserBankAccountModel(
                 name = "Unknown",
                 number = "0000 0000 0000 0000",
+                type = BankAccountType.NORMAL,
+                balance = 0.0,
+                ccv = "123",
+                expiryDate = LocalDateTime.now()
+            ),
+            UserBankAccountModel(
+                name = "Unknown",
+                number = "0000 0000 0000 0000",
+                type = BankAccountType.PLATINUM,
                 balance = 0.0,
                 ccv = "123",
                 expiryDate = LocalDateTime.now()
@@ -27,7 +43,7 @@ object DataSourceDefaults {
                 name = "Fiver",
                 profileImgResId = R.drawable.fiver,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Fiver",
                     number = "1234 5678 0000 9099"
                 )
@@ -36,7 +52,7 @@ object DataSourceDefaults {
                 name = "Bruce Wayne",
                 profileImgResId = R.drawable.bruce_wayne,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Bruce Wayne",
                     number = "1234 5678 0000 9099"
                 )
@@ -45,7 +61,7 @@ object DataSourceDefaults {
                 name = "Danny Fernandez",
                 profileImgResId = R.drawable.danny_fernandez,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Danny Fernandez",
                     number = "1234 5678 0000 9099"
                 )
@@ -54,7 +70,7 @@ object DataSourceDefaults {
                 name = "Tinder",
                 profileImgResId = R.drawable.tinder,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Tinder",
                     number = "1234 5678 0000 9099"
                 )
@@ -64,7 +80,7 @@ object DataSourceDefaults {
                 name = "Bank of America Ltd.",
                 profileImgResId = R.drawable.bank_of_america,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Bank of America Ltd.",
                     number = "1234 5678 0000 9099"
                 )
@@ -73,7 +89,7 @@ object DataSourceDefaults {
                 name = "Wolt",
                 profileImgResId = R.drawable.wolt,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Wolt",
                     number = "1234 5678 0000 9099"
                 )
@@ -82,7 +98,7 @@ object DataSourceDefaults {
                 name = "Kelly Robinson",
                 profileImgResId = R.drawable.kelly_robinson,
                 bankAccount =
-                codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel(
+                CustomerBankAccountModel(
                     name = "Kelly Robinson",
                     number = "1234 5678 0000 9099"
                 )
@@ -90,83 +106,83 @@ object DataSourceDefaults {
         )
     }
 
-    fun getTransactions(): List<codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel> {
+    fun getTransactions(): List<TransactionModel> {
         val customers = getCustomers()
         return listOf(
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[0].bankAccount.number,
                 amount = 45.23,
                 currency = Currency.USD,
                 rate = 2.4,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.TRANSFER,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.COMPLETED,
+                type = TransactionType.TRANSFER,
+                status = TransactionStatus.COMPLETED,
                 createdAt = LocalDateTime.now().minusDays(10),
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[1].bankAccount.number,
                 amount = 28.0,
                 currency = Currency.EUR,
                 rate = 2.0,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.WITHDRAWAL,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.COMPLETED,
+                type = TransactionType.WITHDRAWAL,
+                status = TransactionStatus.COMPLETED,
                 createdAt = LocalDateTime.now().minusDays(10),
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[2].bankAccount.number,
                 amount = 5.2,
                 currency = Currency.AZN,
                 rate = 0.5,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.WITHDRAWAL,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.FAILED,
+                type = TransactionType.WITHDRAWAL,
+                status = TransactionStatus.FAILED,
                 createdAt = LocalDateTime.now().minusYears(1),
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[3].bankAccount.number,
                 amount = 0.45,
                 currency = Currency.USD,
                 rate = 4.0,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.REFUND,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.CANCELED,
+                type = TransactionType.REFUND,
+                status = TransactionStatus.CANCELED,
                 createdAt = LocalDateTime.now().minusDays(5),
                 updatedAt = LocalDateTime.now().minusDays(4)
             ),
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[4].bankAccount.number,
                 amount = 100.99,
                 currency = Currency.EUR,
                 rate = 2.5,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.TRANSFER,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.PENDING,
+                type = TransactionType.TRANSFER,
+                status = TransactionStatus.PENDING,
                 createdAt = LocalDateTime.now().minusDays(90),
                 updatedAt = LocalDateTime.now().minusDays(87)
             ),
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[5].bankAccount.number,
                 amount = 1000.0,
                 currency = Currency.USD,
                 rate = 10.0,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.TRANSFER,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.COMPLETED,
+                type = TransactionType.TRANSFER,
+                status = TransactionStatus.COMPLETED,
                 createdAt = LocalDateTime.now().minusDays(150),
                 updatedAt = LocalDateTime.now().minusDays(148)
             ),
-            codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel(
+            TransactionModel(
                 externalAccountNumber = unknownUser.bankAccounts[0].number,
                 internalAccountNumber = customers[6].bankAccount.number,
                 amount = 400.0,
                 currency = Currency.AZN,
                 rate = 1.4,
-                type = codeasus.projects.bank.eco.domain.local.model.enums.TransactionType.DEPOSIT,
-                status = codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus.COMPLETED,
+                type = TransactionType.DEPOSIT,
+                status = TransactionStatus.COMPLETED,
                 createdAt = LocalDateTime.now().minusDays(200),
                 updatedAt = LocalDateTime.now().minusDays(201)
             )

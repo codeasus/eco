@@ -3,6 +3,7 @@ package codeasus.projects.bank.eco.data.local.util
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
+import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
@@ -17,8 +18,8 @@ import javax.inject.Inject
 
 class TestDataLoader @Inject constructor(
     val userRepository: UserRepository,
-    val customerRepository: CustomerRepository,
-    val transactionRepository: TransactionRepository
+    private val customerRepository: CustomerRepository,
+    private val transactionRepository: TransactionRepository
 ) {
 
     private fun getCustomers(): List<CustomerModel> {
@@ -98,12 +99,14 @@ class TestDataLoader @Inject constructor(
                 name = "Albert Flores",
                 number = "1234 5678 9002 0003",
                 balance = 123.99,
+                type = BankAccountType.NORMAL,
                 ccv = "123",
                 expiryDate = LocalDateTime.now().plusYears(3)
             ),
             UserBankAccountModel(
                 name = "Albert Flores",
                 number = "9876 0000 0000 3245",
+                type = BankAccountType.PLATINUM,
                 balance = 4503.25,
                 ccv = "456",
                 expiryDate = LocalDateTime.now().plusYears(2).plusMonths(4)

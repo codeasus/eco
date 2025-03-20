@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -44,6 +44,7 @@ fun HomeScreen(navigationManager: NavigationManager) {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
         val userState = vm.user.collectAsStateWithLifecycle()
+        val bankCars = vm.bankCards.collectAsStateWithLifecycle()
         val transactions = vm.transactions.collectAsStateWithLifecycle()
 
         BaseScaffold(
@@ -76,9 +77,15 @@ fun HomeScreen(navigationManager: NavigationManager) {
                     text = "Cards",
                     style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
                 )
-                Cards(userState.value?.bankAccounts ?: emptyList()) {
+                Cards(
+                    userBankAccounts = bankCars.value,
+                    onCardSelected = {
 
-                }
+                    },
+                    onCardSwiped = {
+                        vm.reStackCards()
+                    }
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -86,11 +93,21 @@ fun HomeScreen(navigationManager: NavigationManager) {
                     Button(onClick = {}) {
                         Text(text = "Top Up")
                     }
-                    OutlinedButton(onClick = {}) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        onClick = {}) {
                         Text(text = "Send")
                     }
 
-                    OutlinedButton(onClick = {}) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        onClick = {}) {
                         Text(text = "Request")
                     }
                 }

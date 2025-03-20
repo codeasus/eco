@@ -22,6 +22,8 @@ googleGson = "2.10.1"
 datastore = "1.1.2"
 room = "2.6.1"
 identityJvm = "202411.1"
+composeFoundation = "1.7.8"
+adaptiveAndroid = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -85,6 +87,10 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
+
+# Compose-Foundation
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation"}
+androidx-adaptive-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-android", version.ref = "adaptiveAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
