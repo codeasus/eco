@@ -11,44 +11,31 @@ import codeasus.projects.bank.eco.feature.search_transaction.presentation.Search
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
 
 @Composable
-fun AppNavHost(
-    navController: NavHostController,
-    startDestination: Screen = Screen.Home
-) {
-    val navigationManager = remember(navController) {
-        NavigationManager(navController)
-    }
+fun AppNavHost(navController: NavHostController) {
+    val navigationManager = remember(navController) { NavigationManager(navController) }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination.route
-    ) {
-        composable(Screen.Home.route) {
+    NavHost(navController = navController, startDestination = BottomNavbarScreen.Home) {
+        composable<BottomNavbarScreen.Home> {
             HomeScreen(navigationManager = navigationManager)
         }
-        composable(Screen.Product.route) {
+        composable<BottomNavbarScreen.Product> {
             ProductScreen(navigationManager = navigationManager)
         }
-        composable(Screen.Transfer.route) {
+        composable<BottomNavbarScreen.Transfer> {
             TransferScreen(navigationManager = navigationManager)
         }
-        composable(Screen.SearchTransaction.route) {
+        composable<SearchTransaction> {
             SearchTransactionScreen(navigationManager = navigationManager)
         }
     }
 }
 
-class NavigationManager(private val navController: NavHostController) {
-    val currentRoute: String?
-        get() = navController.currentDestination?.route
-
+class NavigationManager(val navController: NavHostController) {
     fun navigateTo(screen: Screen) {
-        navController.navigate(screen.route)
+        navController.navigate(screen)
     }
 
     fun navigateUp() {
         navController.navigateUp()
     }
-
-    fun isBottomNavScreen(): Boolean = Screen.fromRoute(currentRoute) is Screen.BottomNavbarScreen
 }

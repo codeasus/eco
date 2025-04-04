@@ -8,8 +8,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
-import codeasus.projects.bank.eco.core.navigation.NavigationManager
-import codeasus.projects.bank.eco.core.navigation.Screen
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 
@@ -17,19 +15,17 @@ import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 @Composable
 fun BaseTopNavbar(
     scrollBehavior: TopAppBarScrollBehavior,
+    title: String,
     user: UserModel?,
-    navigationManager: NavigationManager,
     onNotificationClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
-    val currentScreen = Screen.fromRoute(navigationManager.currentRoute)
-
     TopAppBar(
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
         title = {
             Text(
-                text = currentScreen.title,
+                text = title,
                 style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
             )
         },

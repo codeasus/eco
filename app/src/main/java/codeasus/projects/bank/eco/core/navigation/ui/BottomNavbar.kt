@@ -1,5 +1,7 @@
 package codeasus.projects.bank.eco.core.navigation.ui
 
+import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -12,46 +14,58 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import codeasus.projects.bank.eco.R
+import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
-import codeasus.projects.bank.eco.core.navigation.Screen.BottomNavbarScreen
+import kotlin.reflect.KClass
+
+data class BottomNavbarScreen<T : Any>(val route: T, @DrawableRes val icon: Int)
 
 object BottomNavBarScreens {
-    val items = mapOf(
-        Pair(BottomNavbarScreen.Home.route, BottomNavbarScreen.Home),
-        Pair(BottomNavbarScreen.Transfer.route, BottomNavbarScreen.Transfer),
-        Pair(BottomNavbarScreen.Product.route, BottomNavbarScreen.Product)
+    val items = arrayOf(
+        BottomNavbarScreen(BottomNavbarScreen.Home, R.drawable.ic_home),
+        BottomNavbarScreen(BottomNavbarScreen.Transfer, R.drawable.ic_transfer),
+        BottomNavbarScreen(BottomNavbarScreen.Product, R.drawable.ic_product),
     )
 }
 
-private fun getSelectedItemIndex(route: String?): BottomNavbarScreen {
-    return BottomNavBarScreens.items[route] ?: BottomNavbarScreen.Home
+private fun NavController.isCurrentScreen(screenClass: KClass<out BottomNavbarScreen>): Boolean {
+    val route = this.currentBackStackEntry?.destination?.route?: return false
+    Log.d("Navigation-route: ", route)
+    Log.d("Navigation-class: ", screenClass.qualifiedName.toString())
+    return route.startsWith(screenClass.qualifiedName.toString())
 }
 
 @Composable
 fun BottomNavbar(navigator: NavigationManager) {
-    val currentScreen = getSelectedItemIndex(navigator.currentRoute)
+    val nav = navigator.navController
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-        BottomNavBarScreens.items.values.forEachIndexed { _, screen ->
+        BottomNavBarScreens.items.forEach { navItem ->
             NavigationBarItem(
-                selected = currentScreen == screen,
+                selected = nav.isCurrentScreen(navItem.route::class),
                 onClick = {
-                    if (currentScreen == screen) return@NavigationBarItem
-                    navigator.navigateTo(screen)
+                    if (nav.isCurrentScreen(navItem.route::class)) return@NavigationBarItem
+                    nav.navigate(navItem.route) {
+                        popUpTo(nav.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(screen.icon),
-                        tint = if (currentScreen == screen) {
-                            MaterialTheme.colorScheme.primary
-                        } else MaterialTheme.colorScheme.onSurface,
-                        contentDescription = screen.title
+                        painter = painterResource(navItem.icon),
+                        tint = if (nav.isCurrentScreen(navItem.route::class)) { MaterialTheme.colorScheme.primary } else MaterialTheme.colorScheme.onSurface,
+                        contentDescription = navItem.route.title
                     )
                 },
                 label = {
                     Text(
-                        screen.title,
-                        color = if (currentScreen == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        navItem.route.title,
+                        color = if (nav.isCurrentScreen(navItem.route::class)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     )
                 },
                 alwaysShowLabel = true,

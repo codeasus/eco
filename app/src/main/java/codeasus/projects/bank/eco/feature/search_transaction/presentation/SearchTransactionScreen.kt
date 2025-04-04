@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
-import codeasus.projects.bank.eco.core.navigation.Screen
+import codeasus.projects.bank.eco.core.navigation.SearchTransaction
 import codeasus.projects.bank.eco.core.navigation.ui.SearchTopNavbar
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
@@ -30,15 +30,15 @@ import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 @Composable
 fun SearchTransactionScreen(navigationManager: NavigationManager) {
     BaseScreen<SearchTransactionViewModel> { vm ->
-        val currentScreen = Screen.fromRoute(navigationManager.currentRoute)
-        val uiSelectedTransactionTypeState =
-            vm.uiSelectedTransactionTypeState.collectAsStateWithLifecycle()
+
+        val uiSelectedTransactionTypeState = vm.uiSelectedTransactionTypeState.collectAsStateWithLifecycle()
         val uiSearchState = vm.uiSearchState.collectAsStateWithLifecycle()
         val transactions = vm.transactions.collectAsStateWithLifecycle()
+
         BaseScaffold(
             topBar = {
                 SearchTopNavbar(
-                    title = currentScreen.title,
+                    title = SearchTransaction.title,
                     uiSearchState = uiSearchState.value,
                     onBackClick = { navigationManager.navigateUp() },
                     onSearchClick = { vm.toggleSearchTextVisibility() },
