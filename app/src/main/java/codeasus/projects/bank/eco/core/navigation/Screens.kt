@@ -10,6 +10,11 @@ data object SearchTransaction : Screen {
     override val title: String = "Transactions"
 }
 
+@Serializable
+data class Card(val bankAccountId: String) : Screen {
+    override val title: String = "Card"
+}
+
 sealed interface BottomNavbarScreen : Screen {
     @Serializable
     data object Home: BottomNavbarScreen {

@@ -71,6 +71,7 @@ fun Cards(
             }
         }
     }
+
     LaunchedEffect(boxDragState) {
         snapshotFlow { boxDragState.offset }
             .collect { offset ->
@@ -109,11 +110,11 @@ fun Cards(
                         .spec(index, boxDragState)
                         .absoluteOffset(y = offsetY.dp)
                     val bankCardAlpha = if (index == 0) topCardAlpha.floatValue else 1.0f
-                    BankCard(
+                    BankCardFront(
                         modifier = modifier,
                         bankAccount = bankAccount,
                         bankCardAlpha = bankCardAlpha,
-                        onCardSelected = onCardSelected
+                        onSelected = onCardSelected
                     )
                 },
                 modifier = Modifier.zIndex(userBankAccounts.size - index.toFloat()),

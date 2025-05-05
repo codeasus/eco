@@ -19,6 +19,7 @@ object DataSourceDefaults {
         profileImageResId = R.drawable.unknown,
         bankAccounts = listOf(
             UserBankAccountModel(
+                id = "card_unknown_normal_1",
                 name = "Unknown",
                 number = "0000 0000 0000 0000",
                 type = BankAccountType.NORMAL,
@@ -27,6 +28,7 @@ object DataSourceDefaults {
                 expiryDate = LocalDateTime.now()
             ),
             UserBankAccountModel(
+                id = "card_unknown_platinum_1",
                 name = "Unknown",
                 number = "0000 0000 0000 0000",
                 type = BankAccountType.PLATINUM,

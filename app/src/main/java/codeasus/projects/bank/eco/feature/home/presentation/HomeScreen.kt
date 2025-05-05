@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
+import codeasus.projects.bank.eco.core.navigation.Card
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.SearchTransaction
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
@@ -51,8 +52,8 @@ fun HomeScreen(navigationManager: NavigationManager) {
             )
             Cards(
                 userBankAccounts = bankCars.value,
-                onCardSelected = {
-
+                onCardSelected = { bankAccount ->
+                    navigationManager.navController.navigate(Card(bankAccount.id))
                 },
                 onCardSwiped = {
                     vm.reStackCards()

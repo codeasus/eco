@@ -20,7 +20,7 @@ import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import kotlin.reflect.KClass
 
-data class BottomNavbarScreen<T : Any>(val route: T, @DrawableRes val icon: Int)
+data class BottomNavbarScreen<T : Any>(val screen: T, @DrawableRes val icon: Int)
 
 object BottomNavBarScreens {
     val items = arrayOf(
@@ -43,10 +43,10 @@ fun BottomNavbar(navigator: NavigationManager) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         BottomNavBarScreens.items.forEach { navItem ->
             NavigationBarItem(
-                selected = nav.isCurrentScreen(navItem.route::class),
+                selected = nav.isCurrentScreen(navItem.screen::class),
                 onClick = {
-                    if (nav.isCurrentScreen(navItem.route::class)) return@NavigationBarItem
-                    nav.navigate(navItem.route) {
+                    if (nav.isCurrentScreen(navItem.screen::class)) return@NavigationBarItem
+                    nav.navigate(navItem.screen) {
                         popUpTo(nav.graph.startDestinationId) {
                             saveState = true
                         }
@@ -58,14 +58,14 @@ fun BottomNavbar(navigator: NavigationManager) {
                     Icon(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(navItem.icon),
-                        tint = if (nav.isCurrentScreen(navItem.route::class)) { MaterialTheme.colorScheme.primary } else MaterialTheme.colorScheme.onSurface,
-                        contentDescription = navItem.route.title
+                        tint = if (nav.isCurrentScreen(navItem.screen::class)) { MaterialTheme.colorScheme.primary } else MaterialTheme.colorScheme.onSurface,
+                        contentDescription = navItem.screen.title
                     )
                 },
                 label = {
                     Text(
-                        navItem.route.title,
-                        color = if (nav.isCurrentScreen(navItem.route::class)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        navItem.screen.title,
+                        color = if (nav.isCurrentScreen(navItem.screen::class)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     )
                 },
                 alwaysShowLabel = true,

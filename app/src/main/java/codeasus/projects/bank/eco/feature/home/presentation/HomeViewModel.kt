@@ -10,6 +10,7 @@ import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,10 +22,10 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel(userRepository) {
 
     private val _transactions = MutableStateFlow<List<Pair<CustomerModel, TransactionModel>>>(emptyList())
-    val transactions: StateFlow<List<Pair<CustomerModel, TransactionModel>>> = _transactions
+    val transactions: StateFlow<List<Pair<CustomerModel, TransactionModel>>> = _transactions.asStateFlow()
 
     private val _bankCards = MutableStateFlow<List<UserBankAccountModel>>(emptyList())
-    val bankCards: StateFlow<List<UserBankAccountModel>> = _bankCards
+    val bankCards: StateFlow<List<UserBankAccountModel>> = _bankCards.asStateFlow()
 
     init {
         viewModelScope.launch {

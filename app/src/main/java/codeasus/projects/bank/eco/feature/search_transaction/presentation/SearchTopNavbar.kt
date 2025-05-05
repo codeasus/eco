@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.core.navigation.ui
+package codeasus.projects.bank.eco.feature.search_transaction.presentation
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -40,11 +40,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
-import codeasus.projects.bank.eco.core.navigation.ui.SearchTopNavbarDefaults.horizontalPadding
-import codeasus.projects.bank.eco.core.navigation.ui.SearchTopNavbarDefaults.topBarHeight
-import codeasus.projects.bank.eco.core.navigation.ui.SearchTopNavbarDefaults.topBarHeightExpanded
+import codeasus.projects.bank.eco.core.navigation.ui.SearchAction
+import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTopNavbarDefaults.horizontalPadding
+import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTopNavbarDefaults.topBarHeight
+import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTopNavbarDefaults.topBarHeightExpanded
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionState
 
 object SearchTopNavbarDefaults {
     val horizontalPadding = 4.dp
@@ -158,7 +158,6 @@ fun SearchTopNavbar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReferenceTopBar(scrollBehavior: TopAppBarScrollBehavior) {
-
     TopAppBar(
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),

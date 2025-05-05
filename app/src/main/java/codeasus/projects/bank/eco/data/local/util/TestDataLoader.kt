@@ -96,6 +96,7 @@ class TestDataLoader @Inject constructor(
         profileImageResId = R.drawable.albert_flores,
         bankAccounts = listOf(
             UserBankAccountModel(
+                id = "card_normal_1",
                 name = "Albert Flores",
                 number = "1234 5678 9002 0003",
                 balance = 123.99,
@@ -104,6 +105,7 @@ class TestDataLoader @Inject constructor(
                 expiryDate = LocalDateTime.now().plusYears(3)
             ),
             UserBankAccountModel(
+                id = "card_platinum_1",
                 name = "Albert Flores",
                 number = "9876 0000 0000 3245",
                 type = BankAccountType.PLATINUM,

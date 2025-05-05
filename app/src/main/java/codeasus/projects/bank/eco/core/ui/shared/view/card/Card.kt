@@ -25,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -42,95 +44,169 @@ import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 
 @Composable
-fun BankCard(
+fun BankCardFront(
     modifier: Modifier,
     bankAccount: UserBankAccountModel,
-    bankCardAlpha: Float,
-    onCardSelected: (UserBankAccountModel) -> Unit
+    rotationYAngle: Float = 0f,
+    bankCardAlpha: Float = 1.0F,
+    onSelected: (UserBankAccountModel) -> Unit = {}
 ) {
-    val themeColors = when(bankAccount.type) {
-        BankAccountType.NORMAL ->  BankCardDefaults.NormalCardColors
+    val themeColors = when (bankAccount.type) {
+        BankAccountType.NORMAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
     }
 
-    Box(contentAlignment = Alignment.Center) {
-        Card(
-            modifier = modifier
-                .clip(RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp))
-                .clickable { onCardSelected(bankAccount) },
-            shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp),
-            colors = CardDefaults.cardColors(containerColor = themeColors.colorBackground.copy(alpha = bankCardAlpha))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = themeColors.colorBackground.copy(alpha = bankCardAlpha))
-                    .drawBehind {
-                        drawIntoCanvas { canvas ->
-                            val paint = Paint().apply {
-                                maskFilter = BlurMaskFilter(900f, BlurMaskFilter.Blur.NORMAL)
-                                color = themeColors.colorBackgroundShape
-                            }
-                            canvas.nativeCanvas.drawCircle(center.x + 50, center.y, 120f, paint)
-                            canvas.nativeCanvas.drawCircle(center.x - 250, center.y, 100f, paint)
-                            canvas.nativeCanvas.drawCircle(0f + 200, 0f, 120f, paint)
+    Card(
+        modifier = modifier
+            .graphicsLayer {
+                alpha = bankCardAlpha
+                rotationY = rotationYAngle
+                cameraDistance = 12f * density
+            }
+            .clip(RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp))
+            .clickable { onSelected(bankAccount) },
+        shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp),
+        colors = CardDefaults.cardColors(containerColor = themeColors.colorBackground)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = themeColors.colorBackground)
+                .drawBehind {
+                    drawIntoCanvas { canvas ->
+                        val paint = Paint().apply {
+                            maskFilter = BlurMaskFilter(900f, BlurMaskFilter.Blur.NORMAL)
+                            color = themeColors.colorBackgroundShape
                         }
+                        canvas.nativeCanvas.drawCircle(center.x + 50, center.y, 120f, paint)
+                        canvas.nativeCanvas.drawCircle(center.x - 250, center.y, 100f, paint)
+                        canvas.nativeCanvas.drawCircle(0f + 200, 0f, 120f, paint)
                     }
-                    .padding(24.dp)
+                }
+                .padding(24.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Echo",
-                            style = TextStyle(
-                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                                fontWeight = FontWeight.Medium,
-                                color = themeColors.colorTextDarker.copy(alpha = bankCardAlpha)
-                            )
+                    Text(
+                        text = "Echo",
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            fontWeight = FontWeight.Medium,
+                            color = themeColors.colorTextDarker
                         )
-                        Image(
-                            modifier = Modifier.width(32.dp),
-                            painter = painterResource(R.drawable.ic_contactless_payment),
-                            contentScale = ContentScale.FillWidth,
-                            colorFilter = ColorFilter.tint(themeColors.colorTextDarker.copy(alpha = bankCardAlpha)),
-                            contentDescription = "Contactless Payment Sign",
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = bankAccount.name,
-                            style = TextStyle(color = themeColors.colorTextLighter.copy(alpha = bankCardAlpha))
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                    )
+                    Image(
+                        modifier = Modifier.width(32.dp),
+                        painter = painterResource(R.drawable.ic_contactless_payment),
+                        contentScale = ContentScale.FillWidth,
+                        colorFilter = ColorFilter.tint(themeColors.colorTextDarker),
+                        contentDescription = "Contactless Payment Sign",
+                    )
+                }
+                Column {
+                    Text(
+                        text = bankAccount.name,
+                        style = TextStyle(color = themeColors.colorTextLighter)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "★★★★  ★★★★  ★★★★  ${bankAccount.number.split(" ").last()}",
-                            style = TextStyle(color = themeColors.colorTextLighter.copy(alpha = bankCardAlpha))
+                            style = TextStyle(color = themeColors.colorTextLighter)
                         )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Exp ${formatExpiryDate(bankAccount.expiryDate)}",
-                            style = TextStyle(color = themeColors.colorTextDarker.copy(alpha = bankCardAlpha))
-                        )
-                        Image(
-                            modifier = Modifier.width(36.dp),
-                            painter = painterResource(R.drawable.ic_apple_pay),
-                            contentScale = ContentScale.FillWidth,
-                            colorFilter = ColorFilter.tint(themeColors.colorTextDarker.copy(alpha = bankCardAlpha)),
-                            contentDescription = "Contactless Payment Sign",
-                        )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Exp ${formatExpiryDate(bankAccount.expiryDate)}",
+                        style = TextStyle(color = themeColors.colorTextDarker)
+                    )
+                    Image(
+                        modifier = Modifier.width(36.dp),
+                        painter = painterResource(R.drawable.ic_apple_pay),
+                        contentScale = ContentScale.FillWidth,
+                        colorFilter = ColorFilter.tint(themeColors.colorTextDarker),
+                        contentDescription = "Contactless Payment Sign",
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotationYAngle: Float = 0f) {
+
+    val themeColors = when (bankAccount.type) {
+        BankAccountType.NORMAL -> BankCardDefaults.NormalCardColors
+        BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
+    }
+
+    Card(
+        modifier = modifier
+            .graphicsLayer {
+                rotationY = rotationYAngle
+                cameraDistance = 12f * density
+            }
+            .clip(RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp)),
+        shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp),
+        colors = CardDefaults.cardColors(containerColor = themeColors.colorBackground)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = themeColors.colorBackground)
+                .drawBehind {
+                    drawIntoCanvas { canvas ->
+                        val paint = Paint().apply {
+                            maskFilter = BlurMaskFilter(900f, BlurMaskFilter.Blur.NORMAL)
+                            color = themeColors.colorBackgroundShape
+                        }
+                        canvas.nativeCanvas.drawCircle(center.x + 50, center.y, 120f, paint)
+                        canvas.nativeCanvas.drawCircle(center.x - 250, center.y, 100f, paint)
+                        canvas.nativeCanvas.drawCircle(0f + 200, 0f, 120f, paint)
                     }
+                }
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(Modifier.height(24.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(Color.Black)
+                ) {
+                }
+                Spacer(Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth()
+                        .height(36.dp)
+                        .background(Color.White)
+                        .padding(horizontal = 24.dp).graphicsLayer {
+                            if(rotationYAngle >= 90.0) {
+                                rotationY = 180.0f
+                            }
+                        },
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "**${bankAccount.ccv[2]}",
+                        style = TextStyle(color = themeColors.colorTextDarker)
+                    )
                 }
             }
         }
@@ -141,7 +217,7 @@ fun BankCard(
 @Composable
 fun BankCardDarkPreview() {
     EcoTheme {
-        BankCard(
+        BankCardFront(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
@@ -157,7 +233,7 @@ fun BankCardDarkPreview() {
 @Composable
 fun BankCardLightPreview() {
     EcoTheme {
-        BankCard(
+        BankCardFront(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
@@ -166,5 +242,18 @@ fun BankCardLightPreview() {
         ) {
 
         }
+    }
+}
+
+@Preview(showSystemUi = false, showBackground = false)
+@Composable
+fun BankCardBackLightPreview() {
+    EcoTheme {
+        BankCardBack(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp),
+            bankAccount = DataSourceDefaults.unknownUser.bankAccounts[1],
+        )
     }
 }
