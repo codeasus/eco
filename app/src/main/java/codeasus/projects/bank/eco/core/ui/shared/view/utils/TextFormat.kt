@@ -20,7 +20,7 @@ fun formatExpiryDate(expiryDate: LocalDateTime): String {
     return expiryDate.format(formatter)
 }
 
-fun defineTransactionAmountColor(transactionType: codeasus.projects.bank.eco.domain.local.model.enums.TransactionType): Color {
+fun defineTransactionAmountColor(transactionType: TransactionType): Color {
     return when (transactionType) {
         TransactionType.TRANSFER, TransactionType.WITHDRAWAL, TransactionType.PAYMENT -> TransactionUIItemColors.COLOR_MATERIAL_RED
         TransactionType.DEPOSIT, TransactionType.REFUND -> Color.Unspecified
@@ -30,11 +30,8 @@ fun defineTransactionAmountColor(transactionType: codeasus.projects.bank.eco.dom
 fun formatUITransactionAmount(transaction: codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel): String {
     fun formatForSign(sign: String) = "$sign ${transaction.currency.symbol}${formatTransactionAmount(transaction.amount)}"
     return when (transaction.type) {
-        TransactionType.TRANSFER -> formatForSign("-")
-        TransactionType.DEPOSIT -> formatForSign("+")
-        TransactionType.WITHDRAWAL -> formatForSign("-")
-        TransactionType.PAYMENT -> formatForSign("-")
-        TransactionType.REFUND -> formatForSign("+")
+        TransactionType.DEPOSIT, TransactionType.REFUND -> formatForSign("+")
+        TransactionType.TRANSFER, TransactionType.WITHDRAWAL, TransactionType.PAYMENT -> formatForSign("-")
     }
 }
 
