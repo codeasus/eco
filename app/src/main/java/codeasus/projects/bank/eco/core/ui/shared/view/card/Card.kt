@@ -204,7 +204,7 @@ fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotation
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "**${bankAccount.ccv[2]}",
+                        text = "**${bankAccount.cvv[2]}",
                         style = TextStyle(color = themeColors.colorTextDarker)
                     )
                 }

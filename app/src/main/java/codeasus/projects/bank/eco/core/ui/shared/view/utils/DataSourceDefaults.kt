@@ -24,7 +24,7 @@ object DataSourceDefaults {
                 number = "0000 0000 0000 0000",
                 type = BankAccountType.NORMAL,
                 balance = 0.0,
-                ccv = "123",
+                cvv = "123",
                 expiryDate = LocalDateTime.now()
             ),
             UserBankAccountModel(
@@ -33,7 +33,7 @@ object DataSourceDefaults {
                 number = "0000 0000 0000 0000",
                 type = BankAccountType.PLATINUM,
                 balance = 0.0,
-                ccv = "123",
+                cvv = "123",
                 expiryDate = LocalDateTime.now()
             )
         )

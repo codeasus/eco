@@ -114,7 +114,7 @@ fun CardDetailsBottomSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = userBankAccountModel.ccv,
+                            text = userBankAccountModel.cvv,
                             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         )
                         IconButton(onClick = {}) {

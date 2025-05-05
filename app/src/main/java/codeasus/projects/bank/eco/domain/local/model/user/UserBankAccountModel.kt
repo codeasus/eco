@@ -9,6 +9,6 @@ data class UserBankAccountModel(
     val number: String,
     val type: BankAccountType,
     val balance: Double,
-    val ccv: String,
+    val cvv: String,
     val expiryDate: LocalDateTime
 )

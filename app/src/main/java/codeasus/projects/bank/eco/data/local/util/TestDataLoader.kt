@@ -101,7 +101,7 @@ class TestDataLoader @Inject constructor(
                 number = "1234 5678 9002 0003",
                 balance = 123.99,
                 type = BankAccountType.NORMAL,
-                ccv = "123",
+                cvv = "123",
                 expiryDate = LocalDateTime.now().plusYears(3)
             ),
             UserBankAccountModel(
@@ -110,7 +110,7 @@ class TestDataLoader @Inject constructor(
                 number = "9876 0000 0000 3245",
                 type = BankAccountType.PLATINUM,
                 balance = 4503.25,
-                ccv = "456",
+                cvv = "456",
                 expiryDate = LocalDateTime.now().plusYears(2).plusMonths(4)
             )
         )
