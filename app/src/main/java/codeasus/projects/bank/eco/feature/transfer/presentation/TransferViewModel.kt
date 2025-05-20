@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
+import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import codeasus.projects.bank.eco.feature.transfer.states.TransactionState
@@ -36,9 +37,9 @@ class TransferViewModel @Inject constructor(
         getCustomers()
     }
 
-    fun selectCurrency(currencyName: String) {
+    fun selectCurrency(currency: Currency) {
         viewModelScope.launch {
-            _transactionState.emit(_transactionState.value.copy(currency = currencyName))
+            _transactionState.emit(_transactionState.value.copy(currency = currency))
         }
     }
 

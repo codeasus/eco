@@ -38,8 +38,8 @@ import codeasus.projects.bank.eco.core.ui.shared.view.Profiles
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.feature.transfer.utils.CardNumberVisualTransformation
-import codeasus.projects.bank.eco.feature.transfer.utils.Currencies
 
 @Composable
 fun TransferScreen(navigationManager: NavigationManager) {
@@ -148,14 +148,11 @@ fun TransferScreen(navigationManager: NavigationManager) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val selectedCurrency = transactionState.value.currency
-                    val currencyIcon = Currencies.getIcon(selectedCurrency)
                     var transferAmountText by remember { mutableStateOf("") }
 
-                    CurrencyDropDownList(
-                        Currencies.items,
-                        selectedCurrency,
-                        currencyIcon
-                    ) { currency -> vm.selectCurrency(currency) }
+                    CurrencyDropDownList(Currency.entries.toTypedArray(), selectedCurrency) {
+                        currency -> vm.selectCurrency(currency)
+                    }
 
                     OutlinedTextField(
                         modifier = Modifier.weight(1.0f),
@@ -175,7 +172,7 @@ fun TransferScreen(navigationManager: NavigationManager) {
                         isError = inputFieldValidationStates["transferAmount"] is InputValidationResult.Invalid,
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(id = currencyIcon),
+                                painter = painterResource(id = selectedCurrency.icon),
                                 contentDescription = "Currency"
                             )
                         },

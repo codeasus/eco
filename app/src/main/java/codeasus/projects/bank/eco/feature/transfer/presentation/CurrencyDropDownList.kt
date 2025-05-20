@@ -30,15 +30,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 
 @Composable
 fun CurrencyDropDownList(
-    currencies: Map<String, Int>,
-    title: String,
-    icon: Int,
-    onCurrencySelected: (String) -> Unit
+    currencies: Array<Currency>,
+    selectedCurrency: Currency,
+    onCurrencySelected: (Currency) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -56,12 +55,12 @@ fun CurrencyDropDownList(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(id = icon),
-                    contentDescription = title
+                    painter = painterResource(id = selectedCurrency.icon),
+                    contentDescription = selectedCurrency.name
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = title,
+                    text = selectedCurrency.name,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -77,19 +76,19 @@ fun CurrencyDropDownList(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            currencies.forEach { (currencyName, currencyIcon) ->
+            currencies.forEach { currency ->
                 DropdownMenuItem(
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = currencyIcon),
-                            contentDescription = currencyName
+                            painter = painterResource(id = currency.icon),
+                            contentDescription = currency.name
                         )
                     },
                     text = {
-                        Text(text = currencyName)
+                        Text(text = currency.name)
                     },
                     onClick = {
-                        onCurrencySelected(currencyName)
+                        onCurrencySelected(currency)
                         expanded = false
                     }
                 )
@@ -101,13 +100,8 @@ fun CurrencyDropDownList(
 @Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun CurrencyDropDownListPreview() {
-    val currencies = mapOf(
-        "EUR" to R.drawable.ic_eur,
-        "USD" to R.drawable.ic_usd,
-        "PLN" to R.drawable.ic_pln
-    )
     EcoTheme {
-        CurrencyDropDownList(currencies, "EUR", R.drawable.ic_eur) {
+        CurrencyDropDownList(Currency.entries.toTypedArray(), Currency.PLN) {
 
         }
     }
