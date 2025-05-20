@@ -20,6 +20,16 @@ fun formatExpiryDate(expiryDate: LocalDateTime): String {
     return expiryDate.format(formatter)
 }
 
+fun formatCardNumber(cardNumber: String): String {
+    if (cardNumber.length >= 16) throw IllegalArgumentException("Card number should not have more than 16 digits")
+    val builder = StringBuilder()
+    for (i in cardNumber.indices) {
+        if (i % 4 == 0 && i != 0) builder.append(" ")
+        builder.append(cardNumber[i])
+    }
+    return builder.toString()
+}
+
 fun defineTransactionAmountColor(transactionType: TransactionType): Color {
     return when (transactionType) {
         TransactionType.TRANSFER, TransactionType.WITHDRAWAL, TransactionType.PAYMENT -> TransactionUIItemColors.COLOR_MATERIAL_RED

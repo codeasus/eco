@@ -118,7 +118,7 @@ fun BankCardFront(
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "★★★★  ★★★★  ★★★★  ${bankAccount.number.split(" ").last()}",
+                            text = "★★★★  ★★★★  ★★★★  ${bankAccount.number.takeLast(4)}",
                             style = TextStyle(color = themeColors.colorTextLighter)
                         )
                     }

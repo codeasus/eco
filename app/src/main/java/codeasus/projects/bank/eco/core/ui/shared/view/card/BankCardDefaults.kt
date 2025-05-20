@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 object BankCardDefaults {
     const val CORNER_RADIUS = 32
-    const val OUTER_RIM_SIZE = 8
 
     interface ThemedColors {
         val colorBackground: Color

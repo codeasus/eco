@@ -36,20 +36,25 @@ fun Profile(
     isSelected: Boolean = false,
     onProfileSelected: () -> Unit
 ) {
+    val shape = RoundedCornerShape(12.dp)
+
     Column(
         modifier = Modifier
             .withName(withName = withName)
-            .clickable(onClick = { onProfileSelected() })
-                then (
+            .then(
                 if (isSelected) {
+                    Modifier.background(
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                        shape = shape
+                    )
+                } else {
                     Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .padding(4.dp)
-                } else Modifier
-                ),
+                }
+            )
+            .clip(shape)
+            .clickable(onClick = onProfileSelected)
+            .padding(4.dp),
+
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -83,6 +88,7 @@ fun ProfilePreview() {
                 .size(32.dp)
                 .clip(CircleShape),
             customer = DataSourceDefaults.getCustomers()[1],
+            isSelected = true,
             withName = true,
         ) {}
     }

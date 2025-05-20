@@ -30,7 +30,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Fiver",
-                        number = "1234 5678 0000 0001"
+                        number = "1234567800000001"
                     )
             ),
             CustomerModel(
@@ -39,7 +39,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Bruce Wayne",
-                        number = "1234 5678 0000 0002"
+                        number = "1234567800000002"
                     )
             ),
             CustomerModel(
@@ -48,7 +48,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Danny Fernandez",
-                        number = "1234 5678 0000 0003"
+                        number = "1234567800000003"
                     )
             ),
             CustomerModel(
@@ -57,7 +57,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Tinder",
-                        number = "1234 5678 0000 0004"
+                        number = "1234567800000004"
                     )
 
             ),
@@ -67,7 +67,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Bank of America Ltd.",
-                        number = "1234 5678 0000 0005"
+                        number = "1234567800000005"
                     )
             ),
             CustomerModel(
@@ -76,7 +76,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Wolt",
-                        number = "1234 5678 0000 0006"
+                        number = "1234567800000006"
                     )
             ),
             CustomerModel(
@@ -85,7 +85,7 @@ class TestDataLoader @Inject constructor(
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Kelly Robinson",
-                        number = "1234 5678 0000 0007"
+                        number = "1234567800000007"
                     )
             )
         )
@@ -98,7 +98,7 @@ class TestDataLoader @Inject constructor(
             UserBankAccountModel(
                 id = "card_normal_1",
                 name = "Albert Flores",
-                number = "1234 5678 9002 0003",
+                number = "1234567890020003",
                 balance = 123.99,
                 type = BankAccountType.NORMAL,
                 cvv = "123",
@@ -107,7 +107,7 @@ class TestDataLoader @Inject constructor(
             UserBankAccountModel(
                 id = "card_platinum_1",
                 name = "Albert Flores",
-                number = "9876 0000 0000 3245",
+                number = "9876000000003245",
                 type = BankAccountType.PLATINUM,
                 balance = 4503.25,
                 cvv = "456",

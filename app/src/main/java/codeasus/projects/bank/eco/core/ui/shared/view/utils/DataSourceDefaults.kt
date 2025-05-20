@@ -21,7 +21,7 @@ object DataSourceDefaults {
             UserBankAccountModel(
                 id = "card_unknown_normal_1",
                 name = "Unknown",
-                number = "0000 0000 0000 0000",
+                number = "0000000000000000",
                 type = BankAccountType.NORMAL,
                 balance = 0.0,
                 cvv = "123",
@@ -30,7 +30,7 @@ object DataSourceDefaults {
             UserBankAccountModel(
                 id = "card_unknown_platinum_1",
                 name = "Unknown",
-                number = "0000 0000 0000 0000",
+                number = "0000000000000000",
                 type = BankAccountType.PLATINUM,
                 balance = 0.0,
                 cvv = "123",
@@ -47,7 +47,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Fiver",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
             ),
             CustomerModel(
@@ -56,7 +56,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Bruce Wayne",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
             ),
             CustomerModel(
@@ -65,7 +65,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Danny Fernandez",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
             ),
             CustomerModel(
@@ -74,7 +74,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Tinder",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
 
             ),
@@ -84,7 +84,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Bank of America Ltd.",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
             ),
             CustomerModel(
@@ -93,7 +93,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Wolt",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
             ),
             CustomerModel(
@@ -102,7 +102,7 @@ object DataSourceDefaults {
                 bankAccount =
                 CustomerBankAccountModel(
                     name = "Kelly Robinson",
-                    number = "1234 5678 0000 9099"
+                    number = "1234567800009099"
                 )
             )
         )

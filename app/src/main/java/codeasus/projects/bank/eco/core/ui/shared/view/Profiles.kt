@@ -3,7 +3,6 @@ package codeasus.projects.bank.eco.core.ui.shared.view
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -47,7 +46,6 @@ fun Profiles(customers: List<CustomerModel>, onProfileSelected: (CustomerModel) 
                                     color = MaterialTheme.colorScheme.primary,
                                     shape = CircleShape
                                 )
-                                .padding(2.dp)
                         } else Modifier
                     ),
                 customer = customers[index],
@@ -66,6 +64,7 @@ fun Profiles(customers: List<CustomerModel>, onProfileSelected: (CustomerModel) 
 @Composable
 fun ProfilesPreview() {
     EcoTheme {
-        Profiles(DataSourceDefaults.getCustomers()) {}
+        Profiles(DataSourceDefaults.getCustomers()) {
+        }
     }
 }
