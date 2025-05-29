@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.data.di
+package codeasus.projects.bank.eco.di
 
 import android.content.Context
 import codeasus.projects.bank.eco.data.local.repository.user.UserRepositoryImpl

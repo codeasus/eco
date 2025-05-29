@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.data.di
+package codeasus.projects.bank.eco.di
 
 import android.content.Context
 import androidx.room.Room

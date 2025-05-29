@@ -40,6 +40,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResul
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.feature.transfer.utils.CardNumberVisualTransformation
+import codeasus.projects.bank.eco.feature.utils.UiState
 
 @Composable
 fun TransferScreen(navigationManager: NavigationManager) {
@@ -48,6 +49,8 @@ fun TransferScreen(navigationManager: NavigationManager) {
         val customers = vm.customers.collectAsStateWithLifecycle()
         val transactionState = vm.transactionState.collectAsStateWithLifecycle()
         val inputFieldValidationStates = vm.inputFieldValidationStates
+        val binUiState = vm.binLookupState.collectAsStateWithLifecycle()
+
 
         Column(
             modifier = Modifier
@@ -62,13 +65,7 @@ fun TransferScreen(navigationManager: NavigationManager) {
                 style = TextStyle(fontSize = MaterialTheme.typography.headlineMedium.fontSize)
             )
 
-//            Row(modifier = Modifier.fillMaxWidth().background(Color.Red)){
-//                SuggestionChip(
-//                    onClick = {},
-//                    label = { Text(text = "Capital Bank") },
-//                    shape = RoundedCornerShape(18.dp)
-//                )
-//            }
+            BankAccountBinView(binUiState.value)
 
             Column(
                 modifier = Modifier
@@ -97,7 +94,21 @@ fun TransferScreen(navigationManager: NavigationManager) {
                     isError = inputFieldValidationStates["cardNumber"] is InputValidationResult.Invalid,
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_card),
+                            painter = painterResource(
+                                id = when(val bin = binUiState.value) {
+                                    is UiState.Success -> {
+                                        when(bin.data.scheme) {
+                                            "VISA" -> R.drawable.ic_visa_outlined
+                                            "MASTERCARD" -> R.drawable.ic_master_outlined
+                                            "AMERICAN EXPRESS" -> R.drawable.ic_amex_outlined
+                                            else -> R.drawable.ic_card
+                                        }
+                                    }
+                                    is UiState.Loading, is UiState.Error -> {
+                                        R.drawable.ic_card
+                                    }
+                                }
+                            ),
                             contentDescription = "Card number"
                         )
                     },
@@ -150,8 +161,11 @@ fun TransferScreen(navigationManager: NavigationManager) {
                     val selectedCurrency = transactionState.value.currency
                     var transferAmountText by remember { mutableStateOf("") }
 
-                    CurrencyDropDownList(Currency.entries.toTypedArray(), selectedCurrency) {
-                        currency -> vm.selectCurrency(currency)
+                    CurrencyDropDownList(
+                        Currency.entries.toTypedArray(),
+                        selectedCurrency
+                    ) { currency ->
+                        vm.selectCurrency(currency)
                     }
 
                     OutlinedTextField(
@@ -200,10 +214,9 @@ fun TransferScreen(navigationManager: NavigationManager) {
     }
 }
 
-@Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(showSystemUi = false, uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 fun TransferScreenPreview() {
     EcoTheme {
-
     }
 }
