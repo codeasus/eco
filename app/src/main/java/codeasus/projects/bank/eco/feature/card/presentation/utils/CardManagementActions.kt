@@ -1,7 +1,6 @@
 package codeasus.projects.bank.eco.feature.card.presentation.utils
 
 import codeasus.projects.bank.eco.R
-import codeasus.projects.bank.eco.feature.card.presentation.CardManagementActionUIData
 
 object CardManagementActions {
     val cardActions = listOf(
