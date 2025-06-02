@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.feature.card.presentation
+package codeasus.projects.bank.eco.feature.card.presentation.utils
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes

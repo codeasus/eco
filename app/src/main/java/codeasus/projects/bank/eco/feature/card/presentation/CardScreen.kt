@@ -1,7 +1,6 @@
 package codeasus.projects.bank.eco.feature.card.presentation
 
 import android.content.res.Configuration
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,22 +33,9 @@ import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-
-class CardManagementActionData(
-    val actionId: Int,
-    val actionName: String,
-    @DrawableRes val actionIcon: Int
-)
-
-object CardManagementActions {
-    val cardActions = listOf(
-        CardManagementActionData(1, "Card Controls", R.drawable.ic_controls),
-        CardManagementActionData(2, "Edit Card", R.drawable.ic_edit_card),
-        CardManagementActionData(3, "Delete Card", R.drawable.ic_delete_card),
-        CardManagementActionData(3, "Transactions", R.drawable.ic_transaction),
-        CardManagementActionData(5, "Limits", R.drawable.ic_limit),
-    )
-}
+import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
+import codeasus.projects.bank.eco.feature.card.presentation.utils.CardManagementAction
+import codeasus.projects.bank.eco.feature.card.presentation.utils.CardManagementActions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

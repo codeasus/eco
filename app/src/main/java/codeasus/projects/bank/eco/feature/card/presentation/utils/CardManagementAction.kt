@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.feature.card.presentation
+package codeasus.projects.bank.eco.feature.card.presentation.utils
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -23,10 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.feature.card.presentation.CardManagementActionUIData
 
 @Composable
 fun CardManagementAction(
-    cardManagementAction: CardManagementActionData,
+    cardManagementAction: CardManagementActionUIData,
     onClick: (actionId: Int) -> Unit
 ) {
     Row(
