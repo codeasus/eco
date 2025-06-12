@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import codeasus.projects.bank.eco.feature.card.presentation.CardScreenRoot
 import codeasus.projects.bank.eco.feature.home.presentation.HomeScreenRoot
-import codeasus.projects.bank.eco.feature.product.presentation.ProductScreen
+import codeasus.projects.bank.eco.feature.product.presentation.ProductScreenRoot
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreen
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
 
@@ -25,7 +25,7 @@ fun AppNavHost(navController: NavHostController) {
             CardScreenRoot(navigationManager = navigationManager, args.bankAccountId)
         }
         composable<BottomNavbarScreen.Product> {
-            ProductScreen(navigationManager = navigationManager)
+            ProductScreenRoot(navigationManager = navigationManager)
         }
         composable<BottomNavbarScreen.Transfer> {
             TransferScreen(navigationManager = navigationManager)
