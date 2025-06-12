@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import codeasus.projects.bank.eco.feature.card.presentation.CardScreenRoot
-import codeasus.projects.bank.eco.feature.home.presentation.HomeScreen
+import codeasus.projects.bank.eco.feature.home.presentation.HomeScreenRoot
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreen
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreen
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
@@ -18,7 +18,7 @@ fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = BottomNavbarScreen.Home) {
         composable<BottomNavbarScreen.Home> {
-            HomeScreen(navigationManager = navigationManager)
+            HomeScreenRoot(navigationManager = navigationManager)
         }
         composable<Card> {
             val args = it.toRoute<Card>()

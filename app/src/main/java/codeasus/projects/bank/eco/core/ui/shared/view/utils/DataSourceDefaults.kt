@@ -39,6 +39,16 @@ object DataSourceDefaults {
         )
     )
 
+    fun getCustomerTransactions(): List<Pair<CustomerModel, TransactionModel>> {
+        val customers = getCustomers()
+        val transactions = getTransactions()
+
+        return transactions.mapIndexed { index, transaction ->
+            val customer = customers[index % customers.size]
+            customer to transaction
+        }
+    }
+
     fun getCustomers(): List<CustomerModel> {
         return listOf(
             CustomerModel(

@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.Card
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
@@ -30,79 +29,115 @@ import codeasus.projects.bank.eco.core.navigation.SearchTransaction
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.Transactions
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
+import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
 
 @Composable
-fun HomeScreen(navigationManager: NavigationManager) {
+fun HomeScreenRoot(navigationManager: NavigationManager) {
     MainBaseScreen<HomeViewModel>(navigationManager, BottomNavbarScreen.Home.title) { vm ->
+        val state = vm.state.collectAsStateWithLifecycle()
 
-        val bankCars = vm.bankCards.collectAsStateWithLifecycle()
-        val transactions = vm.transactions.collectAsStateWithLifecycle()
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Start),
-                text = "Cards",
-                style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
-            )
-            Cards(
-                userBankAccounts = bankCars.value,
-                onCardSelected = { bankAccount ->
-                    navigationManager.navController.navigate(Card(bankAccount.id))
-                },
-                onCardSwiped = {
-                    vm.reStackCards()
-                }
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(onClick = {}) {
-                    Text(text = "Top Up")
-                }
-                OutlinedButton (onClick = {}) {
-                    Text(text = "Request")
-                }
+        HomeScreen(
+            state = state.value, onAction = vm::handleIntent,
+            onNavigateToCardScreen = {
+                navigationManager.navigateTo(Card(it))
+            },
+            onNavigateToSearchTransactionScreen = {
+                navigationManager.navigateTo(SearchTransaction)
             }
-            Spacer(Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Transactions",
-                    style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
-                )
-                Text(
-                    modifier = Modifier.clickable {
-                        navigationManager.navigateTo(SearchTransaction)
-                    },
-                    text = "View All",
-                    style = TextStyle(color = MaterialTheme.colorScheme.secondary),
-                    textDecoration = TextDecoration.Underline
-                )
-            }
-            Transactions(transactions.value)
-        }
+        )
     }
 }
 
-@Preview(
-    showSystemUi = false,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
-)
 @Composable
-fun HomeScreenPreview() {
+fun HomeScreen(
+    state: HomeState,
+    onAction: (HomeIntent) -> Unit,
+    onNavigateToCardScreen: (String) -> Unit = {},
+    onNavigateToSearchTransactionScreen: () -> Unit = {}
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.Start),
+            text = "Cards",
+            style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
+        )
+        Cards(
+            userBankAccounts = state.cards,
+            onCardSelected = { bankAccount ->
+                onNavigateToCardScreen(bankAccount.id)
+            },
+            onCardSwiped = {
+                onAction(HomeIntent.ReStackCards)
+            }
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(onClick = {}) {
+                Text(text = "Top Up")
+            }
+            OutlinedButton(onClick = {}) {
+                Text(text = "Request")
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Transactions",
+                style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
+            )
+            Text(
+                modifier = Modifier.clickable {
+                    onNavigateToSearchTransactionScreen()
+                },
+                text = "View All",
+                style = TextStyle(color = MaterialTheme.colorScheme.secondary),
+                textDecoration = TextDecoration.Underline
+            )
+        }
+        Transactions(state.transactions)
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+fun HomeScreenLightPreview() {
     EcoTheme {
-        val nav = NavigationManager(rememberNavController())
-        HomeScreen(nav)
+        HomeScreen(
+            state = HomeState(
+                isLoading = false,
+                transactions = DataSourceDefaults.getCustomerTransactions(),
+                cards = DataSourceDefaults.unknownUser.bankAccounts
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun HomeScreenDarkPreview() {
+    EcoTheme {
+        HomeScreen(
+            state = HomeState(
+                isLoading = false,
+                transactions = DataSourceDefaults.getCustomerTransactions(),
+                cards = DataSourceDefaults.unknownUser.bankAccounts
+            ),
+            onAction = {}
+        )
     }
 }

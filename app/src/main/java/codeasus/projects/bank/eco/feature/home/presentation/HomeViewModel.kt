@@ -2,14 +2,12 @@ package codeasus.projects.bank.eco.feature.home.presentation
 
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
-import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
-import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
-import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
+import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
+import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -21,31 +19,38 @@ class HomeViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository
 ) : BaseViewModel(userRepository) {
 
-    private val _transactions = MutableStateFlow<List<Pair<CustomerModel, TransactionModel>>>(emptyList())
-    val transactions: StateFlow<List<Pair<CustomerModel, TransactionModel>>> = _transactions.asStateFlow()
-
-    private val _bankCards = MutableStateFlow<List<UserBankAccountModel>>(emptyList())
-    val bankCards: StateFlow<List<UserBankAccountModel>> = _bankCards.asStateFlow()
+    private val _state = MutableStateFlow(HomeState())
+    val state = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            user.collectLatest {
-                _bankCards.emit(it?.bankAccounts ?: emptyList())
-            }
-        }
+        loadCards()
         loadAllTransactions()
+    }
+
+    fun handleIntent(intent: HomeIntent) {
+        when (intent) {
+            is HomeIntent.ReStackCards -> reStackCards()
+        }
     }
 
     private fun loadAllTransactions() {
         viewModelScope.launch {
             val transactions = transactionRepository.getAllTransactions(null).map { Pair(it.value, it.key) }
-            _transactions.emit(transactions)
+            _state.emit(_state.value.copy(transactions = transactions))
         }
     }
 
-    fun reStackCards() {
+    private fun loadCards() {
         viewModelScope.launch {
-            val bankCards = _bankCards.value.toMutableList()
+            user.collectLatest {
+                _state.emit(_state.value.copy(cards = it?.bankAccounts ?: emptyList()))
+            }
+        }
+    }
+
+    private fun reStackCards() {
+        viewModelScope.launch {
+            val bankCards = _state.value.cards.toMutableList()
 
             if (bankCards.isEmpty()) return@launch
 
@@ -57,7 +62,7 @@ class HomeViewModel @Inject constructor(
                 last = temp
             }
             bankCards[bankCards.size - 1] = first
-            _bankCards.emit(bankCards)
+            _state.emit(_state.value.copy(cards = bankCards))
         }
     }
 }
