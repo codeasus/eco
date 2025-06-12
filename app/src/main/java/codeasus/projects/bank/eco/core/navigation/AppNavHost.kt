@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import codeasus.projects.bank.eco.feature.card.presentation.CardScreen
+import codeasus.projects.bank.eco.feature.card.presentation.CardScreenRoot
 import codeasus.projects.bank.eco.feature.home.presentation.HomeScreen
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreen
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreen
@@ -22,7 +22,7 @@ fun AppNavHost(navController: NavHostController) {
         }
         composable<Card> {
             val args = it.toRoute<Card>()
-            CardScreen(navigationManager = navigationManager, args.bankAccountId)
+            CardScreenRoot(navigationManager = navigationManager, args.bankAccountId)
         }
         composable<BottomNavbarScreen.Product> {
             ProductScreen(navigationManager = navigationManager)

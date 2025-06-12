@@ -18,10 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -32,82 +29,106 @@ import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.feature.card.presentation.states.CardFlipState
+import codeasus.projects.bank.eco.feature.card.presentation.states.CardIntent
+import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardManagementAction
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardManagementActions
 
+@Composable
+fun CardScreenRoot(navigationManager: NavigationManager, bankAccountId: String) {
+    BaseScreen<CardViewModel> { vm ->
+        val state = vm.state.collectAsStateWithLifecycle()
+
+        LaunchedEffect(bankAccountId) {
+            vm.handleIntent(CardIntent.LoadCard(bankAccountId))
+        }
+
+        CardScreen(
+            state = state.value,
+            onAction = vm::handleIntent,
+            onNavigateUp = { navigationManager.navigateUp() }
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardScreen(navigationManager: NavigationManager, bankAccountId: String) {
-    BaseScreen<CardViewModel> { vm ->
+fun CardScreen(
+    state: CardState,
+    onAction: (CardIntent) -> Unit,
+    onNavigateUp: () -> Unit = {}
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-        val bankAccount = vm.bankAccount.collectAsStateWithLifecycle()
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-        var showBottomSheet by remember { mutableStateOf(false) }
-
-        vm.loadCard(bankAccountId)
-
-        BaseScaffold(
-            topBar = {
-                CardTopNavbar("Card ${bankAccount.value?.type.toString()}", scrollBehavior) {
-                    navigationManager.navigateUp()
-                }
-            }
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+    BaseScaffold(
+        topBar = {
+            CardTopNavbar(
+                title = "Card ${state.bankAccount?.type.toString()}",
+                scrollBehavior = scrollBehavior
             ) {
-                bankAccount.value?.let { bankAccount ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        FlipCard(vm.cardFlipState, bankAccount)
-                        CardDetailsBottomSheet(
-                            userBankAccountModel = bankAccount,
-                            isVisible = showBottomSheet,
-                            onDismiss = { showBottomSheet = false }
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CardInstantAction(R.drawable.ic_reveal, "Reveal") { showBottomSheet = true }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_flip, "Flip") { vm.flip() }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_freeze, "Freeze") { }
-                }
-                Spacer(modifier = Modifier.width(24.dp))
-                Text(
-                    text = "Card Management",
-                    style = TextStyle(fontSize = MaterialTheme.typography.headlineSmall.fontSize)
-                )
-                Column(
+                onNavigateUp()
+            }
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            state.bankAccount?.let { bankAccount ->
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    for (i in CardManagementActions.cardActions) {
-                        CardManagementAction(i) {
-                            when (i.actionId) {
-                                0 -> {}
-                                1 -> {}
-                                2 -> {}
-                                3 -> {}
-                                4 -> {}
-                                5 -> {}
-                            }
-                        }
+                    FlipCard(state.cardFlipState, bankAccount)
+                    CardDetailsBottomSheet(
+                        userBankAccountModel = bankAccount,
+                        isVisible = state.showBottomSheet,
+                        onDismiss = { onAction(CardIntent.HideBottomSheet) }
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CardInstantAction(R.drawable.ic_reveal, "Reveal") {
+                    onAction(CardIntent.ShowBottomSheet)
+                }
+                Spacer(modifier = Modifier.width(24.dp))
+                CardInstantAction(R.drawable.ic_flip, "Flip") {
+                    onAction(CardIntent.FlipCard)
+                }
+                Spacer(modifier = Modifier.width(24.dp))
+                CardInstantAction(R.drawable.ic_freeze, "Freeze") {
+                    onAction(CardIntent.FreezeCard)
+                }
+            }
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+            Text(
+                text = "Card Management",
+                style = TextStyle(fontSize = MaterialTheme.typography.headlineSmall.fontSize)
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                CardManagementActions.cardActions.forEach { action ->
+                    CardManagementAction(action) {
+                        onAction(CardIntent.HandleCardManagementAction(action.actionId))
                     }
                 }
             }
@@ -115,10 +136,34 @@ fun CardScreen(navigationManager: NavigationManager, bankAccountId: String) {
     }
 }
 
-@Preview(showSystemUi = false, showBackground = false, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun BankCardBackLightPreview() {
+fun CardScreenLightPreview() {
     EcoTheme {
-        CardManagementAction(CardManagementActions.cardActions[3]) { }
+        CardScreen(
+            state = CardState(
+                bankAccount = DataSourceDefaults.unknownUser.bankAccounts[0],
+                cardFlipState = CardFlipState.FRONT,
+                showBottomSheet = false,
+                isLoading = false
+            ),
+            onAction = {}
+        )
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CardScreenDarkPreview() {
+    EcoTheme {
+        CardScreen(
+            state = CardState(
+                bankAccount = DataSourceDefaults.unknownUser.bankAccounts[0],
+                cardFlipState = CardFlipState.BACK,
+                showBottomSheet = false,
+                isLoading = false
+            ),
+            onAction = {}
+        )
     }
 }
