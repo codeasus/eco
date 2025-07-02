@@ -2,83 +2,96 @@ package codeasus.projects.bank.eco.feature.search_transaction.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
-import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
+import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionIntent
+import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchTransactionViewModel @Inject constructor(
-    private val transactionRepository: TransactionRepository
-) : ViewModel() {
-
-    val uiSearchState = MutableStateFlow(SearchTransactionState())
-    val uiSelectedTransactionTypeState = MutableStateFlow(TransactionType.toDefaultSelectionMap())
-
-    private val _transactions = MutableStateFlow<List<Pair<CustomerModel, TransactionModel>>>(emptyList())
-    val transactions: StateFlow<List<Pair<CustomerModel, TransactionModel>>> = _transactions
+class SearchTransactionViewModel @Inject constructor(private val transactionRepository: TransactionRepository) : ViewModel() {
+    private val _state = MutableStateFlow(SearchTransactionState())
+    val state = _state.asStateFlow()
 
     init {
         loadTransactionsBasedOnTransactionType()
         loadTransactionsByKeyword()
     }
 
-    fun toggleSearchTextVisibility() {
-        uiSearchState.value =
-            uiSearchState.value.copy(isSearchTextVisible = !uiSearchState.value.isSearchTextVisible)
+    fun handleIntent(intent: SearchTransactionIntent) {
+        when(intent) {
+            is SearchTransactionIntent.ToggleSearchTextVisibility -> toggleSearchTextVisibility()
+            is SearchTransactionIntent.SetSearchText -> setSearchText(intent.text)
+            is SearchTransactionIntent.SelectTransactionType -> setTransactionType(intent.type)
+        }
     }
 
-    fun setSearchText(text: String) {
-        uiSearchState.value = uiSearchState.value.copy(searchText = text)
+    private fun toggleSearchTextVisibility() {
+        _state.value = _state.value.copy(isSearchTextVisible = !_state.value.isSearchTextVisible)
     }
 
-    fun searchActionEngaged() {
-        uiSearchState.value = uiSearchState.value.copy(searchActionEngaged = true)
+    private fun setSearchText(text: String) {
+        _state.value = _state.value.copy(searchText = text)
     }
 
-    fun setTransactionType(transactionType: TransactionType) {
-        uiSelectedTransactionTypeState.value = uiSelectedTransactionTypeState.value
-            .toMutableMap()
-            .apply { put(transactionType, !(this[transactionType] ?: false)) }
+    private fun setTransactionType(transactionType: TransactionType) {
+        _state.value = _state.value.copy(
+            selectedTransactionTypes = _state.value.selectedTransactionTypes.toMutableMap().apply {
+                put(transactionType, !(this[transactionType] ?: false))
+            }
+        )
         loadTransactionsBasedOnTransactionType()
     }
 
-    fun getTransactionTypeSelectState(transactionType: TransactionType): Boolean {
-        return uiSelectedTransactionTypeState.value[transactionType] ?: false
-    }
-
     private fun getSelectedTransactionTypes(): List<String> {
-        return uiSelectedTransactionTypeState.value.filter { it.value }.map { it.key.name }
+        return _state.value.selectedTransactionTypes.filter { it.value }.map { it.key.name }
     }
 
-    private fun getSearchText(): String {
-        return uiSearchState.value.searchText
+    private fun getAllTransactions() {
+        viewModelScope.launch {
+            val transactions = transactionRepository
+                .getAllTransactions(cardNumber = null)
+                .map { Pair(it.value, it.key) }
+            _state.value = _state.value.copy(transactions = transactions)
+        }
+    }
+
+    private fun getTransactionByType(types: List<String>) {
+        viewModelScope.launch {
+            val transactions = transactionRepository
+                .getTransactionsByType(cardNumber = null, types = types)
+                .map { Pair(it.value, it.key) }
+            _state.value = _state.value.copy(transactions = transactions)
+        }
     }
 
     private fun loadTransactionsBasedOnTransactionType() {
         viewModelScope.launch {
-            uiSelectedTransactionTypeState.collectLatest { uiSelectedTransactionTypeState ->
-                val types = uiSelectedTransactionTypeState.filter { it.value }.map { it.key.name }
-                val searchKeyword = getSearchText()
+            _state.collectLatest { searchTransactionState ->
+                val types = searchTransactionState.selectedTransactionTypes
+                    .filter { it.value }
+                    .map { it.key.name }
+                val searchKeyword = searchTransactionState.searchText
                 when {
                     types.isEmpty() && searchKeyword.isEmpty() -> {
                         getAllTransactions()
                     }
 
                     types.isNotEmpty() && searchKeyword.isNotEmpty() -> {
-                        val transactions = transactionRepository.getTransactionsByKeywordAndType(
-                            cardNumber = null,
-                            keyword = searchKeyword,
-                            types = types
-                        ).map { Pair(it.value, it.key) }
-                        _transactions.emit(transactions)
+                        val transactions = transactionRepository
+                            .getTransactionsByKeywordAndType(
+                                cardNumber = null,
+                                keyword = searchKeyword,
+                                types = types
+                            )
+                            .map { Pair(it.value, it.key) }
+                        _state.value = _state.value.copy(transactions = transactions)
                     }
 
                     types.isNotEmpty() && searchKeyword.isEmpty() -> {
@@ -86,34 +99,21 @@ class SearchTransactionViewModel @Inject constructor(
                     }
 
                     types.isEmpty() && searchKeyword.isNotEmpty() -> {
-                        val transactions = transactionRepository.getTransactionsByKeyword(
-                            cardNumber = null,
-                            keyword = searchKeyword
-                        ).map { Pair(it.value, it.key) }
-                        _transactions.emit(transactions)
+                        val transactions = transactionRepository
+                            .getTransactionsByKeyword(
+                                cardNumber = null,
+                                keyword = searchKeyword
+                            ).map { Pair(it.value, it.key) }
+                        _state.value = _state.value.copy(transactions = transactions)
                     }
                 }
             }
         }
     }
 
-    private fun getAllTransactions() {
-        viewModelScope.launch {
-            val transactions = transactionRepository.getAllTransactions(cardNumber = null).map { Pair(it.value, it.key) }
-            _transactions.emit(transactions)
-        }
-    }
-
-    private fun getTransactionByType(types: List<String>) {
-        viewModelScope.launch {
-            val transactions = transactionRepository.getTransactionsByType(cardNumber = null, types = types).map { Pair(it.value, it.key) }
-            _transactions.emit(transactions)
-        }
-    }
-
     private fun loadTransactionsByKeyword() {
         viewModelScope.launch {
-            uiSearchState.collectLatest { uiSearchState ->
+            _state.collectLatest { uiSearchState ->
                 delay(1000L)
 
                 if (uiSearchState.searchText.isEmpty() || !uiSearchState.isSearchTextVisible) {
@@ -125,7 +125,10 @@ class SearchTransactionViewModel @Inject constructor(
                 val searchText = uiSearchState.searchText
 
                 val transactions = if (types.isEmpty()) {
-                    transactionRepository.getTransactionsByKeyword(cardNumber = null, keyword = searchText)
+                    transactionRepository.getTransactionsByKeyword(
+                        cardNumber = null,
+                        keyword = searchText
+                    )
                 } else {
                     transactionRepository.getTransactionsByKeywordAndType(
                         cardNumber = null,
@@ -134,7 +137,7 @@ class SearchTransactionViewModel @Inject constructor(
                     )
                 }.map { Pair(it.value, it.key) }
 
-                _transactions.emit(transactions)
+                _state.value = _state.value.copy(transactions = transactions)
             }
         }
     }

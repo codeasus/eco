@@ -9,7 +9,7 @@ import androidx.navigation.toRoute
 import codeasus.projects.bank.eco.feature.card.presentation.CardScreenRoot
 import codeasus.projects.bank.eco.feature.home.presentation.HomeScreenRoot
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreenRoot
-import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreen
+import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreenRoot
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
 
 @Composable
@@ -31,7 +31,7 @@ fun AppNavHost(navController: NavHostController) {
             TransferScreen(navigationManager = navigationManager)
         }
         composable<SearchTransaction> {
-            SearchTransactionScreen(navigationManager = navigationManager)
+            SearchTransactionScreenRoot(navigationManager = navigationManager)
         }
     }
 }

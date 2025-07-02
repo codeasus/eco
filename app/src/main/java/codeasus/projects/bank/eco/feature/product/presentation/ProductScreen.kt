@@ -32,7 +32,7 @@ fun ProductScreenRoot(navigationManager: NavigationManager) {
 @Composable
 fun ProductScreen(
     state: ProductState,
-    onAction: (ProductIntent) -> Unit,
+    onAction: (ProductIntent) -> Unit
 ) {
     Column(
         modifier = Modifier

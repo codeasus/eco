@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,6 +44,7 @@ import codeasus.projects.bank.eco.feature.search_transaction.presentation.Search
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTopNavbarDefaults.topBarHeight
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTopNavbarDefaults.topBarHeightExpanded
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionState
 
 object SearchTopNavbarDefaults {
     val horizontalPadding = 4.dp
@@ -55,17 +55,16 @@ object SearchTopNavbarDefaults {
 @Composable
 fun SearchTopNavbar(
     title: String,
-    uiSearchState: SearchTransactionState,
+    searchTransactionState: SearchTransactionState,
     onBackClick: () -> Unit,
     onSearchClick: () -> Unit,
-    onSearchTextValueChange: (String) -> Unit,
-    onSearch: () -> Unit
+    onSearchTextValueChange: (String) -> Unit
 ) {
     Surface(
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxWidth()
-            .height(if (uiSearchState.isSearchTextVisible) topBarHeightExpanded else topBarHeight),
+            .height(if (searchTransactionState.isSearchTextVisible) topBarHeightExpanded else topBarHeight),
         color = MaterialTheme.colorScheme.surface
     ) {
         Column(
@@ -117,7 +116,7 @@ fun SearchTopNavbar(
             }
 
             AnimatedVisibility(
-                visible = uiSearchState.isSearchTextVisible,
+                visible = searchTransactionState.isSearchTextVisible,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
@@ -127,13 +126,12 @@ fun SearchTopNavbar(
                         .padding(horizontal = 16.dp),
                 ) {
                     OutlinedTextField(
-                        value = uiSearchState.searchText,
+                        value = searchTransactionState.searchText,
                         onValueChange = { onSearchTextValueChange(it) },
                         placeholder = { Text(text = "Search transactions") },
                         shape = RoundedCornerShape(24.dp),
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -195,8 +193,7 @@ fun SearchTopNavbarPreview() {
             SearchTransactionState(),
             onBackClick = {},
             onSearchClick = {},
-            onSearchTextValueChange = {},
-            onSearch = {}
+            onSearchTextValueChange = {}
         )
     }
 }
