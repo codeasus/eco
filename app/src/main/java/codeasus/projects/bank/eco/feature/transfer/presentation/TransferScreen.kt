@@ -39,77 +39,163 @@ import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import codeasus.projects.bank.eco.feature.transfer.states.InputField
+import codeasus.projects.bank.eco.feature.transfer.states.TransferIntent
+import codeasus.projects.bank.eco.feature.transfer.states.TransferState
 import codeasus.projects.bank.eco.feature.transfer.utils.CardNumberVisualTransformation
 import codeasus.projects.bank.eco.feature.utils.UiState
 
 @Composable
-fun TransferScreen(navigationManager: NavigationManager) {
+fun TransferScreenRoot(navigationManager: NavigationManager) {
     MainBaseScreen<TransferViewModel>(navigationManager, BottomNavbarScreen.Transfer.title) { vm ->
+        val state = vm.state.collectAsStateWithLifecycle()
 
-        val customers = vm.customers.collectAsStateWithLifecycle()
-        val transactionState = vm.transactionState.collectAsStateWithLifecycle()
-        val inputFieldValidationStates = vm.inputFieldValidationStates
-        val binUiState = vm.binLookupState.collectAsStateWithLifecycle()
+        TransferScreen(state.value, vm::handleIntent)
+    }
+}
 
+@Composable
+fun TransferScreen(
+    state: TransferState,
+    onAction: (TransferIntent) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Profiles(state.customers) { customer -> onAction(TransferIntent.SelectCustomer(customer)) }
+
+        Text(
+            modifier = Modifier.align(Alignment.Start),
+            text = "Card Details",
+            style = TextStyle(fontSize = MaterialTheme.typography.headlineMedium.fontSize)
+        )
+
+        if(state.binLookupResultState is UiState.Success) {
+            BankAccountBinView(state.binLookupResultState.data)
+        }
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.75F))
+                .padding(vertical = 24.dp, horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Profiles(customers.value) { customer -> vm.selectCustomer(customer) }
-            Text(
-                modifier = Modifier.align(Alignment.Start),
-                text = "Card Details",
-                style = TextStyle(fontSize = MaterialTheme.typography.headlineMedium.fontSize)
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.transaction.accountNumber,
+                onValueChange = {
+                    if (it.length > 16) return@OutlinedTextField
+                    onAction(TransferIntent.SetAccountNumber(it))
+                },
+                placeholder = { Text("Recipient's card number") },
+                shape = RoundedCornerShape(24.dp),
+                singleLine = true,
+                visualTransformation = CardNumberVisualTransformation(),
+                supportingText = {
+                    state.inputFieldValidationStates[InputField.CardNumber].let {
+                        if (it is InputValidationResult.Invalid) Text(it.errorMessage)
+                    }
+                },
+                isError = state.inputFieldValidationStates[InputField.CardNumber] is InputValidationResult.Invalid,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(
+                            id = when(val binLookupResult = state.binLookupResultState) {
+                                is UiState.Success -> {
+                                    when(binLookupResult.data.scheme) {
+                                        "VISA" -> R.drawable.ic_visa_outlined
+                                        "MASTERCARD" -> R.drawable.ic_master_outlined
+                                        "AMERICAN EXPRESS" -> R.drawable.ic_amex_outlined
+                                        else -> R.drawable.ic_card
+                                    }
+                                }
+                                is UiState.Empty, UiState.Loading, is UiState.Error -> {
+                                    R.drawable.ic_card
+                                }
+                            }
+                        ),
+                        contentDescription = "Card number"
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent
+                )
             )
 
-            BankAccountBinView(binUiState.value)
-
-            Column(
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.transaction.accountName,
+                onValueChange = { onAction(TransferIntent.SetBeneficiaryName(it)) },
+                placeholder = { Text("Recipient's name") },
+                shape = RoundedCornerShape(24.dp),
+                singleLine = true,
+                supportingText = {
+                    state.inputFieldValidationStates[InputField.RecipientName].let {
+                        if (it is InputValidationResult.Invalid) Text(it.errorMessage)
+                    }
+                },
+                isError = state.inputFieldValidationStates[InputField.RecipientName] is InputValidationResult.Invalid,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_user),
+                        contentDescription = "Name"
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent
+                )
+            )
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.75F))
-                    .padding(vertical = 24.dp, horizontal = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(top = 8.dp),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                var transferAmountText by remember { mutableStateOf("") }
+
+                CurrencyDropDownList(
+                    Currency.entries.toTypedArray(),
+                    state.transaction.currency,
+                ) { currency -> onAction(TransferIntent.SelectCurrency(currency)) }
+
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = transactionState.value.accountNumber,
+                    modifier = Modifier.weight(1.0f),
+                    value = transferAmountText,
                     onValueChange = {
-                        if (it.length > 16) return@OutlinedTextField
-                        vm.setAccountNumber(it)
+                        transferAmountText = it
+                        onAction(TransferIntent.SetTransferAmount(it))
                     },
-                    placeholder = { Text("Recipient's card number") },
+                    placeholder = { Text("Transfer amount") },
                     shape = RoundedCornerShape(24.dp),
                     singleLine = true,
-                    visualTransformation = CardNumberVisualTransformation(),
                     supportingText = {
-                        inputFieldValidationStates["cardNumber"].let {
+                        state.inputFieldValidationStates[InputField.TransferAmount].let {
                             if (it is InputValidationResult.Invalid) Text(it.errorMessage)
                         }
                     },
-                    isError = inputFieldValidationStates["cardNumber"] is InputValidationResult.Invalid,
+                    isError = state.inputFieldValidationStates[InputField.TransferAmount] is InputValidationResult.Invalid,
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(
-                                id = when(val bin = binUiState.value) {
-                                    is UiState.Success -> {
-                                        when(bin.data.scheme) {
-                                            "VISA" -> R.drawable.ic_visa_outlined
-                                            "MASTERCARD" -> R.drawable.ic_master_outlined
-                                            "AMERICAN EXPRESS" -> R.drawable.ic_amex_outlined
-                                            else -> R.drawable.ic_card
-                                        }
-                                    }
-                                    is UiState.Loading, is UiState.Error -> {
-                                        R.drawable.ic_card
-                                    }
-                                }
-                            ),
-                            contentDescription = "Card number"
+                            painter = painterResource(id = state.transaction.currency.icon),
+                            contentDescription = "Currency"
                         )
                     },
                     keyboardOptions = KeyboardOptions(
@@ -122,93 +208,14 @@ fun TransferScreen(navigationManager: NavigationManager) {
                         unfocusedBorderColor = Color.Transparent
                     )
                 )
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = transactionState.value.accountName,
-                    onValueChange = { vm.setAccountName(it) },
-                    placeholder = { Text("Recipient's name") },
-                    shape = RoundedCornerShape(24.dp),
-                    singleLine = true,
-                    supportingText = {
-                        inputFieldValidationStates["recipientName"].let {
-                            if (it is InputValidationResult.Invalid) Text(it.errorMessage)
-                        }
-                    },
-                    isError = inputFieldValidationStates["recipientName"] is InputValidationResult.Invalid,
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_user),
-                            contentDescription = "Name"
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
-                    )
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    val selectedCurrency = transactionState.value.currency
-                    var transferAmountText by remember { mutableStateOf("") }
-
-                    CurrencyDropDownList(
-                        Currency.entries.toTypedArray(),
-                        selectedCurrency
-                    ) { currency ->
-                        vm.selectCurrency(currency)
-                    }
-
-                    OutlinedTextField(
-                        modifier = Modifier.weight(1.0f),
-                        value = transferAmountText,
-                        onValueChange = {
-                            transferAmountText = it
-                            vm.setAmount(it)
-                        },
-                        placeholder = { Text("Transfer amount") },
-                        shape = RoundedCornerShape(24.dp),
-                        singleLine = true,
-                        supportingText = {
-                            inputFieldValidationStates["transferAmount"].let {
-                                if (it is InputValidationResult.Invalid) Text(it.errorMessage)
-                            }
-                        },
-                        isError = inputFieldValidationStates["transferAmount"] is InputValidationResult.Invalid,
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(id = selectedCurrency.icon),
-                                contentDescription = "Currency"
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent
-                        )
-                    )
-                }
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .align(Alignment.CenterHorizontally),
-                    onClick = {}
-                ) {
-                    Text(text = "Transfer")
-                }
+            }
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .align(Alignment.CenterHorizontally),
+                onClick = {}
+            ) {
+                Text(text = "Transfer")
             }
         }
     }
@@ -218,5 +225,6 @@ fun TransferScreen(navigationManager: NavigationManager) {
 @Composable
 fun TransferScreenPreview() {
     EcoTheme {
+        TransferScreen(TransferState()) {}
     }
 }

@@ -1,7 +1,5 @@
 package codeasus.projects.bank.eco.feature.transfer.presentation
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
@@ -9,11 +7,11 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
-import codeasus.projects.bank.eco.domain.remote.model.banking.BinLookupModel
 import codeasus.projects.bank.eco.domain.remote.usecase.GetBinLookupUseCase
-import codeasus.projects.bank.eco.domain.utils.DomainNetworkError
 import codeasus.projects.bank.eco.domain.utils.DomainResult
-import codeasus.projects.bank.eco.feature.transfer.states.TransactionState
+import codeasus.projects.bank.eco.feature.transfer.states.InputField
+import codeasus.projects.bank.eco.feature.transfer.states.TransferIntent
+import codeasus.projects.bank.eco.feature.transfer.states.TransferState
 import codeasus.projects.bank.eco.feature.transfer.utils.CardDetailsInputFieldsValidator
 import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,94 +26,88 @@ class TransferViewModel @Inject constructor(
     private val customerRepository: CustomerRepository,
     private val getBinLookupUseCase: GetBinLookupUseCase
 ) : BaseViewModel(userRepository) {
-    private var _customers = MutableStateFlow<List<CustomerModel>>(emptyList())
-    val customers = _customers.asStateFlow()
 
-    private var _transactionState = MutableStateFlow(TransactionState())
-    val transactionState = _transactionState.asStateFlow()
-
-    private val _binLookUpState = MutableStateFlow<UiState<BinLookupModel>>(UiState.Loading)
-    val binLookupState =  _binLookUpState.asStateFlow()
-
-    val inputFieldValidationStates = mutableStateMapOf<String, InputValidationResult<Any>>(
-        "cardNumber" to InputValidationResult.Empty,
-        "recipientName" to InputValidationResult.Empty,
-        "transferAmount" to InputValidationResult.Empty
-    )
+    private val _state = MutableStateFlow(TransferState())
+    val state = _state.asStateFlow()
 
     init {
-        getCustomers()
+        loadCustomers()
+    }
+
+    fun handleIntent(intent: TransferIntent) {
+        when (intent) {
+            is TransferIntent.SelectCurrency -> selectCurrency(intent.currency)
+            is TransferIntent.SetTransferAmount -> setTransferAmount(intent.amount)
+            is TransferIntent.SetBeneficiaryName -> setBeneficiaryName(intent.beneficiaryName)
+            is TransferIntent.SetAccountNumber -> setAccountNumber(intent.accountNumber)
+            is TransferIntent.SelectCustomer -> selectCustomer(intent.customerModel)
+        }
     }
 
     private fun lookupBin(bin: String) {
         viewModelScope.launch {
             when (val result = getBinLookupUseCase(bin)) {
                 is DomainResult.Success -> {
-                    _binLookUpState.value = UiState.Success(result.data)
+                    _state.emit(_state.value.copy(binLookupResultState = UiState.Success(result.data)))
                 }
-                is DomainResult.Error -> {
-                    val error = result.error as DomainNetworkError
-                    _binLookUpState.emit(UiState.Error(error.message))
-                }
+
+                is DomainResult.Error -> {}
             }
         }
     }
 
-    fun selectCurrency(currency: Currency) {
-        viewModelScope.launch {
-            _transactionState.emit(_transactionState.value.copy(currency = currency))
-        }
+    private fun selectCurrency(currency: Currency) {
+        _state.value = _state.value.copy(transaction = _state.value.transaction.copy(currency = currency))
     }
 
-    fun setAmount(strAmount: String) {
+    private fun setTransferAmount(strAmount: String) {
         viewModelScope.launch {
             val validationResponse = CardDetailsInputFieldsValidator.validateTransferAmount(strAmount)
             when (validationResponse) {
                 is InputValidationResult.Valid -> {
-                    _transactionState.emit(_transactionState.value.copy(amount = validationResponse.data))
-                    inputFieldValidationStates["transferAmount"] = validationResponse
+                    _state.emit(_state.value.copy(transaction = _state.value.transaction.copy(amount = validationResponse.data)))
+                    updateInputFieldValidationStatus(InputField.TransferAmount, validationResponse)
                 }
                 else -> {}
             }
-            inputFieldValidationStates["transferAmount"] = validationResponse
+            updateInputFieldValidationStatus(InputField.TransferAmount, validationResponse)
         }
     }
 
-    fun setAccountNumber(accountNumber: String) {
-        viewModelScope.launch {
-            if(accountNumber.length == 8) {
-                val incomingStr = accountNumber.take(8)
-                val currentStr = _transactionState.value.accountNumber.take(8)
-                if(currentStr != incomingStr) {
-                    lookupBin(accountNumber.take(8))
-                }
+    private fun setAccountNumber(accountNumber: String) {
+        if (accountNumber.length == 8) {
+            val incomingStr = accountNumber.take(8)
+            val currentStr = _state.value.transaction.accountNumber.take(8)
+            if (currentStr != incomingStr) {
+                lookupBin(accountNumber.take(8))
             }
-            _transactionState.emit(_transactionState.value.copy(accountNumber = accountNumber))
-            inputFieldValidationStates["cardNumber"] = CardDetailsInputFieldsValidator.validateCardNumber(accountNumber)
+        }
+        _state.value = _state.value.copy(transaction = _state.value.transaction.copy(accountNumber = accountNumber))
+        updateInputFieldValidationStatus(InputField.CardNumber, CardDetailsInputFieldsValidator.validateCardNumber(accountNumber))
+    }
+
+    private fun setBeneficiaryName(accountName: String) {
+        _state.value = _state.value.copy(transaction = _state.value.transaction.copy(accountName = accountName))
+        updateInputFieldValidationStatus(InputField.RecipientName, CardDetailsInputFieldsValidator.validateRecipientName(accountName))
+    }
+
+    private fun selectCustomer(customer: CustomerModel) {
+        viewModelScope.launch {
+            _state.emit(_state.value.copy(transaction = _state.value.transaction.copy(accountName = customer.name, accountNumber = customer.bankAccount.number)))
         }
     }
 
-    fun setAccountName(accountName: String) {
+    private fun loadCustomers() {
         viewModelScope.launch {
-            _transactionState.emit(_transactionState.value.copy(accountName = accountName))
-            inputFieldValidationStates["recipientName"] = CardDetailsInputFieldsValidator.validateRecipientName(accountName)
+            _state.emit(_state.value.copy(customers = customerRepository.getAllCustomers()))
         }
     }
 
-    fun selectCustomer(customer: CustomerModel) {
-        viewModelScope.launch {
-            _transactionState.emit(
-                _transactionState.value.copy(
-                    accountName = customer.name,
-                    accountNumber = customer.bankAccount.number
-                )
-            )
+    private fun updateInputFieldValidationStatus(inputField: InputField, validationResult: InputValidationResult<Any>) {
+        val copyInputFieldValidationStates = _state.value.inputFieldValidationStates.let {
+            it[inputField] = validationResult
+            it
         }
-    }
-
-    private fun getCustomers() {
-        viewModelScope.launch {
-            _customers.emit(customerRepository.getAllCustomers())
-        }
+        _state.value = _state.value.copy(inputFieldValidationStates = copyInputFieldValidationStates)
     }
 }

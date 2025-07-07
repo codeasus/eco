@@ -11,6 +11,7 @@ import codeasus.projects.bank.eco.feature.home.presentation.HomeScreenRoot
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreenRoot
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreenRoot
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreen
+import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreenRoot
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -28,7 +29,7 @@ fun AppNavHost(navController: NavHostController) {
             ProductScreenRoot(navigationManager = navigationManager)
         }
         composable<BottomNavbarScreen.Transfer> {
-            TransferScreen(navigationManager = navigationManager)
+            TransferScreenRoot(navigationManager = navigationManager)
         }
         composable<SearchTransaction> {
             SearchTransactionScreenRoot(navigationManager = navigationManager)

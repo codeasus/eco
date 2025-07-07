@@ -26,69 +26,56 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.CountryFlags
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.remote.model.banking.BinLookupModel
 import codeasus.projects.bank.eco.domain.remote.model.banking.Country
-import codeasus.projects.bank.eco.feature.utils.UiState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun BankAccountBinView(binUiState: UiState<BinLookupModel>) {
-    @Composable
-    fun View(bin: BinLookupModel) {
+fun BankAccountBinView(binLookupResult: BinLookupModel) {
+    val shakeOffset = remember { Animatable(0f) }
 
-        val shakeOffset = remember { Animatable(0f) }
-
-        LaunchedEffect(bin) {
-            shakeOffset.animateTo(
-                targetValue = 0f,
-                animationSpec = keyframes {
-                    durationMillis = 300
-                    0f at 0
-                    -8f at 50
-                    8f at 100
-                    -6f at 150
-                    6f at 200
-                    -4f at 250
-                    0f at 300
-                }
-            )
-        }
-
-        FlowRow (
-            modifier = Modifier
-                .fillMaxWidth()
-                .offset { IntOffset(shakeOffset.value.dp.roundToPx(), 0) },
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            SuggestionChip(
-                onClick = {},
-                label = { bin.issuer?.let { Text(text = it) } },
-                icon = {
-                    Icon(
-                        modifier = Modifier.size(18.dp),
-                        painter = painterResource(id = R.drawable.ic_bank),
-                        contentDescription = "Bank"
-                    )
-                },
-                shape = RoundedCornerShape(18.dp)
-            )
-            SuggestionChip(
-                onClick = {},
-                label = {
-                    bin.country?.a2?.let {
-                        Text(text = "${CountryFlags.getFlagEmoji(it)} $it")
-                    }
-                },
-                shape = RoundedCornerShape(18.dp)
-            )
-        }
+    LaunchedEffect(binLookupResult) {
+        shakeOffset.animateTo(
+            targetValue = 0f,
+            animationSpec = keyframes {
+                durationMillis = 300
+                0f at 0
+                -8f at 50
+                8f at 100
+                -6f at 150
+                6f at 200
+                -4f at 250
+                0f at 300
+            }
+        )
     }
 
-    when (binUiState) {
-        is UiState.Success -> {
-            View(binUiState.data)
-        }
-
-        is UiState.Loading, is UiState.Error -> {}
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .offset { IntOffset(shakeOffset.value.dp.roundToPx(), 0) },
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        SuggestionChip(
+            onClick = {},
+            label = { binLookupResult.issuer?.let { Text(text = it) } },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    painter = painterResource(id = R.drawable.ic_bank),
+                    contentDescription = "Bank"
+                )
+            },
+            shape = RoundedCornerShape(18.dp)
+        )
+        SuggestionChip(
+            onClick = {},
+            label = {
+                binLookupResult.country?.a2?.let {
+                    Text(text = "${CountryFlags.getFlagEmoji(it)} $it")
+                }
+            },
+            shape = RoundedCornerShape(18.dp)
+        )
     }
 }
 
@@ -112,6 +99,6 @@ fun BankAccountBinViewPreview() {
             ),
             luhn = true
         )
-        BankAccountBinView(UiState.Success(bin))
+        BankAccountBinView(bin)
     }
 }
