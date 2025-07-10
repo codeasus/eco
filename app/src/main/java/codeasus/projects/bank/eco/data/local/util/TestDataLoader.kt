@@ -5,12 +5,15 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccoun
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import codeasus.projects.bank.eco.domain.local.model.enums.Priority
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
+import codeasus.projects.bank.eco.domain.local.repository.system_message.SystemMessageRepository
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import java.time.LocalDateTime
@@ -19,7 +22,8 @@ import javax.inject.Inject
 class TestDataLoader @Inject constructor(
     val userRepository: UserRepository,
     private val customerRepository: CustomerRepository,
-    private val transactionRepository: TransactionRepository
+    private val transactionRepository: TransactionRepository,
+    private val systemMessageRepository: SystemMessageRepository
 ) {
 
     private fun getCustomers(): List<CustomerModel> {
@@ -120,6 +124,7 @@ class TestDataLoader @Inject constructor(
         addAppUser()
         addCustomers()
         saveTransactions()
+        saveSystemMessages()
     }
 
     private suspend fun addAppUser() {
@@ -216,5 +221,55 @@ class TestDataLoader @Inject constructor(
         )
         transactionRepository.deleteTransactions()
         transactions.forEach { transactionRepository.saveTransaction(it) }
+    }
+
+    suspend fun saveSystemMessages() {
+        val titles = listOf(
+            "Security Update",
+            "System Maintenance",
+            "New Feature Available",
+            "Account Verification",
+            "Payment Processing",
+            "Database Backup",
+            "Service Alert",
+            "Performance Optimization",
+            "User Activity Report",
+            "Network Configuration",
+            "Transaction Limit Update",
+            "Mobile App Update",
+            "Card Activation",
+            "Interest Rate Change",
+            "Privacy Policy Update"
+        )
+
+        val contents = listOf(
+            "Your account security has been enhanced with two-factor authentication.",
+            "Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM.",
+            "Mobile banking app has been updated with improved user interface.",
+            "Please verify your account information to continue using our services.",
+            "Payment processing system has been upgraded for faster transactions.",
+            "Daily database backup completed successfully at 3:30 AM.",
+            "Temporary service interruption expected during peak hours.",
+            "System performance has been optimized for better response times.",
+            "Monthly user activity report is now available in your dashboard.",
+            "Network configuration updated to improve connection stability.",
+            "Daily transaction limits have been increased for premium accounts.",
+            "New version of mobile app is available with enhanced security features.",
+            "Your new debit card has been activated and is ready for use.",
+            "Interest rates for savings accounts have been updated effective today.",
+            "Updated privacy policy is now available. Please review the changes."
+        )
+
+        val priorities = Priority.entries.toTypedArray()
+        systemMessageRepository.deleteSystemMessages()
+        repeat(15) { index ->
+            val systemMessage = SystemMessageModel(
+                title = titles[index],
+                content = contents[index],
+                priority = priorities.random(),
+                createdAt = LocalDateTime.now().minusHours((0..168).random().toLong())
+            )
+            systemMessageRepository.insertSystemMessage(systemMessage)
+        }
     }
 }

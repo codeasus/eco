@@ -5,8 +5,10 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccoun
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import codeasus.projects.bank.eco.domain.local.model.enums.Priority
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
@@ -38,6 +40,45 @@ object DataSourceDefaults {
             )
         )
     )
+
+    fun getSystemMessages(): List<SystemMessageModel> {
+        val titles = listOf(
+            "Security Update",
+            "System Maintenance",
+            "New Feature Available",
+            "Account Verification",
+            "Payment Processing",
+            "Database Backup",
+            "Service Alert",
+            "Performance Optimization",
+            "User Activity Report",
+            "Network Configuration"
+        )
+
+        val contents = listOf(
+            "Your account security has been enhanced with two-factor authentication.",
+            "Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM.",
+            "Mobile banking app has been updated with improved user interface.",
+            "Please verify your account information to continue using our services.",
+            "Payment processing system has been upgraded for faster transactions.",
+            "Daily database backup completed successfully at 3:30 AM.",
+            "Temporary service interruption expected during peak hours.",
+            "System performance has been optimized for better response times.",
+            "Monthly user activity report is now available in your dashboard.",
+            "Network configuration updated to improve connection stability."
+        )
+
+        val priorities = Priority.entries.toTypedArray()
+
+        return (0..9).map { index ->
+            SystemMessageModel(
+                title = titles[index],
+                content = contents[index],
+                priority = priorities.random(),
+                createdAt = LocalDateTime.now().minusHours((0..72).random().toLong())
+            )
+        }
+    }
 
     fun getCustomerTransactions(): List<Pair<CustomerModel, TransactionModel>> {
         val customers = getCustomers()

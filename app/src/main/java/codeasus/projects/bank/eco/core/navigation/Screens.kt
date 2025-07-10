@@ -15,6 +15,11 @@ data class Card(val bankAccountId: String) : Screen {
     override val title: String = "Card"
 }
 
+@Serializable
+data object SystemMessages : Screen {
+    override val title: String = "System Messages"
+}
+
 sealed interface BottomNavbarScreen : Screen {
     @Serializable
     data object Home: BottomNavbarScreen {

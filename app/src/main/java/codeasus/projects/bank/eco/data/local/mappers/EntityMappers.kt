@@ -1,12 +1,15 @@
 package codeasus.projects.bank.eco.data.local.mappers
 
 import codeasus.projects.bank.eco.data.local.entity.CustomerEntity
+import codeasus.projects.bank.eco.data.local.entity.SystemMessageEntity
 import codeasus.projects.bank.eco.data.local.entity.TransactionEntity
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import codeasus.projects.bank.eco.domain.local.model.enums.Priority
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -63,5 +66,28 @@ fun TransactionEntity.toTransactionModel(): TransactionModel {
         status = TransactionStatus.valueOf(this.status),
         createdAt = LocalDateTime.parse(this.createdAt, formatter),
         updatedAt = LocalDateTime.parse(this.updatedAt, formatter)
+    )
+}
+
+// SystemMessage Mappers
+fun SystemMessageModel.toSystemMessageEntity(): SystemMessageEntity {
+    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+
+    return SystemMessageEntity(
+        title = this.title,
+        content = this.content,
+        priority = this.priority.value,
+        createdAt = this.createdAt.format(formatter)
+    )
+}
+
+fun SystemMessageEntity.toSystemMessageModel(): SystemMessageModel {
+    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+
+    return SystemMessageModel(
+        title = this.title,
+        content = this.content,
+        priority = Priority.fromInt(this.priority),
+        createdAt = LocalDateTime.parse(this.createdAt, formatter)
     )
 }

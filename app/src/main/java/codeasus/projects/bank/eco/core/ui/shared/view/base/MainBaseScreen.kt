@@ -9,6 +9,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.navigation.SystemMessages
 import codeasus.projects.bank.eco.core.navigation.ui.BaseTopNavbar
 import codeasus.projects.bank.eco.core.navigation.ui.BottomNavbar
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
@@ -21,7 +22,6 @@ inline fun <reified T : BaseViewModel> MainBaseScreen(navigationManager: Navigat
     val userState = viewModel.user.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-
     BaseScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -30,7 +30,7 @@ inline fun <reified T : BaseViewModel> MainBaseScreen(navigationManager: Navigat
                 title = title,
                 user = userState.value,
                 onNotificationClick = {
-
+                    navigationManager.navigateTo(SystemMessages)
                 },
                 onProfileClick = {
 

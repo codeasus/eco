@@ -15,6 +15,12 @@ fun formatLocalDateTime(dateTime: LocalDateTime): String {
     return dateTime.format(formatter)
 }
 
+fun formatFullLocalDateTime(dateTime: LocalDateTime): String {
+    val pattern = "dd MMM yyyy, HH:mm"
+    val formatter = DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
+    return dateTime.format(formatter)
+}
+
 fun formatExpiryDate(expiryDate: LocalDateTime): String {
     val formatter = DateTimeFormatter.ofPattern("MM/yy")
     return expiryDate.format(formatter)

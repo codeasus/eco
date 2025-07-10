@@ -81,7 +81,7 @@ fun SearchTopNavbar(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Box(modifier = Modifier.fillMaxHeight()) {
-                    IconButton(onClick = { onBackClick() }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_nav_back),
                             contentDescription = "Back",
