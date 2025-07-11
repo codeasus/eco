@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,7 +25,6 @@ fun CardInstantAction(@DrawableRes iconResourceId: Int, actionName: String, onCl
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         FilledIconButton(
             modifier = Modifier.size(64.dp),
-            shape = CircleShape,
             onClick = onClick
         ) {
             Icon(

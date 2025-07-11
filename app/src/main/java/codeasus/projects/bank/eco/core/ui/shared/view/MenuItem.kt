@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.feature.card.presentation.utils
+package codeasus.projects.bank.eco.core.ui.shared.view
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -22,19 +22,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
+import codeasus.projects.bank.eco.core.ui.shared.utils.MenuItem
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItems
 
 @Composable
-fun CardManagementAction(
-    cardManagementAction: CardManagementActionUIData,
-    onClick: (actionId: Int) -> Unit
-) {
+fun MenuItem(menuItem: MenuItem, onClick: (title: String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
             .clickable {
-                onClick(cardManagementAction.actionId)
+                onClick(menuItem.title)
             }
             .padding(horizontal = 4.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -44,11 +43,11 @@ fun CardManagementAction(
             modifier = Modifier
                 .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                 .padding(18.dp),
-            painter = painterResource(id = cardManagementAction.actionIcon),
-            contentDescription = cardManagementAction.actionName
+            painter = painterResource(id = menuItem.iconRes),
+            contentDescription = menuItem.title
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Text(text = cardManagementAction.actionName)
+        Text(text = menuItem.title)
         Spacer(modifier = Modifier.weight(1f))
         Icon(
             painter = painterResource(id = R.drawable.ic_nav_forward),
@@ -61,6 +60,6 @@ fun CardManagementAction(
 @Composable
 fun CardManagementActionPreview() {
     EcoTheme {
-        CardManagementAction(CardManagementActions.cardActions[3]) { }
+        MenuItem(CardMenuItems.value[3]) { }
     }
 }

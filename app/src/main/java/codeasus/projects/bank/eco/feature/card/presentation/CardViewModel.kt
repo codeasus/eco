@@ -25,7 +25,6 @@ class CardViewModel @Inject constructor(userRepository: UserRepository) :
             is CardIntent.FlipCard -> flipCard()
             is CardIntent.ShowBottomSheet -> showBottomSheet()
             is CardIntent.HideBottomSheet -> hideBottomSheet()
-            is CardIntent.HandleCardManagementAction -> handleCardManagementAction(intent.actionId)
             is CardIntent.FreezeCard -> freezeCard()
         }
     }
@@ -36,28 +35,6 @@ class CardViewModel @Inject constructor(userRepository: UserRepository) :
                 val bankAccount =
                     user?.bankAccounts?.find { accounts -> accounts.id == bankAccountId }
                 _state.value = _state.value.copy(bankAccount = bankAccount)
-            }
-        }
-    }
-
-    private fun handleCardManagementAction(actionId: Int) {
-        when (actionId) {
-            0 -> {
-            }
-
-            1 -> {
-            }
-
-            2 -> {
-            }
-
-            3 -> {
-            }
-
-            4 -> {
-            }
-
-            5 -> {
             }
         }
     }

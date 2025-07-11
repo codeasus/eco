@@ -97,6 +97,7 @@ class TestDataLoader @Inject constructor(
 
     private val appUser = UserModel(
         name = "Albert Flores",
+        tagName = "albert_flores",
         profileImageResId = R.drawable.albert_flores,
         bankAccounts = listOf(
             UserBankAccountModel(

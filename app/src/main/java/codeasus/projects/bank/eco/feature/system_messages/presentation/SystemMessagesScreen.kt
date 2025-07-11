@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.navigation.SystemMessages
+import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseBackNavTopNavbar
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
@@ -50,7 +52,7 @@ fun SystemMessagesScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     BaseScaffold(
         topBar = {
-            SystemMessagesTopNavbar(scrollBehavior = scrollBehavior) {
+            BaseBackNavTopNavbar(scrollBehavior = scrollBehavior, SystemMessages.title) {
                 onBackClick()
             }
         }

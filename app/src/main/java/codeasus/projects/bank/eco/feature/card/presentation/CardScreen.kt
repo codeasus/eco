@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.ui.shared.view.MenuItem
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
@@ -35,8 +36,7 @@ import codeasus.projects.bank.eco.feature.card.presentation.states.CardFlipState
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardIntent
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
-import codeasus.projects.bank.eco.feature.card.presentation.utils.CardManagementAction
-import codeasus.projects.bank.eco.feature.card.presentation.utils.CardManagementActions
+import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItems
 
 @Composable
 fun CardScreenRoot(navigationManager: NavigationManager, bankAccountId: String) {
@@ -117,7 +117,7 @@ fun CardScreen(
             Spacer(modifier = Modifier.width(24.dp))
 
             Text(
-                text = "Card Management",
+                text = "Card management",
                 style = TextStyle(fontSize = MaterialTheme.typography.headlineSmall.fontSize)
             )
 
@@ -126,9 +126,8 @@ fun CardScreen(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
-                CardManagementActions.cardActions.forEach { action ->
-                    CardManagementAction(action) {
-                        onAction(CardIntent.HandleCardManagementAction(action.actionId))
+                CardMenuItems.value.forEach { cardMenuItem ->
+                    MenuItem(cardMenuItem) {
                     }
                 }
             }

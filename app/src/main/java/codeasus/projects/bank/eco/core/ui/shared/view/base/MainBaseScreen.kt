@@ -9,6 +9,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.navigation.Profile
 import codeasus.projects.bank.eco.core.navigation.SystemMessages
 import codeasus.projects.bank.eco.core.navigation.ui.BaseTopNavbar
 import codeasus.projects.bank.eco.core.navigation.ui.BottomNavbar
@@ -16,7 +17,11 @@ import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-inline fun <reified T : BaseViewModel> MainBaseScreen(navigationManager: NavigationManager, title: String, crossinline content: @Composable (T) -> Unit) {
+inline fun <reified T : BaseViewModel> MainBaseScreen(
+    navigationManager: NavigationManager,
+    title: String,
+    crossinline content: @Composable (T) -> Unit
+) {
     val viewModel: T = hiltViewModel()
 
     val userState = viewModel.user.collectAsStateWithLifecycle()
@@ -33,7 +38,7 @@ inline fun <reified T : BaseViewModel> MainBaseScreen(navigationManager: Navigat
                     navigationManager.navigateTo(SystemMessages)
                 },
                 onProfileClick = {
-
+                    navigationManager.navigateTo(Profile)
                 }
             )
         },

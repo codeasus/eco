@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.feature.system_messages.presentation
+package codeasus.projects.bank.eco.core.ui.shared.view.base
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,7 +17,7 @@ import codeasus.projects.bank.eco.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SystemMessagesTopNavbar(scrollBehavior: TopAppBarScrollBehavior, onBackClick: () -> Unit) {
+fun BaseBackNavTopNavbar(scrollBehavior: TopAppBarScrollBehavior, title: String, onBackClick: () -> Unit) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -32,7 +32,7 @@ fun SystemMessagesTopNavbar(scrollBehavior: TopAppBarScrollBehavior, onBackClick
         },
         title = {
             Text(
-                text = "System Messages",
+                text = title,
                 style = MaterialTheme.typography.titleLarge,
             )
         }

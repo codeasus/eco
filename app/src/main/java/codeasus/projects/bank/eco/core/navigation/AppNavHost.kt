@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import codeasus.projects.bank.eco.feature.card.presentation.CardScreenRoot
 import codeasus.projects.bank.eco.feature.home.presentation.HomeScreenRoot
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreenRoot
+import codeasus.projects.bank.eco.feature.profile.presentation.ProfileScreenRoot
 import codeasus.projects.bank.eco.feature.search_transaction.presentation.SearchTransactionScreenRoot
 import codeasus.projects.bank.eco.feature.system_messages.presentation.SystemMessagesScreenRoot
 import codeasus.projects.bank.eco.feature.transfer.presentation.TransferScreenRoot
@@ -36,6 +37,9 @@ fun AppNavHost(navController: NavHostController) {
         }
         composable<SystemMessages> {
             SystemMessagesScreenRoot(navigationManager = navigationManager)
+        }
+        composable<Profile> {
+            ProfileScreenRoot(navigationManager = navigationManager)
         }
     }
 }

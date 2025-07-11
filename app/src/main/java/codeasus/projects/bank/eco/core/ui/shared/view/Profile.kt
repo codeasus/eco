@@ -90,6 +90,8 @@ fun ProfilePreview() {
             customer = DataSourceDefaults.getCustomers()[1],
             isSelected = true,
             withName = true,
-        ) {}
+        ) {
+            
+        }
     }
 }

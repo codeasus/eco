@@ -16,9 +16,36 @@ import java.time.LocalDateTime
 
 object DataSourceDefaults {
 
+    val exampleUser = UserModel(
+        name = "Henry Cavill",
+        profileImageResId = R.drawable.henry_cavill,
+        tagName = "henry_cavill",
+        bankAccounts = listOf(
+            UserBankAccountModel(
+                id = "card_unknown_normal_1",
+                name = "Henry Cavill",
+                number = "0000000000000345",
+                type = BankAccountType.NORMAL,
+                balance = 0.0,
+                cvv = "123",
+                expiryDate = LocalDateTime.now()
+            ),
+            UserBankAccountModel(
+                id = "card_unknown_platinum_1",
+                name = "Henry Cavill",
+                number = "0000000000008923",
+                type = BankAccountType.PLATINUM,
+                balance = 0.0,
+                cvv = "123",
+                expiryDate = LocalDateTime.now()
+            )
+        )
+    )
+
     val unknownUser = UserModel(
         name = "Unknown",
         profileImageResId = R.drawable.unknown,
+        tagName = "unknown",
         bankAccounts = listOf(
             UserBankAccountModel(
                 id = "card_unknown_normal_1",

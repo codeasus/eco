@@ -20,6 +20,11 @@ data object SystemMessages : Screen {
     override val title: String = "System Messages"
 }
 
+@Serializable
+data object Profile : Screen {
+    override val title: String = "Profile"
+}
+
 sealed interface BottomNavbarScreen : Screen {
     @Serializable
     data object Home: BottomNavbarScreen {
