@@ -72,7 +72,7 @@ fun SystemMessagesScreen(
                         onClick = { onAction(SystemMessagesIntent.FilterByPriority(priority)) },
                         selected = state.selectedPriority == priority,
                         label = {
-                            Text(text = priority.name)
+                            Text(text = priority.label)
                         },
                         colors = FilterChipDefaults.filterChipColors(
                             labelColor = MaterialTheme.colorScheme.onSecondaryContainer,

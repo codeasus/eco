@@ -6,6 +6,7 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.Priority
+import codeasus.projects.bank.eco.domain.local.model.enums.Scheme
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
@@ -105,6 +106,7 @@ class TestDataLoader @Inject constructor(
                 name = "Albert Flores",
                 number = "1234567890020003",
                 balance = 123.99,
+                scheme = Scheme.VISA,
                 type = BankAccountType.NORMAL,
                 cvv = "123",
                 expiryDate = LocalDateTime.now().plusYears(3)
@@ -113,6 +115,7 @@ class TestDataLoader @Inject constructor(
                 id = "card_platinum_1",
                 name = "Albert Flores",
                 number = "9876000000003245",
+                scheme = Scheme.MASTERCARD,
                 type = BankAccountType.PLATINUM,
                 balance = 4503.25,
                 cvv = "456",

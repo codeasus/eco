@@ -71,7 +71,7 @@ fun SearchTransactionScreen(
                         onClick = { onAction(SearchTransactionIntent.SelectTransactionType(transactionType)) },
                         selected = state.selectedTransactionTypes[transactionType]?: false,
                         label = {
-                            Text(text = transactionType.name)
+                            Text(text = transactionType.label)
                         },
                         colors = FilterChipDefaults.filterChipColors(
                             labelColor = MaterialTheme.colorScheme.onSecondaryContainer,

@@ -6,6 +6,7 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.Priority
+import codeasus.projects.bank.eco.domain.local.model.enums.Scheme
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
@@ -25,6 +26,7 @@ object DataSourceDefaults {
                 id = "card_unknown_normal_1",
                 name = "Henry Cavill",
                 number = "0000000000000345",
+                scheme = Scheme.VISA,
                 type = BankAccountType.NORMAL,
                 balance = 0.0,
                 cvv = "123",
@@ -34,6 +36,7 @@ object DataSourceDefaults {
                 id = "card_unknown_platinum_1",
                 name = "Henry Cavill",
                 number = "0000000000008923",
+                scheme = Scheme.MASTERCARD,
                 type = BankAccountType.PLATINUM,
                 balance = 0.0,
                 cvv = "123",
@@ -51,6 +54,7 @@ object DataSourceDefaults {
                 id = "card_unknown_normal_1",
                 name = "Unknown",
                 number = "0000000000000000",
+                scheme = Scheme.VISA,
                 type = BankAccountType.NORMAL,
                 balance = 0.0,
                 cvv = "123",
@@ -60,6 +64,7 @@ object DataSourceDefaults {
                 id = "card_unknown_platinum_1",
                 name = "Unknown",
                 number = "0000000000000000",
+                scheme = Scheme.MASTERCARD,
                 type = BankAccountType.PLATINUM,
                 balance = 0.0,
                 cvv = "123",

@@ -1,9 +1,9 @@
 package codeasus.projects.bank.eco.domain.local.model.enums
 
-enum class Priority(val value: Int) {
-    LOW(0),
-    MEDIUM(1),
-    HIGH(2);
+enum class Priority(val value: Int, val label: String) {
+    LOW(0, "Low"),
+    MEDIUM(1, "Medium"),
+    HIGH(2, "High");
 
     companion object {
         fun fromInt(value: Int): Priority = when (value) {

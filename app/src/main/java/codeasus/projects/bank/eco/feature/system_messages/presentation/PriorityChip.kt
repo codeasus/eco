@@ -21,7 +21,7 @@ fun PriorityChip(priority: Priority) {
         tonalElevation = 2.dp
     ) {
         Text(
-            text = priority.name,
+            text = priority.label,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
             color = Color.White,
             style = MaterialTheme.typography.labelSmall

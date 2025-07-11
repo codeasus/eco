@@ -41,6 +41,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatExpiryDate
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
+import codeasus.projects.bank.eco.domain.local.model.enums.Scheme
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 
 @Composable
@@ -132,9 +133,14 @@ fun BankCardFront(
                         text = "Exp ${formatExpiryDate(bankAccount.expiryDate)}",
                         style = TextStyle(color = themeColors.colorTextDarker)
                     )
+                    val scheme = when (bankAccount.scheme ) {
+                        Scheme.VISA -> R.drawable.ic_visa_outlined
+                        Scheme.MASTERCARD -> R.drawable.ic_master_outlined
+                        Scheme.AMERICAN_EXPRESS -> R.drawable.ic_amex_outlined
+                    }
                     Image(
                         modifier = Modifier.width(36.dp),
-                        painter = painterResource(R.drawable.ic_apple_pay),
+                        painter = painterResource(scheme),
                         contentScale = ContentScale.FillWidth,
                         colorFilter = ColorFilter.tint(themeColors.colorTextDarker),
                         contentDescription = "Contactless Payment Sign",
