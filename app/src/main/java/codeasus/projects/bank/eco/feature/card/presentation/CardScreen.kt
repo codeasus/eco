@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -27,11 +28,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.MenuItem
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
+import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
+import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
+import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardFlipState
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardIntent
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
@@ -39,7 +44,7 @@ import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAct
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItems
 
 @Composable
-fun CardScreenRoot(navigationManager: NavigationManager, bankAccountId: String) {
+fun CardScreenRoot(navigationManager: NavigationManager, bankAccountId: Long) {
     BaseScreen<CardViewModel> { vm ->
         val state = vm.state.collectAsStateWithLifecycle()
 
@@ -67,7 +72,7 @@ fun CardScreen(
     BaseScaffold(
         topBar = {
             CardTopNavbar(
-                title = "Card ${state.bankAccount?.type.toString()}",
+                title = if (state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) state.bankAccountUiState.data.name else "",
                 scrollBehavior = scrollBehavior
             ) {
                 onNavigateUp()
@@ -80,20 +85,33 @@ fun CardScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            state.bankAccount?.let { bankAccount ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    FlipCard(state.cardFlipState, bankAccount)
-                    CardDetailsBottomSheet(
-                        userBankAccountModel = bankAccount,
-                        isVisible = state.showBottomSheet,
-                        onDismiss = { onAction(CardIntent.HideBottomSheet) }
-                    )
+            when (val bankAccount = state.bankAccountUiState) {
+                is BankAccountUiState.Idle -> {}
+                is BankAccountUiState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BankCardUnknown(modifier = Modifier.fillMaxWidth().height(240.dp), state.bankAccountUiState)
+                    }
                 }
+                is BankAccountUiState.NotFound -> {}
+                is BankAccountUiState.Success<BankAccountUi> -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        FlipCard(state.cardFlipState, bankAccount.data)
+                    }
+                }
+            }
+
+            CardDetailsBottomSheet(bankAccountUiState = state.bankAccountPrivateDataUiState, isVisible = state.showBottomSheet) {
+                onAction(CardIntent.HideBottomSheet)
             }
 
             Row(
@@ -101,15 +119,15 @@ fun CardScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CardInstantAction(R.drawable.ic_reveal, "Reveal") {
+                CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
                     onAction(CardIntent.ShowBottomSheet)
                 }
                 Spacer(modifier = Modifier.width(24.dp))
-                CardInstantAction(R.drawable.ic_flip, "Flip") {
+                CardInstantAction(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
                     onAction(CardIntent.FlipCard)
                 }
                 Spacer(modifier = Modifier.width(24.dp))
-                CardInstantAction(R.drawable.ic_freeze, "Freeze") {
+                CardInstantAction(R.drawable.ic_freeze, "Freeze", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
                     onAction(CardIntent.FreezeCard)
                 }
             }
@@ -141,10 +159,8 @@ fun CardScreenLightPreview() {
     EcoTheme {
         CardScreen(
             state = CardState(
-                bankAccount = DataSourceDefaults.unknownUser.bankAccounts[0],
+                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[0].toBankAccountUi()),
                 cardFlipState = CardFlipState.FRONT,
-                showBottomSheet = false,
-                isLoading = false
             ),
             onAction = {}
         )
@@ -157,10 +173,8 @@ fun CardScreenDarkPreview() {
     EcoTheme {
         CardScreen(
             state = CardState(
-                bankAccount = DataSourceDefaults.unknownUser.bankAccounts[0],
+                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[1].toBankAccountUi()),
                 cardFlipState = CardFlipState.BACK,
-                showBottomSheet = false,
-                isLoading = false
             ),
             onAction = {}
         )

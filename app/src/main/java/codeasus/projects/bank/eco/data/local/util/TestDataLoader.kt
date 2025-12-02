@@ -6,7 +6,7 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.Priority
-import codeasus.projects.bank.eco.domain.local.model.enums.Scheme
+import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
@@ -16,17 +16,18 @@ import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.system_message.SystemMessageRepository
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
+import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 class TestDataLoader @Inject constructor(
-    val userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val customerRepository: CustomerRepository,
     private val transactionRepository: TransactionRepository,
-    private val systemMessageRepository: SystemMessageRepository
+    private val systemMessageRepository: SystemMessageRepository,
+    private val bankAccountRepository: BankAccountRepository
 ) {
-
     private fun getCustomers(): List<CustomerModel> {
         return listOf(
             CustomerModel(
@@ -64,7 +65,6 @@ class TestDataLoader @Inject constructor(
                         name = "Tinder",
                         number = "1234567800000004"
                     )
-
             ),
             CustomerModel(
                 name = "Bank of America Ltd.",
@@ -96,36 +96,36 @@ class TestDataLoader @Inject constructor(
         )
     }
 
+    private val userBankAccountOne = UserBankAccountModel(
+        id = 0,
+        name = "Albert Flores",
+        number = "1234567890020003",
+        balance = 123.99,
+        scheme = BankAccountScheme.VISA,
+        type = BankAccountType.NORMAL,
+        cvv = "123",
+        expiryDate = LocalDateTime.now().plusYears(3)
+    )
+    private val userBankAccountTwo = UserBankAccountModel(
+        id = 1,
+        name = "Albert Flores",
+        number = "9876000000003245",
+        scheme = BankAccountScheme.MASTERCARD,
+        type = BankAccountType.PLATINUM,
+        balance = 4503.25,
+        cvv = "456",
+        expiryDate = LocalDateTime.now().plusYears(2).plusMonths(4)
+    )
+
     private val appUser = UserModel(
         name = "Albert Flores",
         tagName = "albert_flores",
         profileImageResId = R.drawable.albert_flores,
-        bankAccounts = listOf(
-            UserBankAccountModel(
-                id = "card_normal_1",
-                name = "Albert Flores",
-                number = "1234567890020003",
-                balance = 123.99,
-                scheme = Scheme.VISA,
-                type = BankAccountType.NORMAL,
-                cvv = "123",
-                expiryDate = LocalDateTime.now().plusYears(3)
-            ),
-            UserBankAccountModel(
-                id = "card_platinum_1",
-                name = "Albert Flores",
-                number = "9876000000003245",
-                scheme = Scheme.MASTERCARD,
-                type = BankAccountType.PLATINUM,
-                balance = 4503.25,
-                cvv = "456",
-                expiryDate = LocalDateTime.now().plusYears(2).plusMonths(4)
-            )
-        )
     )
 
     suspend fun load() {
         addAppUser()
+        addBankAccounts()
         addCustomers()
         saveTransactions()
         saveSystemMessages()
@@ -133,6 +133,12 @@ class TestDataLoader @Inject constructor(
 
     private suspend fun addAppUser() {
         userRepository.saveUser(appUser)
+    }
+
+    private suspend fun addBankAccounts() {
+        bankAccountRepository.deleteBankAccounts()
+        bankAccountRepository.insertBankAccount(userBankAccountOne)
+        bankAccountRepository.insertBankAccount(userBankAccountTwo)
     }
 
     private suspend fun addCustomers() {
@@ -147,7 +153,7 @@ class TestDataLoader @Inject constructor(
         val transactions = listOf(
             TransactionModel(
                 externalAccountNumber = customers[0].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[1].number,
+                internalAccountNumber = userBankAccountTwo.number,
                 amount = 45.23,
                 currency = Currency.USD,
                 rate = 2.4,
@@ -158,7 +164,7 @@ class TestDataLoader @Inject constructor(
             ),
             TransactionModel(
                 externalAccountNumber = customers[1].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[0].number,
+                internalAccountNumber = userBankAccountOne.number,
                 amount = 28.0,
                 currency = Currency.EUR,
                 rate = 2.0,
@@ -169,7 +175,7 @@ class TestDataLoader @Inject constructor(
             ),
             TransactionModel(
                 externalAccountNumber = customers[2].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[1].number,
+                internalAccountNumber = userBankAccountOne.number,
                 amount = 5.2,
                 currency = Currency.PLN,
                 rate = 0.5,
@@ -180,7 +186,7 @@ class TestDataLoader @Inject constructor(
             ),
             TransactionModel(
                 externalAccountNumber = customers[3].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[1].number,
+                internalAccountNumber = userBankAccountTwo.number,
                 amount = 0.45,
                 currency = Currency.USD,
                 rate = 4.0,
@@ -191,7 +197,7 @@ class TestDataLoader @Inject constructor(
             ),
             TransactionModel(
                 externalAccountNumber = customers[4].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[0].number,
+                internalAccountNumber = userBankAccountTwo.number,
                 amount = 100.99,
                 currency = Currency.EUR,
                 rate = 2.5,
@@ -202,7 +208,7 @@ class TestDataLoader @Inject constructor(
             ),
             TransactionModel(
                 externalAccountNumber = customers[5].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[0].number,
+                internalAccountNumber = userBankAccountOne.number,
                 amount = 1000.0,
                 currency = Currency.USD,
                 rate = 10.0,
@@ -213,7 +219,7 @@ class TestDataLoader @Inject constructor(
             ),
             TransactionModel(
                 externalAccountNumber = customers[6].bankAccount.number,
-                internalAccountNumber = appUser.bankAccounts[1].number,
+                internalAccountNumber = userBankAccountTwo.number,
                 amount = 400.0,
                 currency = Currency.PLN,
                 rate = 1.4,

@@ -31,7 +31,7 @@ fun BaseTopNavbar(
         },
         actions = {
             NotificationAction { onNotificationClick() }
-            ProfileAction(user ?: DataSourceDefaults.unknownUser) { onProfileClick() }
+            ProfileAction(user?: DataSourceDefaults.unknownUser.first) { onProfileClick() }
         }
     )
 }

@@ -4,15 +4,22 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import codeasus.projects.bank.eco.core.database.converters.LocalDateTimeConverters
+import codeasus.projects.bank.eco.data.local.dao.BankAccountDao
 import codeasus.projects.bank.eco.data.local.dao.CustomerDao
 import codeasus.projects.bank.eco.data.local.dao.SystemMessageDao
 import codeasus.projects.bank.eco.data.local.dao.TransactionDao
+import codeasus.projects.bank.eco.data.local.entity.BankAccountEntity
 import codeasus.projects.bank.eco.data.local.entity.CustomerEntity
 import codeasus.projects.bank.eco.data.local.entity.TransactionEntity
 import codeasus.projects.bank.eco.data.local.entity.SystemMessageEntity
 
 @Database(
-    entities = [CustomerEntity::class, TransactionEntity::class, SystemMessageEntity::class],
+    entities = [
+        CustomerEntity::class,
+        TransactionEntity::class,
+        SystemMessageEntity::class,
+        BankAccountEntity::class
+    ],
     version = 1,
     exportSchema = false
 )
@@ -21,4 +28,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun transactionDao(): TransactionDao
     abstract fun systemMessageDao(): SystemMessageDao
+    abstract fun bankAccountDao(): BankAccountDao
 }

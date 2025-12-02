@@ -1,8 +1,8 @@
 package codeasus.projects.bank.eco.di
 
 import codeasus.projects.bank.eco.data.remote.network.getHttpClient
-import codeasus.projects.bank.eco.data.remote.repository.BankAccountRemoteRepository
-import codeasus.projects.bank.eco.domain.remote.repository.banking.BankAccountRepository
+import codeasus.projects.bank.eco.data.remote.repository.BankingRemoteRepository
+import codeasus.projects.bank.eco.domain.remote.repository.banking.BankingRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideBankAccountRepository(httpClient: HttpClient): BankAccountRepository {
-        return BankAccountRemoteRepository(httpClient)
+    fun provideBankAccountRepository(httpClient: HttpClient): BankingRepository {
+        return BankingRemoteRepository(httpClient)
     }
 }

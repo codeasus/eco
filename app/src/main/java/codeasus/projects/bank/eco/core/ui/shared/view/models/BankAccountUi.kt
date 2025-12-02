@@ -1,10 +1,9 @@
-package codeasus.projects.bank.eco.domain.local.model.user
+package codeasus.projects.bank.eco.core.ui.shared.view.models
 
-import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
-import java.time.LocalDateTime
+import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 
-data class UserBankAccountModel(
+data class BankAccountUi(
     val id: Long,
     val name: String,
     val number: String,
@@ -12,5 +11,5 @@ data class UserBankAccountModel(
     val scheme: BankAccountScheme,
     val balance: Double,
     val cvv: String,
-    val expiryDate: LocalDateTime
+    val expiryDate: String
 )

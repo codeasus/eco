@@ -21,10 +21,11 @@ import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 
 @Composable
-fun CardInstantAction(@DrawableRes iconResourceId: Int, actionName: String, onClick: () -> Unit) {
+fun CardInstantAction(@DrawableRes iconResourceId: Int, actionName: String, enabled: Boolean = false, onClick: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         FilledIconButton(
             modifier = Modifier.size(64.dp),
+            enabled = enabled,
             onClick = onClick
         ) {
             Icon(
@@ -42,6 +43,6 @@ fun CardInstantAction(@DrawableRes iconResourceId: Int, actionName: String, onCl
 @Composable
 fun CardInstantActionPreview() {
     EcoTheme {
-        CardInstantAction(iconResourceId = R.drawable.ic_flip, actionName = "Flip") { }
+        CardInstantAction(iconResourceId = R.drawable.ic_flip,  actionName = "Flip") { }
     }
 }

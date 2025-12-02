@@ -3,6 +3,7 @@ package codeasus.projects.bank.eco.feature.home.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,8 +27,11 @@ import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.Card
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.SearchTransaction
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
+import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
+import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.Transactions
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -55,7 +59,7 @@ fun HomeScreenRoot(navigationManager: NavigationManager) {
 fun HomeScreen(
     state: HomeState,
     onAction: (HomeIntent) -> Unit,
-    onNavigateToCardScreen: (String) -> Unit = {},
+    onNavigateToCardScreen: (Long) -> Unit = {},
     onNavigateToSearchTransactionScreen: () -> Unit = {}
 ) {
     Column(
@@ -69,15 +73,37 @@ fun HomeScreen(
             text = "Cards",
             style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
         )
-        Cards(
-            userBankAccounts = state.cards,
-            onCardSelected = { bankAccount ->
-                onNavigateToCardScreen(bankAccount.id)
-            },
-            onCardSwiped = {
-                onAction(HomeIntent.ReStackCards)
+        when (state.bankAccountsUiState) {
+            is BankAccountUiState.Idle -> {}
+            is BankAccountUiState.NotFound -> {}
+            is BankAccountUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BankCardUnknown(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(240.dp),
+                        state.bankAccountsUiState
+                    )
+                }
             }
-        )
+
+            is BankAccountUiState.Success -> {
+                Cards(
+                    userBankAccounts = state.bankAccountsUiState.data,
+                    onSelected = { bankAccount ->
+                        onNavigateToCardScreen(bankAccount.id)
+                    },
+                    onSwiped = {
+                        onAction(HomeIntent.ReStackCards)
+                    }
+                )
+            }
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -120,7 +146,7 @@ fun HomeScreenLightPreview() {
             state = HomeState(
                 isLoading = false,
                 transactions = DataSourceDefaults.getCustomerTransactions(),
-                cards = DataSourceDefaults.unknownUser.bankAccounts
+                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second.map { it.toBankAccountUi() })
             ),
             onAction = {}
         )
@@ -135,7 +161,7 @@ fun HomeScreenDarkPreview() {
             state = HomeState(
                 isLoading = false,
                 transactions = DataSourceDefaults.getCustomerTransactions(),
-                cards = DataSourceDefaults.unknownUser.bankAccounts
+                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second.map { it.toBankAccountUi() })
             ),
             onAction = {}
         )

@@ -50,8 +50,6 @@ fun TagChip(tagName: String, onClick: () -> Unit) {
 @Composable
 fun TagChipPreview() {
     EcoTheme {
-        TagChip(tagName = DataSourceDefaults.exampleUser.tagName) {
-
-        }
+        TagChip(tagName = DataSourceDefaults.exampleUser.first.tagName) {}
     }
 }

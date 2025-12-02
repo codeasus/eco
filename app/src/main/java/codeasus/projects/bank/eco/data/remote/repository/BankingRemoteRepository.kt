@@ -4,14 +4,14 @@ import codeasus.projects.bank.eco.data.remote.mappers.ApiErrorMapper
 import codeasus.projects.bank.eco.data.remote.mappers.BinLookupMapper
 import codeasus.projects.bank.eco.data.remote.model.BinLookupResponseDto
 import codeasus.projects.bank.eco.domain.remote.model.banking.BinLookupModel
-import codeasus.projects.bank.eco.domain.remote.repository.banking.BankAccountRepository
+import codeasus.projects.bank.eco.domain.remote.repository.banking.BankingRepository
 import codeasus.projects.bank.eco.domain.utils.DomainResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 
-class BankAccountRemoteRepository(private val httpClient: HttpClient): BankAccountRepository {
+class BankingRemoteRepository(private val httpClient: HttpClient): BankingRepository {
 
     companion object {
         private const val BASE_URL = "https://data.handyapi.com/bin"

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,22 +38,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatExpiryDate
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
-import codeasus.projects.bank.eco.domain.local.model.enums.Scheme
-import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
+import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
+import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 
 @Composable
 fun BankCardFront(
     modifier: Modifier,
-    bankAccount: UserBankAccountModel,
+    bankAccountUi: BankAccountUi,
     rotationYAngle: Float = 0f,
     bankCardAlpha: Float = 1.0F,
-    onSelected: (UserBankAccountModel) -> Unit = {}
+    onSelected: (BankAccountUi) -> Unit = {}
 ) {
-    val themeColors = when (bankAccount.type) {
+    val themeColors = when (bankAccountUi.type) {
         BankAccountType.NORMAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
     }
@@ -65,7 +67,7 @@ fun BankCardFront(
                 cameraDistance = 12f * density
             }
             .clip(RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp))
-            .clickable { onSelected(bankAccount) },
+            .clickable { onSelected(bankAccountUi) },
         shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp),
         colors = CardDefaults.cardColors(containerColor = themeColors.colorBackground)
     ) {
@@ -113,13 +115,13 @@ fun BankCardFront(
                 }
                 Column {
                     Text(
-                        text = bankAccount.name,
+                        text = bankAccountUi.name,
                         style = TextStyle(color = themeColors.colorTextLighter)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "★★★★  ★★★★  ★★★★  ${bankAccount.number.takeLast(4)}",
+                            text = bankAccountUi.number,
                             style = TextStyle(color = themeColors.colorTextLighter)
                         )
                     }
@@ -130,13 +132,14 @@ fun BankCardFront(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Exp ${formatExpiryDate(bankAccount.expiryDate)}",
+                        text = "Exp ${bankAccountUi.expiryDate}",
                         style = TextStyle(color = themeColors.colorTextDarker)
                     )
-                    val scheme = when (bankAccount.scheme ) {
-                        Scheme.VISA -> R.drawable.ic_visa_outlined
-                        Scheme.MASTERCARD -> R.drawable.ic_master_outlined
-                        Scheme.AMERICAN_EXPRESS -> R.drawable.ic_amex_outlined
+                    val scheme = when (bankAccountUi.scheme) {
+                        BankAccountScheme.VISA -> R.drawable.ic_visa_outlined
+                        BankAccountScheme.MASTERCARD -> R.drawable.ic_master_outlined
+                        BankAccountScheme.AMERICAN_EXPRESS -> R.drawable.ic_amex_outlined
+                        else -> 0
                     }
                     Image(
                         modifier = Modifier.width(36.dp),
@@ -152,9 +155,12 @@ fun BankCardFront(
 }
 
 @Composable
-fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotationYAngle: Float = 0f) {
-
-    val themeColors = when (bankAccount.type) {
+fun BankCardBack(
+    modifier: Modifier,
+    bankAccountUi: BankAccountUi,
+    rotationYAngle: Float = 0f
+) {
+    val themeColors = when (bankAccountUi.type) {
         BankAccountType.NORMAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
     }
@@ -192,8 +198,7 @@ fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotation
                         .fillMaxWidth()
                         .height(56.dp)
                         .background(Color.Black)
-                ) {
-                }
+                )
                 Spacer(Modifier.height(12.dp))
                 Row(
                     modifier = Modifier
@@ -201,8 +206,9 @@ fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotation
                         .fillMaxWidth()
                         .height(36.dp)
                         .background(Color.White)
-                        .padding(horizontal = 24.dp).graphicsLayer {
-                            if(rotationYAngle >= 90.0) {
+                        .padding(horizontal = 24.dp)
+                        .graphicsLayer {
+                            if (rotationYAngle >= 90.0) {
                                 rotationY = 180.0f
                             }
                         },
@@ -210,7 +216,7 @@ fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotation
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "**${bankAccount.cvv[2]}",
+                        text = bankAccountUi.cvv,
                         style = TextStyle(color = themeColors.colorTextDarker)
                     )
                 }
@@ -219,47 +225,135 @@ fun BankCardBack(modifier: Modifier, bankAccount: UserBankAccountModel, rotation
     }
 }
 
-@Preview(showSystemUi = false, showBackground = false)
 @Composable
-fun BankCardDarkPreview() {
-    EcoTheme {
-        BankCardFront(
+fun BankCardUnknown(modifier: Modifier, bankAccountUiState: BankAccountUiState<BankAccountUi>) {
+    val themeColors = BankCardDefaults.UnknownCardColors
+    Card(
+        modifier = modifier.clip(RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp)),
+        shape = RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp),
+        colors = CardDefaults.cardColors(containerColor = themeColors.colorBackground)
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(240.dp),
-            bankAccount = DataSourceDefaults.unknownUser.bankAccounts[0],
-            bankCardAlpha = 1.0f
+                .fillMaxSize()
+                .background(color = themeColors.colorBackground)
+                .drawBehind {
+                    drawIntoCanvas { canvas ->
+                        val paint = Paint().apply {
+                            maskFilter = BlurMaskFilter(900f, BlurMaskFilter.Blur.NORMAL)
+                            color = themeColors.colorBackgroundShape
+                        }
+                        canvas.nativeCanvas.drawCircle(center.x + 50, center.y, 120f, paint)
+                        canvas.nativeCanvas.drawCircle(center.x - 250, center.y, 100f, paint)
+                        canvas.nativeCanvas.drawCircle(0f + 200, 0f, 120f, paint)
+                    }
+                }
+                .padding(24.dp)
         ) {
-
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Echo",
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            fontWeight = FontWeight.Medium,
+                            color = themeColors.colorTextDarker
+                        )
+                    )
+                    Image(
+                        modifier = Modifier.width(32.dp),
+                        painter = painterResource(R.drawable.ic_contactless_payment),
+                        contentScale = ContentScale.FillWidth,
+                        colorFilter = ColorFilter.tint(themeColors.colorTextDarker),
+                        contentDescription = "Contactless Payment Sign",
+                    )
+                }
+                Box(modifier = Modifier.fillMaxSize(1.0f), contentAlignment = Alignment.Center) {
+                    when(bankAccountUiState) {
+                        is BankAccountUiState.Idle, is BankAccountUiState.Success -> {}
+                        is BankAccountUiState.Loading -> {
+                            CircularProgressIndicator(strokeWidth = 3.dp, color = themeColors.colorTextDarker)
+                        }
+                        is BankAccountUiState.NotFound -> {
+                            Image(
+                                modifier = Modifier.width(32.dp),
+                                painter = painterResource(R.drawable.ic_not_found),
+                                contentScale = ContentScale.FillWidth,
+                                colorFilter = ColorFilter.tint(themeColors.colorTextDarker),
+                                contentDescription = "Contactless Payment Sign",
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 @Preview(showSystemUi = false, showBackground = false)
 @Composable
-fun BankCardLightPreview() {
+fun BankCardUnknowPreview() {
     EcoTheme {
-        BankCardFront(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(240.dp),
-            bankAccount = DataSourceDefaults.unknownUser.bankAccounts[1],
-            bankCardAlpha = 1.0f
-        ) {
-
-        }
+        BankCardUnknown(
+            modifier = Modifier.fillMaxWidth().height(240.dp),
+            BankAccountUiState.NotFound
+        )
     }
 }
 
 @Preview(showSystemUi = false, showBackground = false)
 @Composable
-fun BankCardBackLightPreview() {
+fun BankCardDarkFrontPreview() {
+    EcoTheme {
+        BankCardFront(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[0].toBankAccountUi(),
+            bankCardAlpha = 1.0f
+        )
+    }
+}
+
+@Preview(showSystemUi = false, showBackground = false)
+@Composable
+fun BankCardDarkBackPreview() {
     EcoTheme {
         BankCardBack(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
-            bankAccount = DataSourceDefaults.unknownUser.bankAccounts[1],
+            bankAccountUi = DataSourceDefaults.unknownUser.second[0].toBankAccountUi(),
+        )
+    }
+}
+
+@Preview(showSystemUi = false, showBackground = false)
+@Composable
+fun BankCardLightFrontPreview() {
+    EcoTheme {
+        BankCardFront(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[1].toBankAccountUi(),
+        )
+    }
+}
+
+@Preview(showSystemUi = false, showBackground = false)
+@Composable
+fun BankCardLightBackPreview() {
+    EcoTheme {
+        BankCardBack(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[1].toBankAccountUi(),
         )
     }
 }

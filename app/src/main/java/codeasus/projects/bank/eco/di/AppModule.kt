@@ -6,6 +6,7 @@ import codeasus.projects.bank.eco.data.local.util.TestDataLoader
 import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.system_message.SystemMessageRepository
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
+import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -29,13 +30,15 @@ object AppModule {
         userRepository: UserRepository,
         customerRepository: CustomerRepository,
         transactionRepository: TransactionRepository,
-        systemMessageRepository: SystemMessageRepository
+        systemMessageRepository: SystemMessageRepository,
+        bankAccountRepository: BankAccountRepository
     ): TestDataLoader {
         return TestDataLoader(
             userRepository,
             customerRepository,
             transactionRepository,
-            systemMessageRepository
+            systemMessageRepository,
+            bankAccountRepository
         )
     }
 }

@@ -30,9 +30,10 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -40,11 +41,10 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Cards(
-    userBankAccounts: List<UserBankAccountModel>,
-    onCardSelected: (UserBankAccountModel) -> Unit,
-    onCardSwiped: () -> Unit
+    userBankAccounts: List<BankAccountUi>,
+    onSelected: (BankAccountUi) -> Unit,
+    onSwiped: () -> Unit
 ) {
-
     val density = LocalDensity.current
     val windowsWidth = currentWindowSize().width.toFloat()
     val topCardAlpha = remember { mutableFloatStateOf(1.0f) }
@@ -67,7 +67,7 @@ fun Cards(
         snapshotFlow { boxDragState.settledValue }.collectLatest {
             if (it == DragAnchors.LEFT) {
                 boxDragState.snapTo(DragAnchors.CENTER)
-                onCardSwiped()
+                onSwiped()
             }
         }
     }
@@ -86,7 +86,7 @@ fun Cards(
             .height(280.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
-        val parentWidth = maxWidth
+        val parentWidth = this@BoxWithConstraints.maxWidth
         val maxCardHeight = 240
 
         userBankAccounts.forEachIndexed { index, bankAccount ->
@@ -112,9 +112,9 @@ fun Cards(
                     val bankCardAlpha = if (index == 0) topCardAlpha.floatValue else 1.0f
                     BankCardFront(
                         modifier = modifier,
-                        bankAccount = bankAccount,
+                        bankAccountUi = bankAccount,
                         bankCardAlpha = bankCardAlpha,
-                        onSelected = onCardSelected
+                        onSelected = onSelected
                     )
                 },
                 modifier = Modifier.zIndex(userBankAccounts.size - index.toFloat()),
@@ -156,9 +156,9 @@ fun Modifier.spec(index: Int, boxDragState: AnchoredDraggableState<DragAnchors>)
 fun CardsCarouselPreview() {
     EcoTheme {
         Cards(
-            userBankAccounts = DataSourceDefaults.unknownUser.bankAccounts,
-            onCardSwiped = {},
-            onCardSelected = {}
+            userBankAccounts = DataSourceDefaults.unknownUser.second.map { it.toBankAccountUi() },
+            onSwiped = {},
+            onSelected = {}
         )
     }
 }

@@ -3,6 +3,7 @@ package codeasus.projects.bank.eco.core.ui.shared.view.utils
 import androidx.compose.ui.graphics.Color
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.TransactionUIItemColors
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.LocalDateTime
@@ -26,8 +27,15 @@ fun formatExpiryDate(expiryDate: LocalDateTime): String {
     return expiryDate.format(formatter)
 }
 
-fun formatCardNumber(cardNumber: String): String {
-    if (cardNumber.length >= 16) throw IllegalArgumentException("Card number should not have more than 16 digits")
+fun formatBankAccountNumber(number: String): String {
+    return if (number.length == 4) {
+        "★★★★  ★★★★  ★★★★  $number"
+    } else {
+        formatFullBankAccountNumber(number)
+    }
+}
+
+fun formatFullBankAccountNumber(cardNumber: String): String {
     val builder = StringBuilder()
     for (i in cardNumber.indices) {
         if (i % 4 == 0 && i != 0) builder.append(" ")
@@ -43,7 +51,7 @@ fun defineTransactionAmountColor(transactionType: TransactionType): Color {
     }
 }
 
-fun formatUITransactionAmount(transaction: codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel): String {
+fun formatUITransactionAmount(transaction: TransactionModel): String {
     fun formatForSign(sign: String) = "$sign ${transaction.currency.symbol}${formatTransactionAmount(transaction.amount)}"
     return when (transaction.type) {
         TransactionType.DEPOSIT, TransactionType.REFUND -> formatForSign("+")
