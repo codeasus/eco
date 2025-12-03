@@ -2,6 +2,8 @@ package codeasus.projects.bank.eco.feature.search_transaction.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionIntent
@@ -57,7 +59,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
         viewModelScope.launch {
             val transactions = transactionRepository
                 .getAllTransactions(cardNumber = null)
-                .map { Pair(it.value, it.key) }
+                .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
             _state.value = _state.value.copy(transactions = transactions)
         }
     }
@@ -66,7 +68,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
         viewModelScope.launch {
             val transactions = transactionRepository
                 .getTransactionsByType(cardNumber = null, types = types)
-                .map { Pair(it.value, it.key) }
+                .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
             _state.value = _state.value.copy(transactions = transactions)
         }
     }
@@ -90,7 +92,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                                 keyword = searchKeyword,
                                 types = types
                             )
-                            .map { Pair(it.value, it.key) }
+                            .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
                         _state.value = _state.value.copy(transactions = transactions)
                     }
 
@@ -103,7 +105,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                             .getTransactionsByKeyword(
                                 cardNumber = null,
                                 keyword = searchKeyword
-                            ).map { Pair(it.value, it.key) }
+                            ).map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
                         _state.value = _state.value.copy(transactions = transactions)
                     }
                 }
@@ -135,7 +137,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                         keyword = searchText,
                         types = types
                     )
-                }.map { Pair(it.value, it.key) }
+                }.map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
 
                 _state.value = _state.value.copy(transactions = transactions)
             }

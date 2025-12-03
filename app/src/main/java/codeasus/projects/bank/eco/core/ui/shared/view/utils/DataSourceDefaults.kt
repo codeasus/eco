@@ -1,6 +1,13 @@
 package codeasus.projects.bank.eco.core.ui.shared.view.utils
 
 import codeasus.projects.bank.eco.R
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toSystemMessageUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.SystemMessageUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
@@ -43,7 +50,7 @@ object DataSourceDefaults {
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             )
-        )
+        ).map { it.toBankAccountUi() }
     )
 
     val unknownUser = Pair(
@@ -72,10 +79,10 @@ object DataSourceDefaults {
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             )
-        )
+        ).map { it.toBankAccountUi() }
     )
 
-    fun getSystemMessages(): List<SystemMessageModel> {
+    fun getSystemMessages(): List<SystemMessageUi> {
         val titles = listOf(
             "Security Update",
             "System Maintenance",
@@ -110,11 +117,11 @@ object DataSourceDefaults {
                 content = contents[index],
                 priority = priorities.random(),
                 createdAt = LocalDateTime.now().minusHours((0..72).random().toLong())
-            )
+            ).toSystemMessageUi()
         }
     }
 
-    fun getCustomerTransactions(): List<Pair<CustomerModel, TransactionModel>> {
+    fun getCustomerTransactions(): List<Pair<CustomerUi, TransactionUi>> {
         val customers = getCustomers()
         val transactions = getTransactions()
 
@@ -124,7 +131,7 @@ object DataSourceDefaults {
         }
     }
 
-    fun getCustomers(): List<CustomerModel> {
+    fun getCustomers(): List<CustomerUi> {
         return listOf(
             CustomerModel(
                 name = "Fiver",
@@ -190,10 +197,10 @@ object DataSourceDefaults {
                         number = "1234567800009099"
                     )
             )
-        )
+        ).map { it.toCustomerUi() }
     }
 
-    fun getTransactions(): List<TransactionModel> {
+    fun getTransactions(): List<TransactionUi> {
         val customers = getCustomers()
         return listOf(
             TransactionModel(
@@ -273,6 +280,6 @@ object DataSourceDefaults {
                 createdAt = LocalDateTime.now().minusDays(200),
                 updatedAt = LocalDateTime.now().minusDays(201)
             )
-        )
+        ).map { it.toTransactionUi() }
     }
 }

@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.MenuItem
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
@@ -159,7 +158,7 @@ fun CardScreenLightPreview() {
     EcoTheme {
         CardScreen(
             state = CardState(
-                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[0].toBankAccountUi()),
+                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[0]),
                 cardFlipState = CardFlipState.FRONT,
             ),
             onAction = {}
@@ -173,7 +172,7 @@ fun CardScreenDarkPreview() {
     EcoTheme {
         CardScreen(
             state = CardState(
-                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[1].toBankAccountUi()),
+                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[1]),
                 cardFlipState = CardFlipState.BACK,
             ),
             onAction = {}

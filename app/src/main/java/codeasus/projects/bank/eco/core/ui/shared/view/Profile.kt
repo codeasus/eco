@@ -20,9 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 
 private fun Modifier.withName(withName: Boolean): Modifier {
     return if (withName) this.width(64.dp) else this
@@ -31,7 +31,7 @@ private fun Modifier.withName(withName: Boolean): Modifier {
 @Composable
 fun Profile(
     imageModifier: Modifier,
-    customer: CustomerModel,
+    customer: CustomerUi,
     withName: Boolean = false,
     isSelected: Boolean = false,
     onProfileSelected: () -> Unit
@@ -59,7 +59,7 @@ fun Profile(
     ) {
         Image(
             modifier = imageModifier,
-            painter = painterResource(customer.profileImgResId),
+            painter = painterResource(customer.profileImg),
             contentScale = ContentScale.Crop,
             contentDescription = "${customer.name}'s photo"
         )

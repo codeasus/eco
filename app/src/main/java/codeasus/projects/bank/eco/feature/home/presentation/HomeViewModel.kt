@@ -2,6 +2,8 @@ package codeasus.projects.bank.eco.feature.home.presentation
 
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
@@ -34,14 +36,13 @@ class HomeViewModel @Inject constructor(
 
     fun handleIntent(intent: HomeIntent) {
         when (intent) {
-            is HomeIntent.ReStackCards -> reStackCards()
+            is HomeIntent.RestackCards -> reStackCards()
         }
     }
 
     private fun loadAllTransactions() {
         viewModelScope.launch {
-            val transactions =
-                transactionRepository.getAllTransactions(null).map { Pair(it.value, it.key) }
+            val transactions = transactionRepository.getAllTransactions(null).map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
             _state.emit(_state.value.copy(transactions = transactions))
         }
     }

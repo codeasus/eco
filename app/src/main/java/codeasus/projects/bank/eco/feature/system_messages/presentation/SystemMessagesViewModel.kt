@@ -2,6 +2,7 @@ package codeasus.projects.bank.eco.feature.system_messages.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toSystemMessageUi
 import codeasus.projects.bank.eco.domain.local.model.enums.Priority
 import codeasus.projects.bank.eco.domain.local.repository.system_message.SystemMessageRepository
 import codeasus.projects.bank.eco.feature.system_messages.states.SystemMessagesIntent
@@ -32,7 +33,7 @@ class SystemMessagesViewModel @Inject constructor(private val systemMessageRepos
 
     private fun getAllSystemMessages() {
         viewModelScope.launch {
-            val systemMessages = systemMessageRepository.getAllSystemMessages()
+            val systemMessages = systemMessageRepository.getAllSystemMessages().map { it.toSystemMessageUi() }
             _state.emit(_state.value.copy(systemMessages = systemMessages))
         }
     }
@@ -44,7 +45,7 @@ class SystemMessagesViewModel @Inject constructor(private val systemMessageRepos
                 getAllSystemMessages()
                 return@launch
             }
-            val filteredSystemMessages = systemMessageRepository.getSystemMessagesByPriority(priority)
+            val filteredSystemMessages = systemMessageRepository.getSystemMessagesByPriority(priority).map { it.toSystemMessageUi() }
             _state.emit(
                 _state.value.copy(systemMessages = filteredSystemMessages, selectedPriority = priority)
             )

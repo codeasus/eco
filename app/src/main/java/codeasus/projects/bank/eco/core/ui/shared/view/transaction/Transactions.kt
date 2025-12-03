@@ -4,13 +4,13 @@ import android.content.res.Configuration
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
-import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 
 @Composable
-fun Transactions(customerTransactionPairs: List<Pair<CustomerModel, TransactionModel>>) {
+fun Transactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>) {
     LazyColumn {
         items(
             count = customerTransactionPairs.size,

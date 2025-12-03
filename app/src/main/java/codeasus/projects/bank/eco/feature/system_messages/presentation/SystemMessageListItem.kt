@@ -17,13 +17,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatFullLocalDateTime
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toSystemMessageUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.SystemMessageUi
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.Priority
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 
 @Composable
-fun SystemMessageListItem(systemMessage: SystemMessageModel) {
+fun SystemMessageListItem(systemMessage: SystemMessageUi) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +62,7 @@ fun SystemMessageListItem(systemMessage: SystemMessageModel) {
                         style = TextStyle(fontWeight = FontWeight.Normal)
                     )
                     Text(
-                        text = formatFullLocalDateTime(systemMessage.createdAt),
+                        text = systemMessage.createdAt,
                         style = TextStyle(fontWeight = FontWeight.Normal)
                     )
                 }
@@ -79,7 +80,7 @@ fun SystemMessageListItemPreview() {
                 title = "System Operations",
                 content = "This is a system message",
                 priority = Priority.HIGH
-            )
+            ).toSystemMessageUi()
         )
     }
 }

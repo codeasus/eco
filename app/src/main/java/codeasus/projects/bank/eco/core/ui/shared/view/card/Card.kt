@@ -38,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -313,7 +312,7 @@ fun BankCardDarkFrontPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
-            bankAccountUi = DataSourceDefaults.unknownUser.second[0].toBankAccountUi(),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[0],
             bankCardAlpha = 1.0f
         )
     }
@@ -327,7 +326,7 @@ fun BankCardDarkBackPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
-            bankAccountUi = DataSourceDefaults.unknownUser.second[0].toBankAccountUi(),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[0],
         )
     }
 }
@@ -340,7 +339,7 @@ fun BankCardLightFrontPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
-            bankAccountUi = DataSourceDefaults.unknownUser.second[1].toBankAccountUi(),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[1],
         )
     }
 }
@@ -353,7 +352,7 @@ fun BankCardLightBackPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp),
-            bankAccountUi = DataSourceDefaults.unknownUser.second[1].toBankAccountUi(),
+            bankAccountUi = DataSourceDefaults.unknownUser.second[1],
         )
     }
 }

@@ -27,7 +27,6 @@ import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.Card
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.SearchTransaction
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
@@ -99,7 +98,7 @@ fun HomeScreen(
                         onNavigateToCardScreen(bankAccount.id)
                     },
                     onSwiped = {
-                        onAction(HomeIntent.ReStackCards)
+                        onAction(HomeIntent.RestackCards)
                     }
                 )
             }
@@ -144,9 +143,8 @@ fun HomeScreenLightPreview() {
     EcoTheme {
         HomeScreen(
             state = HomeState(
-                isLoading = false,
                 transactions = DataSourceDefaults.getCustomerTransactions(),
-                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second.map { it.toBankAccountUi() })
+                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second)
             ),
             onAction = {}
         )
@@ -159,9 +157,8 @@ fun HomeScreenDarkPreview() {
     EcoTheme {
         HomeScreen(
             state = HomeState(
-                isLoading = false,
                 transactions = DataSourceDefaults.getCustomerTransactions(),
-                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second.map { it.toBankAccountUi() })
+                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second)
             ),
             onAction = {}
         )

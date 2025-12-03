@@ -1,9 +1,10 @@
 package codeasus.projects.bank.eco.feature.transfer.presentation
 
 import androidx.lifecycle.viewModelScope
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
-import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
@@ -40,7 +41,7 @@ class TransferViewModel @Inject constructor(
             is TransferIntent.SetTransferAmount -> setTransferAmount(intent.amount)
             is TransferIntent.SetBeneficiaryName -> setBeneficiaryName(intent.beneficiaryName)
             is TransferIntent.SetAccountNumber -> setAccountNumber(intent.accountNumber)
-            is TransferIntent.SelectCustomer -> selectCustomer(intent.customerModel)
+            is TransferIntent.SelectCustomer -> selectCustomer(intent.customerUi)
         }
     }
 
@@ -91,7 +92,7 @@ class TransferViewModel @Inject constructor(
         updateInputFieldValidationStatus(InputField.RecipientName, CardDetailsInputFieldsValidator.validateRecipientName(accountName))
     }
 
-    private fun selectCustomer(customer: CustomerModel) {
+    private fun selectCustomer(customer: CustomerUi) {
         viewModelScope.launch {
             _state.emit(_state.value.copy(transaction = _state.value.transaction.copy(accountName = customer.name, accountNumber = customer.bankAccount.number)))
         }
@@ -99,7 +100,7 @@ class TransferViewModel @Inject constructor(
 
     private fun loadCustomers() {
         viewModelScope.launch {
-            _state.emit(_state.value.copy(customers = customerRepository.getAllCustomers()))
+            _state.emit(_state.value.copy(customers = customerRepository.getAllCustomers().map { it.toCustomerUi() }))
         }
     }
 

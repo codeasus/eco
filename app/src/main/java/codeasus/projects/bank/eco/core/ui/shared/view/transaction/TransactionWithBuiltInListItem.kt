@@ -26,17 +26,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.core.ui.shared.view.ImgProfile
 import codeasus.projects.bank.eco.core.ui.shared.view.Profile
+import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.defineTransactionAmountColor
-import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatLocalDateTime
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatTransactionRate
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatUITransactionAmount
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
-import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 
 @Composable
-fun TransactionWithBuiltInListItem(customerTransactionPair: Pair<CustomerModel, TransactionModel>) {
+fun TransactionWithBuiltInListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>) {
     ListItem(
         modifier = Modifier.padding(vertical = 0.dp),
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
@@ -56,9 +55,7 @@ fun TransactionWithBuiltInListItem(customerTransactionPair: Pair<CustomerModel, 
             )
         },
         supportingContent = {
-            Text(
-                text = formatLocalDateTime(customerTransactionPair.second.updatedAt),
-            )
+            Text(text = customerTransactionPair.second.updatedAt)
         },
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -86,7 +83,7 @@ fun TransactionWithBuiltInListItem(customerTransactionPair: Pair<CustomerModel, 
 }
 
 @Composable
-fun Transaction(customerTransactionPair: Pair<CustomerModel, TransactionModel>) {
+fun Transaction(customerTransactionPair: Pair<CustomerUi, TransactionUi>) {
     Surface(
         modifier = Modifier.height(64.dp),
         color = Color.Transparent
@@ -99,7 +96,7 @@ fun Transaction(customerTransactionPair: Pair<CustomerModel, TransactionModel>) 
                 imageModifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape),
-                profileImageResId = customerTransactionPair.first.profileImgResId
+                profileImageResId = customerTransactionPair.first.profileImg
             )
 
             Column(
@@ -114,7 +111,7 @@ fun Transaction(customerTransactionPair: Pair<CustomerModel, TransactionModel>) 
                     style = TextStyle(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    text = formatLocalDateTime(customerTransactionPair.second.updatedAt),
+                    text = customerTransactionPair.second.updatedAt,
                     style = TextStyle(color = LocalContentColor.current.copy(alpha = 0.4f)),
                 )
             }

@@ -5,12 +5,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import codeasus.projects.bank.eco.core.ui.shared.view.models.SystemMessageUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 
 @Composable
-fun SystemMessageList(systemMessages: List<SystemMessageModel>) {
+fun SystemMessageList(systemMessages: List<SystemMessageUi>) {
     LazyColumn {
         items(systemMessages) { systemMessage ->
             SystemMessageListItem(systemMessage)

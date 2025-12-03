@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -156,7 +155,7 @@ fun Modifier.spec(index: Int, boxDragState: AnchoredDraggableState<DragAnchors>)
 fun CardsCarouselPreview() {
     EcoTheme {
         Cards(
-            userBankAccounts = DataSourceDefaults.unknownUser.second.map { it.toBankAccountUi() },
+            userBankAccounts = DataSourceDefaults.unknownUser.second,
             onSwiped = {},
             onSelected = {}
         )
