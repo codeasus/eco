@@ -2,6 +2,7 @@ package codeasus.projects.bank.eco.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
@@ -13,6 +14,6 @@ data class TransactionEntity(
     val rate: Double,
     val type: String,
     val status: String,
-    val createdAt: String,
-    val updatedAt: String
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )

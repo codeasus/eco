@@ -3,7 +3,6 @@ package codeasus.projects.bank.eco.di
 import android.content.Context
 import androidx.room.Room
 import codeasus.projects.bank.eco.core.database.AppDatabase
-//import codeasus.projects.bank.eco.core.database.MIGRATION_1_2
 import codeasus.projects.bank.eco.data.local.dao.BankAccountDao
 import codeasus.projects.bank.eco.data.local.dao.CustomerDao
 import codeasus.projects.bank.eco.data.local.dao.SystemMessageDao
@@ -30,7 +29,6 @@ object DatabaseModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, "banking_database")
-//            .addMigrations(MIGRATION_1_2)
             .fallbackToDestructiveMigration()
             .build()
     }

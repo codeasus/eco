@@ -15,8 +15,6 @@ import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 // Customer Mappers
@@ -42,7 +40,6 @@ fun CustomerEntity.toCustomerModel(): CustomerModel {
 
 // Transaction Mappers
 fun TransactionModel.toTransactionEntity(): TransactionEntity {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return TransactionEntity(
         id = this.id.toString(),
         internalAccountNumber = this.internalAccountNumber,
@@ -52,13 +49,12 @@ fun TransactionModel.toTransactionEntity(): TransactionEntity {
         rate = this.rate,
         type = this.type.name,
         status = this.status.name,
-        createdAt = this.createdAt.format(formatter),
-        updatedAt = this.updatedAt.format(formatter)
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt
     )
 }
 
 fun TransactionEntity.toTransactionModel(): TransactionModel {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return TransactionModel(
         id = UUID.fromString(this.id),
         externalAccountNumber = this.externalAccountNumber,
@@ -68,35 +64,32 @@ fun TransactionEntity.toTransactionModel(): TransactionModel {
         rate = this.rate,
         type = TransactionType.valueOf(this.type),
         status = TransactionStatus.valueOf(this.status),
-        createdAt = LocalDateTime.parse(this.createdAt, formatter),
-        updatedAt = LocalDateTime.parse(this.updatedAt, formatter)
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt,
     )
 }
 
 // SystemMessage Mappers
 fun SystemMessageModel.toSystemMessageEntity(): SystemMessageEntity {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return SystemMessageEntity(
         title = this.title,
         content = this.content,
         priority = this.priority.value,
-        createdAt = this.createdAt.format(formatter)
+        createdAt = this.createdAt
     )
 }
 
 fun SystemMessageEntity.toSystemMessageModel(): SystemMessageModel {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return SystemMessageModel(
         title = this.title,
         content = this.content,
         priority = Priority.fromInt(this.priority),
-        createdAt = LocalDateTime.parse(this.createdAt, formatter)
+        createdAt = this.createdAt
     )
 }
 
 //BankAccount Mappers
 fun UserBankAccountModel.toBankAccountEntity(): BankAccountEntity {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return BankAccountEntity(
         name = this.name,
         number = this.number,
@@ -105,12 +98,11 @@ fun UserBankAccountModel.toBankAccountEntity(): BankAccountEntity {
         balance = this.balance,
         currency = Currency.toCode(this.currency),
         cvv = this.cvv,
-        expiryDate = this.expiryDate.format(formatter)
+        expiryDate = this.expiryDate
     )
 }
 
 fun BankAccountEntity.toUserBankAccountModel(): UserBankAccountModel {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     return UserBankAccountModel(
         id = this.id,
         name = this.name,
@@ -120,6 +112,6 @@ fun BankAccountEntity.toUserBankAccountModel(): UserBankAccountModel {
         balance = this.balance,
         currency = Currency.fromCode(this.currency),
         cvv = this.cvv,
-        expiryDate = LocalDateTime.parse(this.expiryDate, formatter)
+        expiryDate = this.expiryDate
     )
 }
