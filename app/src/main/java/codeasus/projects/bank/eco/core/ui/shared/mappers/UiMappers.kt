@@ -22,6 +22,7 @@ fun UserBankAccountModel.toBankAccountUi(): BankAccountUi {
         type = this.type,
         scheme = this.scheme,
         balance = this.balance,
+        currency = this.currency,
         cvv = this.cvv,
         expiryDate = formatExpiryDate(this.expiryDate)
     )

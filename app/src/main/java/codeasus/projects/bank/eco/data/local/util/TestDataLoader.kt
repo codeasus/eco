@@ -101,6 +101,7 @@ class TestDataLoader @Inject constructor(
         name = "Albert Flores",
         number = "1234567890020003",
         balance = 123.99,
+        currency = Currency.USD,
         scheme = BankAccountScheme.VISA,
         type = BankAccountType.NORMAL,
         cvv = "123",
@@ -113,6 +114,7 @@ class TestDataLoader @Inject constructor(
         scheme = BankAccountScheme.MASTERCARD,
         type = BankAccountType.PLATINUM,
         balance = 4503.25,
+        currency = Currency.PLN,
         cvv = "456",
         expiryDate = LocalDateTime.now().plusYears(2).plusMonths(4)
     )

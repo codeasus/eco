@@ -103,6 +103,7 @@ fun UserBankAccountModel.toBankAccountEntity(): BankAccountEntity {
         type = this.type.name,
         scheme = this.scheme.name,
         balance = this.balance,
+        currency = Currency.toCode(this.currency),
         cvv = this.cvv,
         expiryDate = this.expiryDate.format(formatter)
     )
@@ -117,6 +118,7 @@ fun BankAccountEntity.toUserBankAccountModel(): UserBankAccountModel {
         type = BankAccountType.valueOf(this.type),
         scheme = BankAccountScheme.valueOf(this.scheme),
         balance = this.balance,
+        currency = Currency.fromCode(this.currency),
         cvv = this.cvv,
         expiryDate = LocalDateTime.parse(this.expiryDate, formatter)
     )

@@ -12,6 +12,7 @@ data class BankAccountEntity(
     val type: String,
     val scheme: String,
     val balance: Double,
+    val currency: String,
     val cvv: String,
     val expiryDate: String
 )

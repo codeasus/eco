@@ -97,7 +97,7 @@ fun BankCardFront(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Echo",
+                        text = "Eco",
                         style = TextStyle(
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontWeight = FontWeight.Medium,
@@ -256,7 +256,7 @@ fun BankCardUnknown(modifier: Modifier, bankAccountUiState: BankAccountUiState<B
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Echo",
+                        text = "Eco",
                         style = TextStyle(
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontWeight = FontWeight.Medium,

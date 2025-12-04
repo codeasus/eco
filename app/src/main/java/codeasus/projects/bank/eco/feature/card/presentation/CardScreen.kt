@@ -1,6 +1,8 @@
 package codeasus.projects.bank.eco.feature.card.presentation
 
 import android.content.res.Configuration
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,10 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -22,7 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -93,9 +101,15 @@ fun CardScreen(
                             .padding(12.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        BankCardUnknown(modifier = Modifier.fillMaxWidth().height(240.dp), state.bankAccountUiState)
+                        BankCardUnknown(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(240.dp),
+                            state.bankAccountUiState
+                        )
                     }
                 }
+
                 is BankAccountUiState.NotFound -> {}
                 is BankAccountUiState.Success<BankAccountUi> -> {
                     Box(
@@ -109,8 +123,50 @@ fun CardScreen(
                 }
             }
 
-            CardDetailsBottomSheet(bankAccountUiState = state.bankAccountPrivateDataUiState, isVisible = state.showBottomSheet) {
+            CardDetailsBottomSheet(
+                bankAccountUiState = state.bankAccountPrivateDataUiState,
+                isVisible = state.showBottomSheet
+            ) {
                 onAction(CardIntent.HideBottomSheet)
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(32.dp))
+                        .background(color = MaterialTheme.colorScheme.tertiary)
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    text = "Current Balance",
+                    style = TextStyle(color = MaterialTheme.colorScheme.onTertiary)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                when (val bankAccountUiState = state.bankAccountUiState) {
+                    is BankAccountUiState.Idle -> {}
+                    is BankAccountUiState.Loading -> {}
+                    is BankAccountUiState.NotFound -> {}
+                    is BankAccountUiState.Success<BankAccountUi> -> {
+                        val bankAccount = bankAccountUiState.data
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                modifier = Modifier.size(48.dp),
+                                painter = painterResource(id = bankAccount.currency.icon),
+                                contentDescription = "Current balance"
+                            )
+                            Text(
+                                text = bankAccount.balance.toString(),
+                                style = TextStyle(
+                                    fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            )
+                        }
+                    }
+                }
             }
 
             Row(
@@ -118,15 +174,27 @@ fun CardScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                CardInstantAction(
+                    R.drawable.ic_reveal,
+                    "Reveal",
+                    enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>
+                ) {
                     onAction(CardIntent.ShowBottomSheet)
                 }
                 Spacer(modifier = Modifier.width(24.dp))
-                CardInstantAction(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                CardInstantAction(
+                    R.drawable.ic_flip,
+                    "Flip",
+                    enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>
+                ) {
                     onAction(CardIntent.FlipCard)
                 }
                 Spacer(modifier = Modifier.width(24.dp))
-                CardInstantAction(R.drawable.ic_freeze, "Freeze", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                CardInstantAction(
+                    R.drawable.ic_freeze,
+                    "Freeze",
+                    enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>
+                ) {
                     onAction(CardIntent.FreezeCard)
                 }
             }

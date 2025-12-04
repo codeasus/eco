@@ -36,7 +36,8 @@ object DataSourceDefaults {
                 number = "0000000000000345",
                 scheme = BankAccountScheme.VISA,
                 type = BankAccountType.NORMAL,
-                balance = 0.0,
+                balance = 123.89,
+                currency = Currency.USD,
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             ),
@@ -46,7 +47,8 @@ object DataSourceDefaults {
                 number = "0000000000008923",
                 scheme = BankAccountScheme.MASTERCARD,
                 type = BankAccountType.PLATINUM,
-                balance = 0.0,
+                balance = 34500.50,
+                currency = Currency.PLN,
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             )
@@ -65,7 +67,8 @@ object DataSourceDefaults {
                 number = "0000000000000000",
                 scheme = BankAccountScheme.VISA,
                 type = BankAccountType.NORMAL,
-                balance = 0.0,
+                balance = 12.0,
+                currency = Currency.EUR,
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             ),
@@ -75,7 +78,8 @@ object DataSourceDefaults {
                 number = "0000000000000000",
                 scheme = BankAccountScheme.MASTERCARD,
                 type = BankAccountType.PLATINUM,
-                balance = 0.0,
+                balance = 9378.12,
+                currency = Currency.USD,
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             )

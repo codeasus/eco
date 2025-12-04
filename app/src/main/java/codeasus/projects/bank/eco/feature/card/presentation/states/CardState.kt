@@ -8,6 +8,5 @@ data class CardState(
     val bankAccountUiState: BankAccountUiState<BankAccountUi> = BankAccountUiState.Idle,
     val bankAccountPrivateDataUiState: BankAccountUiState<BankAccountUi> = BankAccountUiState.Idle,
     val cardFlipState: CardFlipState = CardFlipState.FRONT,
-    val showBottomSheet: Boolean = false,
-    val error: String? = null
+    val showBottomSheet: Boolean = false
 )
