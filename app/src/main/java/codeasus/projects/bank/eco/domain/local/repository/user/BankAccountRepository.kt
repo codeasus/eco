@@ -4,9 +4,9 @@ import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 
 interface BankAccountRepository  {
     suspend fun insertBankAccount(account: UserBankAccountModel)
-    suspend fun getBankAccountForPublicById(id: Long): UserBankAccountModel?
-    suspend fun getBankAccountForPrivateById(id: Long): UserBankAccountModel?
+    suspend fun getBankAccountForPublicById(accountId: String): UserBankAccountModel?
+    suspend fun getBankAccountForPrivateById(accountId: String): UserBankAccountModel?
     suspend fun getBankAccounts(): List<UserBankAccountModel>
-    suspend fun deleteBankAccount(id: Long)
+    suspend fun deleteBankAccount(accountId: String)
     suspend fun deleteBankAccounts()
 }

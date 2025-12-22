@@ -18,6 +18,7 @@ import codeasus.projects.bank.eco.domain.local.repository.system_message.SystemM
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
+import com.android.identity.util.UUID
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -97,18 +98,18 @@ class TestDataLoader @Inject constructor(
     }
 
     private val userBankAccountOne = UserBankAccountModel(
-        id = 0,
+        id = UUID.randomUUID(),
         name = "Albert Flores",
         number = "1234567890020003",
         balance = 123.99,
         currency = Currency.USD,
         scheme = BankAccountScheme.VISA,
-        type = BankAccountType.NORMAL,
+        type = BankAccountType.PERSONAL,
         cvv = "123",
         expiryDate = LocalDateTime.now().plusYears(3)
     )
     private val userBankAccountTwo = UserBankAccountModel(
-        id = 1,
+        id = UUID.randomUUID(),
         name = "Albert Flores",
         number = "9876000000003245",
         scheme = BankAccountScheme.MASTERCARD,
@@ -144,9 +145,8 @@ class TestDataLoader @Inject constructor(
     }
 
     private suspend fun addCustomers() {
-        val customers = getCustomers()
         customerRepository.deleteCustomers()
-        customers.forEach { customerRepository.saveCustomer(it) }
+        getCustomers().forEach { customerRepository.saveCustomer(it) }
     }
 
     private suspend fun saveTransactions() {
@@ -154,8 +154,9 @@ class TestDataLoader @Inject constructor(
 
         val transactions = listOf(
             TransactionModel(
-                externalAccountNumber = customers[0].bankAccount.number,
-                internalAccountNumber = userBankAccountTwo.number,
+                accountIdSelf = userBankAccountTwo.id.toString(),
+                accountNumberFrom = userBankAccountTwo.number,
+                accountNumberTo = customers[0].bankAccount.number,
                 amount = 45.23,
                 currency = Currency.USD,
                 rate = 2.4,
@@ -165,8 +166,9 @@ class TestDataLoader @Inject constructor(
                 updatedAt = LocalDateTime.now().minusDays(9),
             ),
             TransactionModel(
-                externalAccountNumber = customers[1].bankAccount.number,
-                internalAccountNumber = userBankAccountOne.number,
+                accountIdSelf = userBankAccountOne.id.toString(),
+                accountNumberFrom = userBankAccountOne.number,
+                accountNumberTo = customers[1].bankAccount.number,
                 amount = 28.0,
                 currency = Currency.EUR,
                 rate = 2.0,
@@ -176,8 +178,9 @@ class TestDataLoader @Inject constructor(
                 updatedAt = LocalDateTime.now().minusDays(9),
             ),
             TransactionModel(
-                externalAccountNumber = customers[2].bankAccount.number,
-                internalAccountNumber = userBankAccountOne.number,
+                accountIdSelf = userBankAccountTwo.id.toString(),
+                accountNumberFrom = userBankAccountTwo.number,
+                accountNumberTo = customers[2].bankAccount.number,
                 amount = 5.2,
                 currency = Currency.PLN,
                 rate = 0.5,
@@ -187,8 +190,9 @@ class TestDataLoader @Inject constructor(
                 updatedAt = LocalDateTime.now().minusDays(9),
             ),
             TransactionModel(
-                externalAccountNumber = customers[3].bankAccount.number,
-                internalAccountNumber = userBankAccountTwo.number,
+                accountIdSelf = userBankAccountOne.id.toString(),
+                accountNumberFrom = userBankAccountOne.number,
+                accountNumberTo = customers[3].bankAccount.number,
                 amount = 0.45,
                 currency = Currency.USD,
                 rate = 4.0,
@@ -198,8 +202,9 @@ class TestDataLoader @Inject constructor(
                 updatedAt = LocalDateTime.now().minusDays(4),
             ),
             TransactionModel(
-                externalAccountNumber = customers[4].bankAccount.number,
-                internalAccountNumber = userBankAccountTwo.number,
+                accountIdSelf = userBankAccountTwo.id.toString(),
+                accountNumberFrom = userBankAccountTwo.number,
+                accountNumberTo = customers[4].bankAccount.number,
                 amount = 100.99,
                 currency = Currency.EUR,
                 rate = 2.5,
@@ -209,8 +214,9 @@ class TestDataLoader @Inject constructor(
                 updatedAt = LocalDateTime.now().minusDays(87),
             ),
             TransactionModel(
-                externalAccountNumber = customers[5].bankAccount.number,
-                internalAccountNumber = userBankAccountOne.number,
+                accountIdSelf = userBankAccountOne.id.toString(),
+                accountNumberFrom = userBankAccountOne.number,
+                accountNumberTo = customers[5].bankAccount.number,
                 amount = 1000.0,
                 currency = Currency.USD,
                 rate = 10.0,
@@ -220,8 +226,9 @@ class TestDataLoader @Inject constructor(
                 updatedAt = LocalDateTime.now().minusDays(148),
             ),
             TransactionModel(
-                externalAccountNumber = customers[6].bankAccount.number,
-                internalAccountNumber = userBankAccountTwo.number,
+                accountIdSelf = userBankAccountOne.id.toString(),
+                accountNumberFrom = userBankAccountOne.number,
+                accountNumberTo = customers[6].bankAccount.number,
                 amount = 400.0,
                 currency = Currency.PLN,
                 rate = 1.4,

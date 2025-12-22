@@ -1,7 +1,7 @@
 package codeasus.projects.bank.eco.domain.local.model.enums
 
 enum class BankAccountType {
-    NORMAL, PLATINUM;
+    PERSONAL, PLATINUM;
 
     override fun toString(): String {
         return this.name.lowercase()

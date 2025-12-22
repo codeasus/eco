@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Loading))
             val bankAccounts = bankAccountRepository.getBankAccounts().map { it.toBankAccountUi() }
-            delay(1500)
+            delay(800)
             _state.emit(
                 _state.value.copy(
                     bankAccountsUiState = BankAccountUiState.Success(

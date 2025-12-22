@@ -3,13 +3,14 @@ package codeasus.projects.bank.eco.domain.local.model.transaction
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
+import com.android.identity.util.UUID
 import java.time.LocalDateTime
-import java.util.UUID
 
 data class TransactionModel(
     val id: UUID = UUID.randomUUID(),
-    val externalAccountNumber: String,
-    val internalAccountNumber: String,
+    val accountIdSelf: String,
+    val accountNumberFrom: String,
+    val accountNumberTo: String,
     val amount: Double,
     val currency: Currency = Currency.USD,
     val rate: Double,

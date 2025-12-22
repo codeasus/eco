@@ -3,10 +3,11 @@ package codeasus.projects.bank.eco.domain.local.model.user
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
+import com.android.identity.util.UUID
 import java.time.LocalDateTime
 
 data class UserBankAccountModel(
-    val id: Long,
+    val id: UUID,
     val name: String,
     val number: String,
     val type: BankAccountType,

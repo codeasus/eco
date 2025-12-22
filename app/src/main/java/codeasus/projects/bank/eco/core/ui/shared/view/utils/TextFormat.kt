@@ -52,7 +52,7 @@ fun defineTransactionAmountColor(transactionType: TransactionType): Color {
 }
 
 fun formatUITransactionAmount(transaction: TransactionUi): String {
-    fun formatForSign(sign: String) = "$sign ${transaction.currency.symbol}${formatTransactionAmount(transaction.amount)}"
+    fun formatForSign(sign: String) = "$sign ${transaction.currency.symbol}${transaction.amount}"
     return when (transaction.type) {
         TransactionType.DEPOSIT, TransactionType.REFUND -> formatForSign("+")
         TransactionType.TRANSFER, TransactionType.WITHDRAWAL, TransactionType.PAYMENT -> formatForSign("-")

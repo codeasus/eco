@@ -54,7 +54,7 @@ fun BankCardFront(
     onSelected: (BankAccountUi) -> Unit = {}
 ) {
     val themeColors = when (bankAccountUi.type) {
-        BankAccountType.NORMAL -> BankCardDefaults.NormalCardColors
+        BankAccountType.PERSONAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
     }
 
@@ -160,7 +160,7 @@ fun BankCardBack(
     rotationYAngle: Float = 0f
 ) {
     val themeColors = when (bankAccountUi.type) {
-        BankAccountType.NORMAL -> BankCardDefaults.NormalCardColors
+        BankAccountType.PERSONAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
     }
 

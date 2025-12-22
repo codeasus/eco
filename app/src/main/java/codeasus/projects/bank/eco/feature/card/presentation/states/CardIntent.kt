@@ -4,6 +4,6 @@ sealed class CardIntent {
     data object FlipCard : CardIntent()
     data object ShowBottomSheet : CardIntent()
     data object HideBottomSheet : CardIntent()
-    data object FreezeCard : CardIntent()
-    data class LoadCard(val bankAccountId: Long) : CardIntent()
+    data object TopUp : CardIntent()
+    data class LoadCard(val bankAccountId: String) : CardIntent()
 }

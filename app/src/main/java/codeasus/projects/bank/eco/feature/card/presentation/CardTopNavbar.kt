@@ -11,16 +11,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardTopNavbar(title: String, scrollBehavior: TopAppBarScrollBehavior, onBackClick: () -> Unit,) {
+fun CardTopNavbar(title: String, scrollBehavior: TopAppBarScrollBehavior, color: Color, onBackClick: () -> Unit,) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = color),
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(

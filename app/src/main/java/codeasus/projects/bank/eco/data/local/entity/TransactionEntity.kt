@@ -7,8 +7,9 @@ import java.time.LocalDateTime
 @Entity(tableName = "transactions")
 data class TransactionEntity(
     @PrimaryKey val id: String,
-    val internalAccountNumber: String,
-    val externalAccountNumber: String,
+    val accountIdSelf: String,
+    val accountNumberFrom: String,
+    val accountNumberTo: String,
     val amount: Double,
     val currency: String,
     val rate: Double,

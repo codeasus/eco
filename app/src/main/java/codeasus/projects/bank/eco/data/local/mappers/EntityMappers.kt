@@ -15,7 +15,7 @@ import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
-import java.util.UUID
+import com.android.identity.util.UUID
 
 // Customer Mappers
 fun CustomerModel.toCustomerEntity(): CustomerEntity {
@@ -42,8 +42,9 @@ fun CustomerEntity.toCustomerModel(): CustomerModel {
 fun TransactionModel.toTransactionEntity(): TransactionEntity {
     return TransactionEntity(
         id = this.id.toString(),
-        internalAccountNumber = this.internalAccountNumber,
-        externalAccountNumber = this.externalAccountNumber,
+        accountIdSelf = this.accountIdSelf,
+        accountNumberFrom = this.accountNumberFrom,
+        accountNumberTo = this.accountNumberTo,
         amount = this.amount,
         currency = this.currency.name,
         rate = this.rate,
@@ -57,8 +58,9 @@ fun TransactionModel.toTransactionEntity(): TransactionEntity {
 fun TransactionEntity.toTransactionModel(): TransactionModel {
     return TransactionModel(
         id = UUID.fromString(this.id),
-        externalAccountNumber = this.externalAccountNumber,
-        internalAccountNumber = this.internalAccountNumber,
+        accountIdSelf = this.accountIdSelf,
+        accountNumberTo = this.accountNumberTo,
+        accountNumberFrom = this.accountNumberFrom,
         amount = this.amount,
         currency = Currency.valueOf(this.currency),
         rate = this.rate,
@@ -91,6 +93,7 @@ fun SystemMessageEntity.toSystemMessageModel(): SystemMessageModel {
 //BankAccount Mappers
 fun UserBankAccountModel.toBankAccountEntity(): BankAccountEntity {
     return BankAccountEntity(
+        id = this.id.toString(),
         name = this.name,
         number = this.number,
         type = this.type.name,
@@ -104,7 +107,7 @@ fun UserBankAccountModel.toBankAccountEntity(): BankAccountEntity {
 
 fun BankAccountEntity.toUserBankAccountModel(): UserBankAccountModel {
     return UserBankAccountModel(
-        id = this.id,
+        id = UUID.fromString(this.id),
         name = this.name,
         number = this.number,
         type = BankAccountType.valueOf(this.type),

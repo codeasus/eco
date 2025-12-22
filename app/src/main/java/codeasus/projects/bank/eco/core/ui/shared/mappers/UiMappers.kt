@@ -9,6 +9,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatBankAccountNum
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatExpiryDate
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatFullLocalDateTime
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatLocalDateTime
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatTransactionAmount
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
@@ -16,12 +17,12 @@ import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 
 fun UserBankAccountModel.toBankAccountUi(): BankAccountUi {
     return BankAccountUi(
-        id = this.id,
+        id = this.id.toString(),
         name = this.name,
         number = formatBankAccountNumber(this.number),
         type = this.type,
         scheme = this.scheme,
-        balance = this.balance,
+        balance = formatTransactionAmount(this.balance),
         currency = this.currency,
         cvv = this.cvv,
         expiryDate = formatExpiryDate(this.expiryDate)
@@ -31,9 +32,10 @@ fun UserBankAccountModel.toBankAccountUi(): BankAccountUi {
 fun TransactionModel.toTransactionUi(): TransactionUi {
     return TransactionUi(
         id = this.id.toString(),
-        internalAccountNumber = this.internalAccountNumber,
-        externalAccountNumber = this.externalAccountNumber,
-        amount = this.amount,
+        accountIdSelf = this.accountIdSelf,
+        accountNumberFrom = this.accountNumberFrom,
+        accountNumberTo = this.accountNumberTo,
+        amount = formatTransactionAmount(this.amount),
         currency = this.currency,
         rate = this.rate,
         type = this.type,

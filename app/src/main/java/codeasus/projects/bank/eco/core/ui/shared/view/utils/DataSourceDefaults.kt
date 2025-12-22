@@ -20,6 +20,7 @@ import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessag
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
+import com.android.identity.util.UUID
 import java.time.LocalDateTime
 
 object DataSourceDefaults {
@@ -31,18 +32,18 @@ object DataSourceDefaults {
             tagName = "henry_cavill"
         ), listOf(
             UserBankAccountModel(
-                id = 0,
+                id = UUID.randomUUID(),
                 name = "Henry Cavill",
                 number = "0000000000000345",
                 scheme = BankAccountScheme.VISA,
-                type = BankAccountType.NORMAL,
+                type = BankAccountType.PERSONAL,
                 balance = 123.89,
                 currency = Currency.USD,
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             ),
             UserBankAccountModel(
-                id = 1,
+                id =UUID.randomUUID(),
                 name = "Henry Cavill",
                 number = "0000000000008923",
                 scheme = BankAccountScheme.MASTERCARD,
@@ -62,18 +63,18 @@ object DataSourceDefaults {
             tagName = "unknown"
         ), listOf(
             UserBankAccountModel(
-                id = 0,
+                id = UUID.randomUUID(),
                 name = "Unknown",
                 number = "0000000000000000",
                 scheme = BankAccountScheme.VISA,
-                type = BankAccountType.NORMAL,
+                type = BankAccountType.PERSONAL,
                 balance = 12.0,
                 currency = Currency.EUR,
                 cvv = "123",
                 expiryDate = LocalDateTime.now()
             ),
             UserBankAccountModel(
-                id = 1,
+                id = UUID.randomUUID(),
                 name = "Unknown",
                 number = "0000000000000000",
                 scheme = BankAccountScheme.MASTERCARD,
@@ -208,8 +209,9 @@ object DataSourceDefaults {
         val customers = getCustomers()
         return listOf(
             TransactionModel(
-                externalAccountNumber = exampleUser.second[0].number,
-                internalAccountNumber = customers[0].bankAccount.number,
+                accountIdSelf = exampleUser.second[0].id,
+                accountNumberFrom = customers[0].bankAccount.number,
+                accountNumberTo = exampleUser.second[0].number,
                 amount = 45.23,
                 currency = Currency.USD,
                 rate = 2.4,
@@ -219,8 +221,9 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
             TransactionModel(
-                externalAccountNumber = exampleUser.second[1].number,
-                internalAccountNumber = customers[1].bankAccount.number,
+                accountIdSelf = exampleUser.second[1].id,
+                accountNumberFrom = customers[1].bankAccount.number,
+                accountNumberTo = exampleUser.second[1].number,
                 amount = 28.0,
                 currency = Currency.EUR,
                 rate = 2.0,
@@ -230,8 +233,9 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
             TransactionModel(
-                externalAccountNumber = unknownUser.second[0].number,
-                internalAccountNumber = customers[2].bankAccount.number,
+                accountIdSelf = unknownUser.second[1].id,
+                accountNumberFrom = customers[2].bankAccount.number,
+                accountNumberTo = unknownUser.second[1].number,
                 amount = 5.2,
                 currency = Currency.PLN,
                 rate = 0.5,
@@ -241,8 +245,9 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(9)
             ),
             TransactionModel(
-                externalAccountNumber = exampleUser.second[1].number,
-                internalAccountNumber = customers[3].bankAccount.number,
+                accountIdSelf = unknownUser.second[1].id,
+                accountNumberFrom = customers[3].bankAccount.number,
+                accountNumberTo = unknownUser.second[1].number,
                 amount = 0.45,
                 currency = Currency.USD,
                 rate = 4.0,
@@ -252,8 +257,9 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(4)
             ),
             TransactionModel(
-                externalAccountNumber = unknownUser.second[1].number,
-                internalAccountNumber = customers[4].bankAccount.number,
+                accountIdSelf = exampleUser.second[0].id,
+                accountNumberFrom = customers[4].bankAccount.number,
+                accountNumberTo = exampleUser.second[0].number,
                 amount = 100.99,
                 currency = Currency.EUR,
                 rate = 2.5,
@@ -263,8 +269,9 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(87)
             ),
             TransactionModel(
-                externalAccountNumber = unknownUser.second[0].number,
-                internalAccountNumber = customers[5].bankAccount.number,
+                accountIdSelf = exampleUser.second[0].id,
+                accountNumberFrom = customers[5].bankAccount.number,
+                accountNumberTo = unknownUser.second[0].number,
                 amount = 1000.0,
                 currency = Currency.USD,
                 rate = 10.0,
@@ -274,8 +281,9 @@ object DataSourceDefaults {
                 updatedAt = LocalDateTime.now().minusDays(148)
             ),
             TransactionModel(
-                externalAccountNumber = exampleUser.second[1].number,
-                internalAccountNumber = customers[6].bankAccount.number,
+                accountIdSelf = unknownUser.second[1].id,
+                accountNumberFrom = customers[6].bankAccount.number,
+                accountNumberTo = unknownUser.second[1].number,
                 amount = 400.0,
                 currency = Currency.PLN,
                 rate = 1.4,

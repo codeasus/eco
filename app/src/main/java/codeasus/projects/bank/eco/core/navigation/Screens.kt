@@ -11,7 +11,7 @@ data object SearchTransaction : Screen {
 }
 
 @Serializable
-data class Card(val bankAccountId: Long) : Screen {
+data class Card(val bankAccountId: String) : Screen {
     override val title: String = "Card"
 }
 

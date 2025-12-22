@@ -6,9 +6,10 @@ import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 
 data class TransactionUi (
     val id: String,
-    val externalAccountNumber: String,
-    val internalAccountNumber: String,
-    val amount: Double,
+    val accountIdSelf: String,
+    val accountNumberFrom: String,
+    val accountNumberTo: String,
+    val amount: String,
     val currency: Currency = Currency.USD,
     val rate: Double,
     val type: TransactionType = TransactionType.TRANSFER,

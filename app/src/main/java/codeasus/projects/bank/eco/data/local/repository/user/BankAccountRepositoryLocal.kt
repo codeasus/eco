@@ -41,16 +41,16 @@ class BankAccountRepositoryLocal @Inject constructor(private val bankAccountDao:
         bankAccountDao.saveBankAccount(accountEntity)
     }
 
-    override suspend fun getBankAccountForPublicById(id: Long): UserBankAccountModel? {
-        val bankAccountEntity = bankAccountDao.getBankAccountById(id) ?: return null
+    override suspend fun getBankAccountForPublicById(accountId: String): UserBankAccountModel? {
+        val bankAccountEntity = bankAccountDao.getBankAccountById(accountId) ?: return null
         return bankAccountEntity.toUserBankAccountModel().copy(
             number = decodeAndDecrypt(bankAccountEntity.numberLastChunk),
             cvv = "★★★"
         )
     }
 
-    override suspend fun getBankAccountForPrivateById(id: Long): UserBankAccountModel? {
-        val bankAccountEntity = bankAccountDao.getBankAccountById(id) ?: return null
+    override suspend fun getBankAccountForPrivateById(accountId: String): UserBankAccountModel? {
+        val bankAccountEntity = bankAccountDao.getBankAccountById(accountId) ?: return null
         return bankAccountEntity.toUserBankAccountModel().copy(
             number = decodeAndDecrypt(bankAccountEntity.number),
             cvv = decodeAndDecrypt(bankAccountEntity.cvv)
@@ -68,8 +68,8 @@ class BankAccountRepositoryLocal @Inject constructor(private val bankAccountDao:
         }
     }
 
-    override suspend fun deleteBankAccount(id: Long) {
-        bankAccountDao.deleteBankAccount(id)
+    override suspend fun deleteBankAccount(accountId: String) {
+        bankAccountDao.deleteBankAccount(accountId)
     }
 
     override suspend fun deleteBankAccounts() {

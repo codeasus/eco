@@ -9,9 +9,7 @@ import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionMode
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import javax.inject.Inject
 
-class TransactionRepositoryImpl @Inject constructor(
-    private val transactionDao: TransactionDao
-) : TransactionRepository {
+class TransactionRepositoryImpl @Inject constructor(private val transactionDao: TransactionDao) : TransactionRepository {
 
     override suspend fun saveTransaction(model: TransactionModel) {
         transactionDao.insertTransaction(model.toTransactionEntity())
@@ -21,32 +19,32 @@ class TransactionRepositoryImpl @Inject constructor(
         return transactionDao.getTransactionById(id)?.toTransactionModel()
     }
 
-    override suspend fun getAllTransactions(cardNumber: String?): Map<TransactionModel, CustomerModel> {
-        if (cardNumber != null) {
-            return transactionDao.getAllTransactions(cardNumber).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
+    override suspend fun getAllTransactions(accountId: String?): Map<TransactionModel, CustomerModel> {
+        if (accountId != null) {
+            return transactionDao.getTransactionsByAccountId(accountId).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
         }
-        return transactionDao.getAllTransactions().entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
+        return transactionDao.getTransactions().entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
     }
 
-    override suspend fun getTransactionsByType(cardNumber: String?, types: List<String>): Map<TransactionModel, CustomerModel> {
-        if (cardNumber != null) {
-            return transactionDao.getTransactionsByType(cardNumber, types).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
+    override suspend fun getTransactionsByType(accountId: String?, types: List<String>): Map<TransactionModel, CustomerModel> {
+        if (accountId != null) {
+            return transactionDao.getTransactionsByType(accountId, types).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
         }
         return transactionDao.getTransactionsByType(types).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
     }
 
-    override suspend fun getTransactionsByKeyword(cardNumber: String?, keyword: String): Map<TransactionModel, CustomerModel> {
-        if (cardNumber != null) {
-            return transactionDao.getTransactionsByKeyword(cardNumber, keyword).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
+    override suspend fun getTransactionsByKeyword(accountId: String?, keyword: String): Map<TransactionModel, CustomerModel> {
+        if (accountId != null) {
+            return transactionDao.getTransactionsByKeyword(accountId, keyword).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
         }
         return transactionDao.getTransactionsByKeyword(keyword).entries.associate { (transaction, customer) ->
             transaction.toTransactionModel() to customer.toCustomerModel()
         }
     }
 
-    override suspend fun getTransactionsByKeywordAndType(cardNumber: String?, keyword: String, types: List<String>): Map<TransactionModel, CustomerModel> {
-        if(cardNumber != null) {
-            return transactionDao.getTransactionsByKeywordAndType(cardNumber, keyword, types).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
+    override suspend fun getTransactionsByKeywordAndType(accountId: String?, keyword: String, types: List<String>): Map<TransactionModel, CustomerModel> {
+        if(accountId != null) {
+            return transactionDao.getTransactionsByKeywordAndType(accountId, keyword, types).entries.associate { (transaction, customer) -> transaction.toTransactionModel() to customer.toCustomerModel() }
         }
         return transactionDao.getTransactionsByKeywordAndType(keyword, types).entries.associate { (transaction, customer) ->
             transaction.toTransactionModel() to customer.toCustomerModel()

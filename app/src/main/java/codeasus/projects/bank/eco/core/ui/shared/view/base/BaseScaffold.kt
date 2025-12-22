@@ -8,17 +8,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 @Composable
 fun BaseScaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
+    floatingActionButton: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
         topBar = topBar,
+        floatingActionButton = floatingActionButton,
         bottomBar = bottomBar,
         containerColor = MaterialTheme.colorScheme.surface
     ) { innerPadding ->

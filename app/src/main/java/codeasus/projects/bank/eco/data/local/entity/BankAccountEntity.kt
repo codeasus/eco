@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 @Entity(tableName = "bank_accounts")
 data class BankAccountEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey val id: String,
     val name: String,
     val number: String,
     var numberLastChunk: String = "",
