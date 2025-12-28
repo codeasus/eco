@@ -68,3 +68,10 @@ fun formatTransactionRate(amount: Double): String {
     val format = DecimalFormat("#,#0.0", DecimalFormatSymbols(Locale.ENGLISH))
     return format.format(amount)
 }
+
+fun ellipsisText(text: String): String {
+    if(text.length >= 9) {
+        return "${text.take(8)}..."
+    }
+    return text
+}

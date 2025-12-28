@@ -25,6 +25,18 @@ import java.time.LocalDateTime
 
 object DataSourceDefaults {
 
+    val defaultUserBankAccountModel = UserBankAccountModel(
+        id = UUID.randomUUID(),
+        name = "",
+        number = "",
+        scheme = BankAccountScheme.UNKNOWN,
+        type = BankAccountType.UNKNOWN,
+        balance = 0.0,
+        currency = Currency.UNKNOWN,
+        cvv = "",
+        expiryDate = LocalDateTime.now()
+    )
+
     val exampleUser = Pair(
         UserModel(
             name = "Henry Cavill",
@@ -43,7 +55,7 @@ object DataSourceDefaults {
                 expiryDate = LocalDateTime.now()
             ),
             UserBankAccountModel(
-                id =UUID.randomUUID(),
+                id = UUID.randomUUID(),
                 name = "Henry Cavill",
                 number = "0000000000008923",
                 scheme = BankAccountScheme.MASTERCARD,

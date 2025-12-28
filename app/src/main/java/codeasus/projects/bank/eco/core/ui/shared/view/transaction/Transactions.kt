@@ -1,6 +1,7 @@
 package codeasus.projects.bank.eco.core.ui.shared.view.transaction
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +22,15 @@ fun Transactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>
     }
 }
 
+@Composable
+fun LimitedTransactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>) {
+    Column {
+        for (customerTransactionPair in customerTransactionPairs.take(10)) {
+            TransactionListItem(customerTransactionPair)
+        }
+    }
+}
+
 @Preview(
     showSystemUi = false,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -29,6 +39,6 @@ fun Transactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>
 @Composable
 fun TransactionsPreview() {
     EcoTheme {
-        Transactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions()))
+        LimitedTransactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions()))
     }
 }

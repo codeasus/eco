@@ -1,7 +1,7 @@
 package codeasus.projects.bank.eco.feature.card.presentation
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,25 +26,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.ui.shared.view.TextButton
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
-import codeasus.projects.bank.eco.core.ui.shared.view.transaction.Transactions
+import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactions
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardFlipState
@@ -72,11 +73,8 @@ fun CardScreenRoot(navigationManager: NavigationManager, accountId: String) {
 @Composable
 fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: () -> Unit = {}) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val lightBankCardContainerColor = Color(184, 193, 239, 255)
-    val darkerBankAccountContainerColor = Color(93, 95, 138, 255)
-    val frontWaveColor = Color(113, 119, 164, 255)
-    val middleWaveColor = Color(80, 82, 129, 255)
-    val backWaveColor = Color(54, 63, 110, 255)
+    val scrollState = rememberScrollState()
+
     BaseScaffold(
         topBar = {
             CardTopNavbar(
@@ -92,123 +90,20 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
                 items = CardMenuItems.value,
                 onItemClick = { menuItem ->
                     when (menuItem) {
-                        is CardMenuItem.Freeze -> { /* onAction(CardIntent.FreezeCard) */
-                        }
-
-                        is CardMenuItem.Limits -> { /* onAction(CardIntent.OpenLimits) */
-                        }
-
-                        is CardMenuItem.Edit -> { /* onAction(CardIntent.EditCard) */
-                        }
-
-                        is CardMenuItem.Delete -> { /* onAction(CardIntent.DeleteCard) */
-                        }
+                        is CardMenuItem.Freeze -> { }
+                        is CardMenuItem.Limits -> { }
+                        is CardMenuItem.Edit -> { }
+                        is CardMenuItem.Delete -> { }
                     }
                 }
             )
         }
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp).verticalScroll(scrollState)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .drawBehind {
-                        // --- SHARED BOTTOM GEOMETRY ---
-                        fun Path.applyBottomCurve(width: Float, height: Float) {
-                            cubicTo(
-                                x1 = width * 0.75F,
-                                y1 = height - 150F,
-                                x2 = width * 0.4F,
-                                y2 = height + 200F,
-                                x3 = 0F,
-                                y3 = height
-                            )
-                        }
-
-                        // --- LAYER 0: (Background) ---
-                        val mainBackground = Path().apply {
-                            moveTo(0F, 0F)
-                            lineTo(size.width, 0F)
-                            lineTo(size.width, size.height)
-                            applyBottomCurve(size.width, size.height)
-                            close()
-                        }
-
-                        // --- WAVE 1: (Back) ---
-                        val bgWaveFirst = Path().apply {
-                            moveTo(0F, size.height - 50F)
-                            cubicTo(
-                                x1 = size.width * 0.4f, y1 = size.height,
-                                x2 = size.width * 0.7f, y2 = size.height - 650F,
-                                x3 = size.width, y3 = size.height - 550F
-                            )
-                            lineTo(size.width, size.height)
-                            applyBottomCurve(size.width, size.height)
-                            close()
-                        }
-
-                        // --- WAVE 2: (Middle) ---
-                        val bgWaveSecond = Path().apply {
-                            moveTo(0F, size.height - 30F)
-                            cubicTo(
-                                x1 = size.width * 0.3f, y1 = size.height,
-                                x2 = size.width * 0.8f, y2 = size.height - 450F,
-                                x3 = size.width, y3 = size.height - 400F
-                            )
-                            lineTo(size.width, size.height)
-                            applyBottomCurve(size.width, size.height)
-                            close()
-                        }
-
-                        // --- WAVE 3: (Front) ---
-                        val bgWaveThird = Path().apply {
-                            moveTo(0F, size.height - 10F)
-                            cubicTo(
-                                x1 = size.width * 0.3f, y1 = size.height + 50F,
-                                x2 = size.width * 0.9f, y2 = size.height - 250F,
-                                x3 = size.width, y3 = size.height - 250F
-                            )
-                            lineTo(size.width, size.height)
-                            applyBottomCurve(size.width, size.height)
-                            close()
-                        }
-                        drawPath(
-                            path = mainBackground,
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    darkerBankAccountContainerColor,
-                                    lightBankCardContainerColor
-                                )
-                            )
-                        )
-                        drawPath(
-                            path = bgWaveFirst,
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    lightBankCardContainerColor,
-                                    frontWaveColor
-                                )
-                            )
-                        )
-                        drawPath(
-                            path = bgWaveSecond,
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    lightBankCardContainerColor,
-                                    middleWaveColor
-                                )
-                            )
-                        )
-                        drawPath(
-                            path = bgWaveThird,
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    lightBankCardContainerColor,
-                                    backWaveColor
-                                )
-                            )
-                        )
-                    }
+                    .backgroundCard()
                     .padding(top = 16.dp, bottom = 18.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -285,52 +180,40 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CardInstantAction(
-                        R.drawable.ic_reveal,
-                        "Reveal",
-                        enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>
-                    ) {
+                    CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
                         onAction(CardIntent.ShowBottomSheet)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(
-                        R.drawable.ic_topup,
-                        "Top-up",
-                        enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>
-                    ) {
+                    CardInstantAction(R.drawable.ic_topup, "Top-up", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
                         onAction(CardIntent.TopUp)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(
-                        R.drawable.ic_flip,
-                        "Flip",
-                        enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>
-                    ) {
+                    CardInstantAction(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
                         onAction(CardIntent.FlipCard)
+                    }
+                    Spacer(modifier = Modifier.width(24.dp))
+                    CardInstantAction(R.drawable.ic_dots, "More", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                        onAction(CardIntent.More)
                     }
                 }
             }
             Column(
-                modifier = Modifier.padding(top = 56.dp, start = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 56.dp, start = 16.dp, end = 16.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4F))
+                    .padding(16.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Transactions",
-                        style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
-                    )
-                    Text(
-                        modifier = Modifier.clickable() { },
-                        text = "View All",
-                        style = TextStyle(color = MaterialTheme.colorScheme.secondary),
-                        textDecoration = TextDecoration.Underline
-                    )
+                    Text(text = "Transactions")
+                    TextButton("View all") {  }
                 }
-                Transactions(state.transactions)
+                LimitedTransactions(state.transactions)
             }
         }
     }

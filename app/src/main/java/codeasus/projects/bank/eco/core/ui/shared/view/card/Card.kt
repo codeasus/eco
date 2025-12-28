@@ -56,6 +56,7 @@ fun BankCardFront(
     val themeColors = when (bankAccountUi.type) {
         BankAccountType.PERSONAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
+        BankAccountType.UNKNOWN -> BankCardDefaults.UnknownCardColors
     }
 
     Card(
@@ -162,6 +163,7 @@ fun BankCardBack(
     val themeColors = when (bankAccountUi.type) {
         BankAccountType.PERSONAL -> BankCardDefaults.NormalCardColors
         BankAccountType.PLATINUM -> BankCardDefaults.PlatinumCardColors
+        BankAccountType.UNKNOWN -> BankCardDefaults.UnknownCardColors
     }
 
     Card(

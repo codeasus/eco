@@ -1,6 +1,9 @@
 package codeasus.projects.bank.eco.feature.transfer.states
 
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toUserUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.UserUi
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.domain.remote.model.banking.BinLookupModel
 import codeasus.projects.bank.eco.feature.utils.UiState
@@ -13,6 +16,7 @@ enum class InputField {
 
 data class TransferState(
     val isLoading: Boolean = false,
+    val user: UserUi = DataSourceDefaults.unknownUser.first.toUserUi(),
     val customers: List<CustomerUi> = emptyList(),
     val transaction: TransactionState = TransactionState(),
     val binLookupResultState: UiState<BinLookupModel> = UiState.Empty,

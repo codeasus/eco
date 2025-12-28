@@ -35,7 +35,7 @@ fun Profiles(customers: List<CustomerUi>, onProfileSelected: (CustomerUi) -> Uni
             val customer = customers[index]
             val isSelected = selectedCustomer == customer.name
             Profile(
-                imageModifier = Modifier
+                modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
                     .then(

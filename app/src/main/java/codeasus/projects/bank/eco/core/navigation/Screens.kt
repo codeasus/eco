@@ -32,8 +32,8 @@ sealed interface BottomNavbarScreen : Screen {
     }
 
     @Serializable
-    data object Transfer: BottomNavbarScreen {
-        override val title: String = "Transfer"
+    data object CryptoWallet: BottomNavbarScreen {
+        override val title: String = "Wallet"
     }
 
     @Serializable

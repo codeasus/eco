@@ -2,7 +2,6 @@ package codeasus.projects.bank.eco.core.ui.shared.view.transaction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
@@ -75,13 +73,12 @@ fun TransactionListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>
                     .adaptTransactionListBackgroundToTransactionStatus(
                         transactionStatus = customerTransactionPair.second.status,
                         statusColor
-                    )
-                    .padding(horizontal = 16.dp),
+                    ).padding(start = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 ImgProfile(
-                    imageModifier = Modifier
+                    modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape),
                     profileImageResId = customerTransactionPair.first.profileImg
@@ -140,7 +137,7 @@ fun TransactionListItemPreview() {
         TransactionListItem(
             Pair(
                 DataSourceDefaults.getCustomers()[1],
-                DataSourceDefaults.getTransactions()[1]
+                DataSourceDefaults.getTransactions()[2]
             )
         )
     }

@@ -32,6 +32,7 @@ class TransferViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
+        loadUser()
         loadCustomers()
     }
 
@@ -42,6 +43,16 @@ class TransferViewModel @Inject constructor(
             is TransferIntent.SetBeneficiaryName -> setBeneficiaryName(intent.beneficiaryName)
             is TransferIntent.SetAccountNumber -> setAccountNumber(intent.accountNumber)
             is TransferIntent.SelectCustomer -> selectCustomer(intent.customerUi)
+        }
+    }
+
+    private fun loadUser() {
+        viewModelScope.launch {
+            user.collect {  user ->
+                if(user != null) {
+                    _state.emit(_state.value.copy(user = user))
+                }
+            }
         }
     }
 

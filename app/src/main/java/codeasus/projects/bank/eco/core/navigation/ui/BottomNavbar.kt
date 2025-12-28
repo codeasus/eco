@@ -25,7 +25,7 @@ data class BottomNavbarScreen<T : Any>(val screen: T, @DrawableRes val icon: Int
 object BottomNavBarScreens {
     val items = arrayOf(
         BottomNavbarScreen(BottomNavbarScreen.Home, R.drawable.ic_home),
-        BottomNavbarScreen(BottomNavbarScreen.Transfer, R.drawable.ic_transfer),
+        BottomNavbarScreen(BottomNavbarScreen.CryptoWallet, R.drawable.ic_wallet),
         BottomNavbarScreen(BottomNavbarScreen.Product, R.drawable.ic_product),
     )
 }

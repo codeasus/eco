@@ -29,7 +29,7 @@ fun AppNavHost(navController: NavHostController) {
         composable<BottomNavbarScreen.Product> {
             ProductScreenRoot(navigationManager = navigationManager)
         }
-        composable<BottomNavbarScreen.Transfer> {
+        composable<BottomNavbarScreen.CryptoWallet> {
             TransferScreenRoot(navigationManager = navigationManager)
         }
         composable<SearchTransaction> {

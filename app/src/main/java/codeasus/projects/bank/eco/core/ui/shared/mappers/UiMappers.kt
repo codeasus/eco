@@ -5,6 +5,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerBankAccount
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.SystemMessageUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.UserUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatBankAccountNumber
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatExpiryDate
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatFullLocalDateTime
@@ -14,6 +15,7 @@ import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
+import codeasus.projects.bank.eco.domain.local.model.user.UserModel
 
 fun UserBankAccountModel.toBankAccountUi(): BankAccountUi {
     return BankAccountUi(
@@ -62,5 +64,13 @@ fun SystemMessageModel.toSystemMessageUi(): SystemMessageUi {
         content = this.content,
         priority = this.priority,
         createdAt = formatFullLocalDateTime(this.createdAt)
+    )
+}
+
+fun UserModel.toUserUi(): UserUi {
+    return UserUi(
+        name = this.name,
+        tagName = this.tagName,
+        profileImageResId = this.profileImageResId
     )
 }

@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.shared.view.ImgProfile
-import codeasus.projects.bank.eco.domain.local.model.user.UserModel
+import codeasus.projects.bank.eco.core.ui.shared.view.models.UserUi
 
 @Composable
 fun SearchAction(onSearchClick: () -> Unit) {
@@ -33,10 +33,10 @@ fun SearchAction(onSearchClick: () -> Unit) {
 }
 
 @Composable
-fun ProfileAction(user: UserModel, onProfileClick: () -> Unit) {
+fun ProfileAction(user: UserUi, onProfileClick: () -> Unit) {
     IconButton(onClick = onProfileClick) {
         ImgProfile(
-            imageModifier = Modifier
+            modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape),
             profileImageResId = user.profileImageResId

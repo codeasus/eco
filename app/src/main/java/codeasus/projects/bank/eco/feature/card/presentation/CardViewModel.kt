@@ -48,6 +48,7 @@ class CardViewModel @Inject constructor(
             }
 
             is CardIntent.TopUp -> topUpCard()
+            is CardIntent.More -> {}
         }
     }
 

@@ -30,7 +30,7 @@ private fun Modifier.withName(withName: Boolean): Modifier {
 
 @Composable
 fun Profile(
-    imageModifier: Modifier,
+    modifier: Modifier,
     customer: CustomerUi,
     withName: Boolean = false,
     isSelected: Boolean = false,
@@ -58,7 +58,7 @@ fun Profile(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            modifier = imageModifier,
+            modifier = modifier,
             painter = painterResource(customer.profileImg),
             contentScale = ContentScale.Crop,
             contentDescription = "${customer.name}'s photo"
@@ -70,9 +70,9 @@ fun Profile(
 }
 
 @Composable
-fun ImgProfile(imageModifier: Modifier, profileImageResId: Int) {
+fun ImgProfile(modifier: Modifier, profileImageResId: Int) {
     Image(
-        modifier = imageModifier,
+        modifier = modifier,
         painter = painterResource(profileImageResId),
         contentScale = ContentScale.Crop,
         contentDescription = "User's photo"
@@ -84,7 +84,7 @@ fun ImgProfile(imageModifier: Modifier, profileImageResId: Int) {
 fun ProfilePreview() {
     EcoTheme {
         Profile(
-            imageModifier = Modifier
+            modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape),
             customer = DataSourceDefaults.getCustomers()[1],
