@@ -23,8 +23,7 @@ import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItem
 import codeasus.projects.bank.eco.R
 
 @Composable
-fun CardOptionsFab(items: List<CardMenuItem>, onItemClick: (CardMenuItem) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
+fun CardOptionsFab(items: List<CardMenuItem>, expanded: Boolean, toggleFab: (Boolean) -> Unit, onItemClick: (CardMenuItem) -> Unit) {
 
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 45f else 0f,
@@ -47,7 +46,7 @@ fun CardOptionsFab(items: List<CardMenuItem>, onItemClick: (CardMenuItem) -> Uni
             ) {
                 items.forEach { item ->
                     FabMenuItemRow(item = item) {
-                        expanded = false
+                        toggleFab(false)
                         onItemClick(item)
                     }
                 }
@@ -55,7 +54,7 @@ fun CardOptionsFab(items: List<CardMenuItem>, onItemClick: (CardMenuItem) -> Uni
         }
 
         FloatingActionButton(
-            onClick = { expanded = !expanded },
+            onClick = { toggleFab(true) },
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ) {

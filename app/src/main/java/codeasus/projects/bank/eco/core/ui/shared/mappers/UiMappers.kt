@@ -11,6 +11,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatExpiryDate
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatFullLocalDateTime
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatLocalDateTime
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatTransactionAmount
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.formatTransactionRate
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
@@ -31,7 +32,7 @@ fun UserBankAccountModel.toBankAccountUi(): BankAccountUi {
     )
 }
 
-fun TransactionModel.toTransactionUi(): TransactionUi {
+fun TransactionModel.toTransactionUi(fullDateTime: Boolean = false): TransactionUi {
     return TransactionUi(
         id = this.id.toString(),
         accountIdSelf = this.accountIdSelf,
@@ -39,11 +40,11 @@ fun TransactionModel.toTransactionUi(): TransactionUi {
         accountNumberTo = this.accountNumberTo,
         amount = formatTransactionAmount(this.amount),
         currency = this.currency,
-        rate = this.rate,
+        rate = formatTransactionRate(this.rate),
         type = this.type,
         status = this.status,
-        createdAt = formatLocalDateTime(this.createdAt),
-        updatedAt = formatLocalDateTime(this.updatedAt)
+        createdAt = if(fullDateTime) formatFullLocalDateTime(this.createdAt) else formatLocalDateTime(this.createdAt),
+        updatedAt = if(fullDateTime) formatFullLocalDateTime(this.updatedAt) else formatLocalDateTime(this.updatedAt)
     )
 }
 

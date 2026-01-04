@@ -56,3 +56,6 @@ val surfaceDark = Color(0xFF1A1B1F)
 val onSurfaceDark = Color(0xFFE4E1E6)
 val surfaceVariantDark = Color(0xFF46464F)
 val onSurfaceVariantDark = Color(0xFFC7C5D0)
+
+// Custom
+val textLabel = Color(0xFF646464)

@@ -11,7 +11,7 @@ data class TransactionUi (
     val accountNumberTo: String,
     val amount: String,
     val currency: Currency = Currency.USD,
-    val rate: Double,
+    val rate: String,
     val type: TransactionType = TransactionType.TRANSFER,
     val status: TransactionStatus = TransactionStatus.PENDING,
     val createdAt: String,

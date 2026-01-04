@@ -11,22 +11,23 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 
 @Composable
-fun Transactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>) {
+fun Transactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>, onTransactionSelected: (String) -> Unit) {
     LazyColumn {
         items(
             count = customerTransactionPairs.size,
+            key = { index -> customerTransactionPairs[index].second.id },
             contentType = { i -> customerTransactionPairs[i] }
         ) { index ->
-            TransactionListItem(customerTransactionPairs[index])
+            TransactionListItem(customerTransactionPairs[index], onTransactionSelected)
         }
     }
 }
 
 @Composable
-fun LimitedTransactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>) {
+fun LimitedTransactions(customerTransactionPairs: List<Pair<CustomerUi, TransactionUi>>, onTransactionSelected: (String) -> Unit) {
     Column {
         for (customerTransactionPair in customerTransactionPairs.take(10)) {
-            TransactionListItem(customerTransactionPair)
+            TransactionListItem(customerTransactionPair, onTransactionSelected)
         }
     }
 }
@@ -39,6 +40,6 @@ fun LimitedTransactions(customerTransactionPairs: List<Pair<CustomerUi, Transact
 @Composable
 fun TransactionsPreview() {
     EcoTheme {
-        LimitedTransactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions()))
+        LimitedTransactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions())) {}
     }
 }

@@ -47,6 +47,7 @@ import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
+import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
 fun HomeScreenRoot(navigationManager: NavigationManager) {
@@ -161,7 +162,13 @@ fun HomeScreen(
                     Text(text = "Transactions")
                     TextButton("View all") { onNavigateToSearchTransactionScreen() }
                 }
-                LimitedTransactions(state.transactions)
+                LimitedTransactions(state.transactions) { transactionId ->
+                    onAction(HomeIntent.ShowBottomSheet(transactionId))
+                }
+            }
+
+            TransactionBottomSheet(transactionUiState = state.transactionUiState, isVisible = state.showBottomSheet) {
+                onAction(HomeIntent.HideBottomSheet)
             }
         }
     }

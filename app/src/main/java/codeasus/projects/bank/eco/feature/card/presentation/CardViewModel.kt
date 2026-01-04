@@ -11,6 +11,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardIntent
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
+import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,18 +38,37 @@ class CardViewModel @Inject constructor(
                 loadAllTransactions()
             }
             is CardIntent.FlipCard -> flipCard()
-            is CardIntent.ShowBottomSheet -> {
-                showBottomSheet()
+            is CardIntent.ShowCardDetailsBottomSheet -> {
+                showCardDetailsBottomSheet()
                 loadCardPrivateData()
             }
 
-            is CardIntent.HideBottomSheet -> {
-                hideBottomSheet()
+            is CardIntent.HideCardDetailsBottomSheet -> {
+                hideCardDetailsBottomSheet()
                 nullifyCardPrivateData()
+            }
+
+            is CardIntent.ShowTransactionBottomSheet -> {
+                showTransactionBottomSheet()
+                loadTransactionById(intent.transactionId)
+            }
+
+            is CardIntent.HideTransactionBottomSheet -> {
+                hideTransactionBottomSheet()
             }
 
             is CardIntent.TopUp -> topUpCard()
             is CardIntent.More -> {}
+        }
+    }
+
+    private fun loadTransactionById(id: String) {
+        viewModelScope.launch {
+            val transaction = transactionRepository.getTransactionById(id)?.toTransactionUi(true)
+            delay(500L)
+            if(transaction != null) {
+                _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
+            }
         }
     }
 
@@ -133,11 +153,19 @@ class CardViewModel @Inject constructor(
         // Implement topping-up the card logic here
     }
 
-    private fun showBottomSheet() {
-        _state.value = _state.value.copy(showBottomSheet = true)
+    private fun showCardDetailsBottomSheet() {
+        _state.value = _state.value.copy(showCardDetailsBottomSheet = true)
     }
 
-    private fun hideBottomSheet() {
-        _state.value = _state.value.copy(showBottomSheet = false)
+    private fun hideCardDetailsBottomSheet() {
+        _state.value = _state.value.copy(showCardDetailsBottomSheet = false)
+    }
+
+    private fun showTransactionBottomSheet() {
+        _state.value = _state.value.copy(showTransactionBottomSheet = true, transactionUiState = UiState.Loading)
+    }
+
+    private fun hideTransactionBottomSheet() {
+        _state.value = _state.value.copy(showTransactionBottomSheet = false, transactionUiState = UiState.Empty)
     }
 }

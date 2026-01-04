@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -23,10 +24,10 @@ import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.Transactions
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import androidx.compose.foundation.lazy.items
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionIntent
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionState
+import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
 fun SearchTransactionScreenRoot(navigationManager: NavigationManager) {
@@ -82,7 +83,13 @@ fun SearchTransactionScreen(
                     )
                 }
             }
-            Transactions(state.transactions)
+            Transactions(state.transactions) { transactionId ->
+                onAction(SearchTransactionIntent.ShowBottomSheet(transactionId))
+            }
+        }
+
+        TransactionBottomSheet(transactionUiState = state.transactionUiState, isVisible = state.showBottomSheet) {
+            onAction(SearchTransactionIntent.HideBottomSheet)
         }
     }
 }

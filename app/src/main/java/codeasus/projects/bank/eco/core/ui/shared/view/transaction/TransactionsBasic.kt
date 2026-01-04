@@ -29,6 +29,6 @@ fun TransactionsBasic(customerTransactionPairs: List<Pair<CustomerUi, Transactio
 @Composable
 fun TransactionsBasicPreview() {
     EcoTheme {
-        Transactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions()))
+        Transactions(DataSourceDefaults.getCustomers().zip(DataSourceDefaults.getTransactions())) {}
     }
 }

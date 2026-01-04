@@ -1,6 +1,7 @@
 package codeasus.projects.bank.eco.core.ui.shared.view.transaction
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,7 @@ import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 
 @Composable
-fun TransactionListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>) {
+fun TransactionListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>, onTransactionSelected: (String) -> Unit) {
 
     val statusColor = when (customerTransactionPair.second.status) {
         TransactionStatus.PENDING -> TransactionUIItemColors.COLOR_PENDING
@@ -48,7 +49,11 @@ fun TransactionListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>
     Surface(
         modifier = Modifier
             .height(64.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .clickable {
+                onTransactionSelected(customerTransactionPair.second.id)
+            },
         color = Color.Transparent
     ) {
         Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
@@ -139,6 +144,6 @@ fun TransactionListItemPreview() {
                 DataSourceDefaults.getCustomers()[1],
                 DataSourceDefaults.getTransactions()[2]
             )
-        )
+        ) {}
     }
 }

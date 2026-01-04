@@ -12,6 +12,7 @@ import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountReposi
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
+import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +39,23 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RestackCards -> reStackCards()
+            is HomeIntent.ShowBottomSheet -> {
+                showBottomSheet()
+                loadTransactionById(intent.transactionId)
+            }
+            is HomeIntent.HideBottomSheet -> {
+                hideBottomSheet()
+            }
+        }
+    }
+
+    private fun loadTransactionById(id: String) {
+        viewModelScope.launch {
+            val transaction = transactionRepository.getTransactionById(id)?.toTransactionUi(true)
+            delay(500L)
+            if(transaction != null) {
+                _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
+            }
         }
     }
 
@@ -63,7 +81,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Loading))
             val bankAccounts = bankAccountRepository.getBankAccounts().map { it.toBankAccountUi() }
-            delay(800)
+            delay(800L)
             _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Success(bankAccounts), currentBankAccount = bankAccounts.first()))
         }
     }
@@ -86,5 +104,13 @@ class HomeViewModel @Inject constructor(
                 _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Success(bankAccounts), currentBankAccount = bankAccounts.first()))
             }
         }
+    }
+
+    private fun showBottomSheet() {
+        _state.value = _state.value.copy(showBottomSheet = true, transactionUiState = UiState.Loading)
+    }
+
+    private fun hideBottomSheet() {
+        _state.value = _state.value.copy(showBottomSheet = false, transactionUiState = UiState.Empty)
     }
 }

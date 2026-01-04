@@ -24,6 +24,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +55,7 @@ import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItem
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItems
+import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
 fun CardScreenRoot(navigationManager: NavigationManager, accountId: String) {
@@ -74,6 +79,7 @@ fun CardScreenRoot(navigationManager: NavigationManager, accountId: String) {
 fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: () -> Unit = {}) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scrollState = rememberScrollState()
+    var fabExpanded by remember { mutableStateOf(false) }
 
     BaseScaffold(
         topBar = {
@@ -88,6 +94,14 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
         floatingActionButton = {
             CardOptionsFab(
                 items = CardMenuItems.value,
+                expanded = fabExpanded,
+                toggleFab = {
+                    fabExpanded = if(!it) {
+                        false
+                    } else {
+                        !fabExpanded
+                    }
+                },
                 onItemClick = { menuItem ->
                     when (menuItem) {
                         is CardMenuItem.Freeze -> { }
@@ -141,9 +155,9 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
 
                 CardDetailsBottomSheet(
                     bankAccountUiState = state.bankAccountPrivateDataUiState,
-                    isVisible = state.showBottomSheet
+                    isVisible = state.showCardDetailsBottomSheet
                 ) {
-                    onAction(CardIntent.HideBottomSheet)
+                    onAction(CardIntent.HideCardDetailsBottomSheet)
                 }
 
                 when (val bankAccountUiState = state.bankAccountUiState) {
@@ -181,7 +195,7 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
-                        onAction(CardIntent.ShowBottomSheet)
+                        onAction(CardIntent.ShowCardDetailsBottomSheet)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
                     CardInstantAction(R.drawable.ic_topup, "Top-up", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
@@ -213,7 +227,14 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
                     Text(text = "Transactions")
                     TextButton("View all") {  }
                 }
-                LimitedTransactions(state.transactions)
+                LimitedTransactions(state.transactions) { transactionId ->
+                    onAction(CardIntent.ShowTransactionBottomSheet(transactionId))
+                    fabExpanded = false
+                }
+            }
+
+            TransactionBottomSheet(transactionUiState = state.transactionUiState, isVisible = state.showTransactionBottomSheet) {
+                onAction(CardIntent.HideTransactionBottomSheet)
             }
         }
     }

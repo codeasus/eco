@@ -8,6 +8,7 @@ import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionIntent
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionState
+import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,13 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
             is SearchTransactionIntent.ToggleSearchTextVisibility -> toggleSearchTextVisibility()
             is SearchTransactionIntent.SetSearchText -> setSearchText(intent.text)
             is SearchTransactionIntent.SelectTransactionType -> setTransactionType(intent.type)
+            is SearchTransactionIntent.ShowBottomSheet -> {
+                showBottomSheet()
+                loadTransactionById(intent.transactionId)
+            }
+            is SearchTransactionIntent.HideBottomSheet -> {
+                hideBottomSheet()
+            }
         }
     }
 
@@ -53,6 +61,16 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
 
     private fun getSelectedTransactionTypes(): List<String> {
         return _state.value.selectedTransactionTypes.filter { it.value }.map { it.key.name }
+    }
+
+    private fun loadTransactionById(id: String) {
+        viewModelScope.launch {
+            val transaction = transactionRepository.getTransactionById(id)?.toTransactionUi(true)
+            delay(500L)
+            if(transaction != null) {
+                _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
+            }
+        }
     }
 
     private fun getAllTransactions() {
@@ -142,5 +160,13 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                 _state.value = _state.value.copy(transactions = transactions)
             }
         }
+    }
+
+    private fun showBottomSheet() {
+        _state.value = _state.value.copy(showBottomSheet = true, transactionUiState = UiState.Loading)
+    }
+
+    private fun hideBottomSheet() {
+        _state.value = _state.value.copy(showBottomSheet = false, transactionUiState = UiState.Empty)
     }
 }

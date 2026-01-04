@@ -7,4 +7,3 @@ enum class TransactionType(val label: String) {
     PAYMENT("Payment"),
     REFUND("Refund")
 }
-
