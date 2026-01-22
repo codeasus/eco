@@ -41,7 +41,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
-import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactions
+import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactionsWithDates
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
@@ -162,7 +162,7 @@ fun HomeScreen(
                     Text(text = "Transactions")
                     TextButton("View all") { onNavigateToSearchTransactionScreen() }
                 }
-                LimitedTransactions(state.transactions) { transactionId ->
+                LimitedTransactionsWithDates(state.transactions) { transactionId ->
                     onAction(HomeIntent.ShowBottomSheet(transactionId))
                 }
             }
@@ -181,7 +181,7 @@ fun HomeScreenLightPreview() {
         HomeScreen(
             navigationManager = NavigationManager(rememberNavController()),
             state = HomeState(
-                transactions = DataSourceDefaults.getCustomerTransactions(),
+                transactions =  DataSourceDefaults.getCustomerTransactions(),
                 bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second)
             ),
             onAction = {}

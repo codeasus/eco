@@ -2,16 +2,16 @@ package codeasus.projects.bank.eco.feature.home.presentation
 
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
-import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
+import codeasus.projects.bank.eco.domain.local.usecase.GetAllTransactionsListItemsUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionByIdUseCase
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
+import codeasus.projects.bank.eco.feature.home.presentation.states.toTransactionDateItemUI
 import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -23,8 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     userRepository: UserRepository,
-    private val transactionRepository: TransactionRepository,
-    private val bankAccountRepository: BankAccountRepository
+    private val bankAccountRepository: BankAccountRepository,
+    private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
+    private val getAllTransactionsListItemsUseCase: GetAllTransactionsListItemsUseCase
 ) : BaseViewModel(userRepository) {
 
     private val _state = MutableStateFlow(HomeState())
@@ -43,6 +44,7 @@ class HomeViewModel @Inject constructor(
                 showBottomSheet()
                 loadTransactionById(intent.transactionId)
             }
+
             is HomeIntent.HideBottomSheet -> {
                 hideBottomSheet()
             }
@@ -51,9 +53,8 @@ class HomeViewModel @Inject constructor(
 
     private fun loadTransactionById(id: String) {
         viewModelScope.launch {
-            val transaction = transactionRepository.getTransactionById(id)?.toTransactionUi(true)
-            delay(500L)
-            if(transaction != null) {
+            val transaction = getTransactionByIdUseCase.invoke(id)
+            if (transaction != null) {
                 _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
             }
         }
@@ -61,16 +62,15 @@ class HomeViewModel @Inject constructor(
 
     private fun loadAllTransactions() {
         viewModelScope.launch {
-            val transactions = transactionRepository.getAllTransactions(null)
-                .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
+            val transactions = getAllTransactionsListItemsUseCase.invoke().map { it.toTransactionDateItemUI() }
             _state.emit(_state.value.copy(transactions = transactions))
         }
     }
 
     private fun loadUser() {
         viewModelScope.launch {
-            user.collect {  user ->
-                if(user != null) {
+            user.collect { user ->
+                if (user != null) {
                     _state.emit(_state.value.copy(user = user))
                 }
             }
@@ -82,14 +82,20 @@ class HomeViewModel @Inject constructor(
             _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Loading))
             val bankAccounts = bankAccountRepository.getBankAccounts().map { it.toBankAccountUi() }
             delay(800L)
-            _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Success(bankAccounts), currentBankAccount = bankAccounts.first()))
+            _state.emit(
+                _state.value.copy(
+                    bankAccountsUiState = BankAccountUiState.Success(bankAccounts),
+                    currentBankAccount = bankAccounts.first()
+                )
+            )
         }
     }
 
     private fun reStackCards() {
         viewModelScope.launch {
             if (_state.value.bankAccountsUiState is BankAccountUiState.Success) {
-                val bankAccounts = (_state.value.bankAccountsUiState as BankAccountUiState.Success<List<BankAccountUi>>).data.toMutableList()
+                val bankAccounts =
+                    (_state.value.bankAccountsUiState as BankAccountUiState.Success<List<BankAccountUi>>).data.toMutableList()
 
                 if (bankAccounts.isEmpty()) return@launch
 
@@ -101,16 +107,23 @@ class HomeViewModel @Inject constructor(
                     last = temp
                 }
                 bankAccounts[bankAccounts.size - 1] = first
-                _state.emit(_state.value.copy(bankAccountsUiState = BankAccountUiState.Success(bankAccounts), currentBankAccount = bankAccounts.first()))
+                _state.emit(
+                    _state.value.copy(
+                        bankAccountsUiState = BankAccountUiState.Success(bankAccounts),
+                        currentBankAccount = bankAccounts.first()
+                    )
+                )
             }
         }
     }
 
     private fun showBottomSheet() {
-        _state.value = _state.value.copy(showBottomSheet = true, transactionUiState = UiState.Loading)
+        _state.value =
+            _state.value.copy(showBottomSheet = true, transactionUiState = UiState.Loading)
     }
 
     private fun hideBottomSheet() {
-        _state.value = _state.value.copy(showBottomSheet = false, transactionUiState = UiState.Empty)
+        _state.value =
+            _state.value.copy(showBottomSheet = false, transactionUiState = UiState.Empty)
     }
 }

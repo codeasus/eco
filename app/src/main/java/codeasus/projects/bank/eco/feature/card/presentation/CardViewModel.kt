@@ -2,15 +2,15 @@ package codeasus.projects.bank.eco.feature.card.presentation
 
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
+import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
-import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
+import codeasus.projects.bank.eco.domain.local.usecase.GetAllTransactionsListItemsUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionByIdUseCase
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardIntent
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
+import codeasus.projects.bank.eco.feature.home.presentation.states.toTransactionDateItemUI
 import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -24,7 +24,8 @@ import javax.inject.Inject
 class CardViewModel @Inject constructor(
     userRepository: UserRepository,
     private val bankAccountRepository: BankAccountRepository,
-    private val transactionRepository: TransactionRepository
+    private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
+    private val getAllTransactionsListItemsUseCase: GetAllTransactionsListItemsUseCase
 ) :
     BaseViewModel(userRepository) {
 
@@ -64,8 +65,7 @@ class CardViewModel @Inject constructor(
 
     private fun loadTransactionById(id: String) {
         viewModelScope.launch {
-            val transaction = transactionRepository.getTransactionById(id)?.toTransactionUi(true)
-            delay(500L)
+            val transaction = getTransactionByIdUseCase.invoke(id)
             if(transaction != null) {
                 _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
             }
@@ -78,9 +78,7 @@ class CardViewModel @Inject constructor(
                 when(val bankAccountUiState = state.bankAccountUiState) {
                     is BankAccountUiState.Success -> {
                         val bankAccount = bankAccountUiState.data
-                        val transactions = transactionRepository.getAllTransactions(bankAccount.id).map {
-                                Pair(it.value.toCustomerUi(), it.key.toTransactionUi())
-                            }
+                        val transactions = getAllTransactionsListItemsUseCase.invoke(bankAccount.id).map { it.toTransactionDateItemUI() }
                         _state.emit(_state.value.copy(transactions = transactions))
                     }
                     else -> {}
@@ -106,13 +104,7 @@ class CardViewModel @Inject constructor(
                 _state.emit(_state.value.copy(bankAccountUiState = BankAccountUiState.NotFound))
                 return@launch
             }
-            _state.emit(
-                _state.value.copy(
-                    bankAccountUiState = BankAccountUiState.Success(
-                        bankAccount.toBankAccountUi()
-                    )
-                )
-            )
+            _state.emit(_state.value.copy(bankAccountUiState = BankAccountUiState.Success(bankAccount.toBankAccountUi())))
         }
     }
 

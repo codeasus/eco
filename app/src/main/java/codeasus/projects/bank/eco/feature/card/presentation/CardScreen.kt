@@ -46,7 +46,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
-import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactions
+import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactionsWithDates
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardFlipState
@@ -227,7 +227,7 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
                     Text(text = "Transactions")
                     TextButton("View all") {  }
                 }
-                LimitedTransactions(state.transactions) { transactionId ->
+                LimitedTransactionsWithDates (state.transactions) { transactionId ->
                     onAction(CardIntent.ShowTransactionBottomSheet(transactionId))
                     fabExpanded = false
                 }

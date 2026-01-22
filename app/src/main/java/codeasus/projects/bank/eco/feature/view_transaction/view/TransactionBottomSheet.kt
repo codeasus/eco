@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import codeasus.projects.bank.eco.R
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.getTransactionStatusColorByStatus
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.getTransactionStatusIconByStatus
@@ -219,8 +220,7 @@ fun TransactionBottomSheet(
 fun TransactionBottomSheetPreview() {
     EcoTheme {
         TransactionBottomSheet(
-            transactionUiState = UiState.Success(DataSourceDefaults.getTransactions()[0]),
-//            transactionUiState = UiState.Loading,
+            transactionUiState = UiState.Success(DataSourceDefaults.getTransactions()[0].toTransactionUi()),
             isVisible = true,
         ) {
 

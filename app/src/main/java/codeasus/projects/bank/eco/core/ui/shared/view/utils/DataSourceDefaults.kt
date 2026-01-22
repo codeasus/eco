@@ -10,18 +10,20 @@ import codeasus.projects.bank.eco.core.ui.shared.view.models.SystemMessageUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.customer.CustomerModel
+import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.Priority
-import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessageModel
-import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
+import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
+import codeasus.projects.bank.eco.feature.home.presentation.states.TransactionListItemUI
 import com.android.identity.util.UUID
 import java.time.LocalDateTime
+import java.util.Collections.emptyList
 
 object DataSourceDefaults {
 
@@ -138,18 +140,32 @@ object DataSourceDefaults {
         }
     }
 
-    fun getCustomerTransactions(): List<Pair<CustomerUi, TransactionUi>> {
+    fun getCustomerTransactions(): List<TransactionListItemUI> {
         val customers = getCustomers()
         val transactions = getTransactions()
 
-        return transactions.mapIndexed { index, transaction ->
-            val customer = customers[index % customers.size]
-            customer to transaction
+        if (customers.isEmpty()) return emptyList()
+
+        return buildList {
+            var previousDate: String? = null
+
+            transactions.forEachIndexed { index, transaction ->
+                val date = formatTransactionListDate(transaction.updatedAt)
+
+                if (previousDate != date) {
+                    add(TransactionListItemUI.TransactionDateItem(date))
+                    previousDate = date
+                }
+
+                val customer = customers[index % customers.size]
+
+                add(TransactionListItemUI.TransactionItem(Pair(customer.toCustomerUi(), transaction.toTransactionUi())))
+            }
         }
     }
 
-    fun getCustomers(): List<CustomerUi> {
-        return listOf(
+    fun getCustomers(): List<CustomerModel> {
+        val customers =  listOf(
             CustomerModel(
                 name = "Fiver",
                 profileImgResId = R.drawable.fiver,
@@ -214,12 +230,15 @@ object DataSourceDefaults {
                         number = "1234567800009099"
                     )
             )
-        ).map { it.toCustomerUi() }
+        )
+
+        return customers
     }
 
-    fun getTransactions(): List<TransactionUi> {
+    fun getTransactions(): List<TransactionModel> {
         val customers = getCustomers()
-        return listOf(
+
+        val transactions =  listOf(
             TransactionModel(
                 accountIdSelf = exampleUser.second[0].id,
                 accountNumberFrom = customers[0].bankAccount.number,
@@ -304,6 +323,8 @@ object DataSourceDefaults {
                 createdAt = LocalDateTime.now().minusDays(200),
                 updatedAt = LocalDateTime.now().minusDays(201)
             )
-        ).map { it.toTransactionUi() }
+        )
+
+        return transactions
     }
 }

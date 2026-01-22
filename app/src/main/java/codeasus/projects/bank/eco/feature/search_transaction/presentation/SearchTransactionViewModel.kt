@@ -2,10 +2,13 @@ package codeasus.projects.bank.eco.feature.search_transaction.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
-import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
+import codeasus.projects.bank.eco.domain.local.usecase.GetAllTransactionsListItemsUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionByIdUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionsByKeywordAndTypeUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionsByKeywordUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionsByTypeUseCase
+import codeasus.projects.bank.eco.feature.home.presentation.states.toTransactionDateItemUI
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionIntent
 import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransactionState
 import codeasus.projects.bank.eco.feature.utils.UiState
@@ -18,7 +21,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchTransactionViewModel @Inject constructor(private val transactionRepository: TransactionRepository) : ViewModel() {
+class SearchTransactionViewModel @Inject constructor(
+    private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
+    private val getTransactionsByTypeUseCase: GetTransactionsByTypeUseCase,
+    private val getTransactionByKeywordUseCase: GetTransactionsByKeywordUseCase,
+    private val getAllTransactionsListItemsUseCase: GetAllTransactionsListItemsUseCase,
+    private val getAllTransactionsByKeywordAndTypeUseCase: GetTransactionsByKeywordAndTypeUseCase
+) : ViewModel() {
     private val _state = MutableStateFlow(SearchTransactionState())
     val state = _state.asStateFlow()
 
@@ -28,7 +37,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
     }
 
     fun handleIntent(intent: SearchTransactionIntent) {
-        when(intent) {
+        when (intent) {
             is SearchTransactionIntent.ToggleSearchTextVisibility -> toggleSearchTextVisibility()
             is SearchTransactionIntent.SetSearchText -> setSearchText(intent.text)
             is SearchTransactionIntent.SelectTransactionType -> setTransactionType(intent.type)
@@ -36,6 +45,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                 showBottomSheet()
                 loadTransactionById(intent.transactionId)
             }
+
             is SearchTransactionIntent.HideBottomSheet -> {
                 hideBottomSheet()
             }
@@ -65,9 +75,9 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
 
     private fun loadTransactionById(id: String) {
         viewModelScope.launch {
-            val transaction = transactionRepository.getTransactionById(id)?.toTransactionUi(true)
+            val transaction = getTransactionByIdUseCase.invoke(id)
             delay(500L)
-            if(transaction != null) {
+            if (transaction != null) {
                 _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
             }
         }
@@ -75,18 +85,14 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
 
     private fun getAllTransactions() {
         viewModelScope.launch {
-            val transactions = transactionRepository
-                .getAllTransactions(accountId = null)
-                .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
+            val transactions = getAllTransactionsListItemsUseCase.invoke().map { it.toTransactionDateItemUI() }
             _state.value = _state.value.copy(transactions = transactions)
         }
     }
 
     private fun getTransactionByType(types: List<String>) {
         viewModelScope.launch {
-            val transactions = transactionRepository
-                .getTransactionsByType(accountId = null, types = types)
-                .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
+            val transactions = getTransactionsByTypeUseCase.invoke(types = types).map { it.toTransactionDateItemUI() }
             _state.value = _state.value.copy(transactions = transactions)
         }
     }
@@ -104,13 +110,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                     }
 
                     types.isNotEmpty() && searchKeyword.isNotEmpty() -> {
-                        val transactions = transactionRepository
-                            .getTransactionsByKeywordAndType(
-                                accountId = null,
-                                keyword = searchKeyword,
-                                types = types
-                            )
-                            .map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
+                        val transactions = getAllTransactionsByKeywordAndTypeUseCase.invoke(searchKeyword = searchKeyword, types = types).map {it.toTransactionDateItemUI()}
                         _state.value = _state.value.copy(transactions = transactions)
                     }
 
@@ -119,11 +119,7 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                     }
 
                     types.isEmpty() && searchKeyword.isNotEmpty() -> {
-                        val transactions = transactionRepository
-                            .getTransactionsByKeyword(
-                                accountId = null,
-                                keyword = searchKeyword
-                            ).map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
+                        val transactions = getTransactionByKeywordUseCase.invoke(searchKeyword = searchKeyword).map { it.toTransactionDateItemUI() }
                         _state.value = _state.value.copy(transactions = transactions)
                     }
                 }
@@ -142,20 +138,13 @@ class SearchTransactionViewModel @Inject constructor(private val transactionRepo
                 }
 
                 val types = getSelectedTransactionTypes()
-                val searchText = uiSearchState.searchText
+                val searchKeyword = uiSearchState.searchText
 
                 val transactions = if (types.isEmpty()) {
-                    transactionRepository.getTransactionsByKeyword(
-                        accountId = null,
-                        keyword = searchText
-                    )
+                    getTransactionByKeywordUseCase.invoke(searchKeyword = searchKeyword)
                 } else {
-                    transactionRepository.getTransactionsByKeywordAndType(
-                        accountId = null,
-                        keyword = searchText,
-                        types = types
-                    )
-                }.map { Pair(it.value.toCustomerUi(), it.key.toTransactionUi()) }
+                    getAllTransactionsByKeywordAndTypeUseCase.invoke(searchKeyword = searchKeyword, types = types)
+                }.map { it.toTransactionDateItemUI() }
 
                 _state.value = _state.value.copy(transactions = transactions)
             }

@@ -27,6 +27,22 @@ fun formatExpiryDate(expiryDate: LocalDateTime): String {
     return expiryDate.format(formatter)
 }
 
+fun formatTransactionListDate(date: LocalDateTime): String {
+    if(date.isToday()) {
+        return "Today"
+    } else if (date.isYesterday()){
+        return "Yesterday"
+    } else {
+        if(date.isCurrentYear()) {
+            val formatter = DateTimeFormatter.ofPattern("dd MMM")
+            return date.format(formatter)
+        } else {
+            val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy")
+            return date.format(formatter)
+        }
+    }
+}
+
 fun formatBankAccountNumber(number: String): String {
     return if (number.length == 4) {
         "★★★★  ★★★★  ★★★★  $number"

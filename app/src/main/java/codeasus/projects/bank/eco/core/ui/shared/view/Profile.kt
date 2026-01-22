@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -87,7 +88,7 @@ fun ProfilePreview() {
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape),
-            customer = DataSourceDefaults.getCustomers()[1],
+            customer = DataSourceDefaults.getCustomers()[1].toCustomerUi(),
             isSelected = true,
             withName = true,
         ) {

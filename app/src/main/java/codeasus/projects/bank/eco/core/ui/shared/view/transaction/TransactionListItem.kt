@@ -27,6 +27,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.mappers.toTransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.ImgProfile
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
@@ -57,28 +59,13 @@ fun TransactionListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>
         color = Color.Transparent
     ) {
         Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-//            if (customerTransactionPair.second.status == TransactionStatus.COMPLETED) {
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxHeight()
-//                        .width(16.dp)
-//                        .clip(RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
-//                        .background(
-//                            Brush.horizontalGradient(
-//                                listOf(
-//                                    statusColor.copy(alpha = 0.4F),
-//                                    Color.Transparent
-//                                )
-//                            )
-//                        )
-//                )
-//            }
             Row(
                 modifier = Modifier
                     .adaptTransactionListBackgroundToTransactionStatus(
                         transactionStatus = customerTransactionPair.second.status,
                         statusColor
-                    ).padding(start = 8.dp),
+                    )
+                    .padding(start = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -141,8 +128,8 @@ fun TransactionListItemPreview() {
     EcoTheme {
         TransactionListItem(
             Pair(
-                DataSourceDefaults.getCustomers()[1],
-                DataSourceDefaults.getTransactions()[2]
+                DataSourceDefaults.getCustomers()[1].toCustomerUi(),
+                DataSourceDefaults.getTransactions()[2].toTransactionUi()
             )
         ) {}
     }
