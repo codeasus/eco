@@ -14,6 +14,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,9 +31,13 @@ import codeasus.projects.bank.eco.feature.search_transaction.states.SearchTransa
 import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
-fun SearchTransactionScreenRoot(navigationManager: NavigationManager) {
+fun SearchTransactionScreenRoot(navigationManager: NavigationManager, accountId: String?) {
     BaseScreen<SearchTransactionViewModel> { vm ->
         val state = vm.state.collectAsStateWithLifecycle()
+
+        LaunchedEffect(accountId) {
+            vm.handleIntent(SearchTransactionIntent.ConfigureBankAccountId(accountId))
+        }
 
         SearchTransactionScreen(state.value, vm::handleIntent) {
             navigationManager.navigateUp()
@@ -49,7 +54,7 @@ fun SearchTransactionScreen(
     BaseScaffold(
         topBar = {
             SearchTopNavbar(
-                title = SearchTransaction.title,
+                title = SearchTransaction.TITLE,
                 searchTransactionState = state,
                 onBackClick = onBackClick,
                 onSearchClick = { onAction(SearchTransactionIntent.ToggleSearchTextVisibility) },

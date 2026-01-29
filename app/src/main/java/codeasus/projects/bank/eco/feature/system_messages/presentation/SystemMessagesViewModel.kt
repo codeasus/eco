@@ -10,6 +10,7 @@ import codeasus.projects.bank.eco.feature.system_messages.states.SystemMessagesS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,21 +35,19 @@ class SystemMessagesViewModel @Inject constructor(private val systemMessageRepos
     private fun getAllSystemMessages() {
         viewModelScope.launch {
             val systemMessages = systemMessageRepository.getAllSystemMessages().map { it.toSystemMessageUi() }
-            _state.emit(_state.value.copy(systemMessages = systemMessages))
+            _state.update { it.copy(systemMessages = systemMessages) }
         }
     }
 
     private fun filterSystemMessagesByPriority(priority: Priority) {
         viewModelScope.launch {
             if(priority == _state.value.selectedPriority) {
-                _state.emit(_state.value.copy(selectedPriority = null))
+                _state.update { it.copy(selectedPriority = null) }
                 getAllSystemMessages()
                 return@launch
             }
             val filteredSystemMessages = systemMessageRepository.getSystemMessagesByPriority(priority).map { it.toSystemMessageUi() }
-            _state.emit(
-                _state.value.copy(systemMessages = filteredSystemMessages, selectedPriority = priority)
-            )
+            _state.update { it.copy(systemMessages = filteredSystemMessages, selectedPriority = priority) }
         }
     }
 }

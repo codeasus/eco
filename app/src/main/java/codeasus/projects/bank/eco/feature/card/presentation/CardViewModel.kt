@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -67,7 +68,7 @@ class CardViewModel @Inject constructor(
         viewModelScope.launch {
             val transaction = getTransactionByIdUseCase.invoke(id)
             if(transaction != null) {
-                _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
+                _state.update { it.copy(transactionUiState = UiState.Success(transaction)) }
             }
         }
     }
@@ -79,7 +80,7 @@ class CardViewModel @Inject constructor(
                     is BankAccountUiState.Success -> {
                         val bankAccount = bankAccountUiState.data
                         val transactions = getAllTransactionsListItemsUseCase.invoke(bankAccount.id).map { it.toTransactionDateItemUI() }
-                        _state.emit(_state.value.copy(transactions = transactions))
+                        _state.update { it.copy(transactions = transactions) }
                     }
                     else -> {}
                 }
@@ -95,16 +96,16 @@ class CardViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            _state.emit(_state.value.copy(bankAccountId = bankAccountId))
-            _state.emit(_state.value.copy(bankAccountUiState = BankAccountUiState.Loading))
+            _state.update { it.copy(bankAccountId = bankAccountId) }
+            _state.update { it.copy(bankAccountUiState = BankAccountUiState.Loading) }
             delay(1000)
             val bankAccount = bankAccountRepository.getBankAccountForPublicById(bankAccountId)
 
             if (bankAccount == null) {
-                _state.emit(_state.value.copy(bankAccountUiState = BankAccountUiState.NotFound))
+                _state.update { it.copy(bankAccountUiState = BankAccountUiState.NotFound) }
                 return@launch
             }
-            _state.emit(_state.value.copy(bankAccountUiState = BankAccountUiState.Success(bankAccount.toBankAccountUi())))
+            _state.update { it.copy(bankAccountUiState = BankAccountUiState.Success(bankAccount.toBankAccountUi())) }
         }
     }
 
@@ -112,33 +113,31 @@ class CardViewModel @Inject constructor(
         viewModelScope.launch {
             val bankAccountId = _state.value.bankAccountId
             if (bankAccountId != null) {
-                _state.emit(_state.value.copy(bankAccountPrivateDataUiState = BankAccountUiState.Loading))
+                _state.update { it.copy(bankAccountPrivateDataUiState = BankAccountUiState.Loading) }
                 delay(1200)
                 val bankAccount = bankAccountRepository.getBankAccountForPrivateById(bankAccountId)
 
                 if (bankAccount == null) {
-                    _state.emit(_state.value.copy(bankAccountPrivateDataUiState = BankAccountUiState.NotFound))
+                    _state.update { it.copy(bankAccountPrivateDataUiState = BankAccountUiState.NotFound) }
                     return@launch
                 }
-                _state.emit(
-                    _state.value.copy(
+                _state.update {
+                    it.copy(
                         bankAccountPrivateDataUiState = BankAccountUiState.Success(
                             bankAccount.toBankAccountUi()
                         )
                     )
-                )
+                }
             }
         }
     }
 
     private fun nullifyCardPrivateData() {
-        _state.value = _state.value.copy(bankAccountPrivateDataUiState = BankAccountUiState.Idle)
+        _state.update { it.copy(bankAccountPrivateDataUiState = BankAccountUiState.Idle) }
     }
 
     private fun flipCard() {
-        _state.value = _state.value.copy(
-            cardFlipState = _state.value.cardFlipState.next
-        )
+        _state.update { it.copy(cardFlipState = _state.value.cardFlipState.next) }
     }
 
     private fun topUpCard() {
@@ -146,18 +145,18 @@ class CardViewModel @Inject constructor(
     }
 
     private fun showCardDetailsBottomSheet() {
-        _state.value = _state.value.copy(showCardDetailsBottomSheet = true)
+        _state.update { it.copy(showCardDetailsBottomSheet = true) }
     }
 
     private fun hideCardDetailsBottomSheet() {
-        _state.value = _state.value.copy(showCardDetailsBottomSheet = false)
+        _state.update { it.copy(showCardDetailsBottomSheet = false) }
     }
 
     private fun showTransactionBottomSheet() {
-        _state.value = _state.value.copy(showTransactionBottomSheet = true, transactionUiState = UiState.Loading)
+        _state.update { it.copy(showTransactionBottomSheet = true, transactionUiState = UiState.Loading) }
     }
 
     private fun hideTransactionBottomSheet() {
-        _state.value = _state.value.copy(showTransactionBottomSheet = false, transactionUiState = UiState.Empty)
+        _state.update { it.copy(showTransactionBottomSheet = false, transactionUiState = UiState.Empty) }
     }
 }

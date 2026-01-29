@@ -8,7 +8,7 @@ import kotlin.collections.iterator
 
 class GetTransactionsByKeywordUseCase @Inject constructor(private val transactionRepository: TransactionRepository) {
     suspend operator fun invoke(accountId: String? = null, searchKeyword: String): List<TransactionListItem> {
-        val transactions = transactionRepository.getTransactionsByKeyword(accountId = null, keyword = searchKeyword)
+        val transactions = transactionRepository.getTransactionsByKeyword(accountId = accountId, keyword = searchKeyword)
 
         val result = mutableListOf<TransactionListItem>()
         var lastDate: String? = null

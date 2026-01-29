@@ -8,6 +8,7 @@ import codeasus.projects.bank.eco.feature.profile.presentation.states.ProfileSta
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,15 +24,14 @@ class ProfileViewModel @Inject constructor(private val userRepository: UserRepos
     fun handleIntent(intent: ProfileIntent) {
         when(intent) {
             is ProfileIntent.LoadUserData -> loadUserData()
-
         }
     }
 
     private fun loadUserData() {
         viewModelScope.launch {
             val user = userRepository.loadUser()
-            user?.let {
-                _state.emit(state.value.copy(user = it))
+            user?.let { user ->
+                _state.update { it.copy(user = user) }
             }
         }
     }

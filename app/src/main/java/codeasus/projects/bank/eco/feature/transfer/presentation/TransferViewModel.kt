@@ -18,6 +18,7 @@ import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,7 +51,7 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
             user.collect {  user ->
                 if(user != null) {
-                    _state.emit(_state.value.copy(user = user))
+                    _state.update { it.copy(user = user) }
                 }
             }
         }
@@ -60,7 +61,7 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = getBinLookupUseCase(bin)) {
                 is DomainResult.Success -> {
-                    _state.emit(_state.value.copy(binLookupResultState = UiState.Success(result.data)))
+                    _state.update { it.copy(binLookupResultState = UiState.Success(result.data)) }
                 }
 
                 is DomainResult.Error -> {}
@@ -69,7 +70,7 @@ class TransferViewModel @Inject constructor(
     }
 
     private fun selectCurrency(currency: Currency) {
-        _state.value = _state.value.copy(transaction = _state.value.transaction.copy(currency = currency))
+        _state.update { it.copy(transaction = it.transaction.copy(currency = currency)) }
     }
 
     private fun setTransferAmount(strAmount: String) {
@@ -77,7 +78,7 @@ class TransferViewModel @Inject constructor(
             val validationResponse = CardDetailsInputFieldsValidator.validateTransferAmount(strAmount)
             when (validationResponse) {
                 is InputValidationResult.Valid -> {
-                    _state.emit(_state.value.copy(transaction = _state.value.transaction.copy(amount = validationResponse.data)))
+                    _state.update { it.copy(transaction = it.transaction.copy(amount = validationResponse.data)) }
                     updateInputFieldValidationStatus(InputField.TransferAmount, validationResponse)
                 }
                 else -> {}
@@ -94,24 +95,24 @@ class TransferViewModel @Inject constructor(
                 lookupBin(accountNumber.take(8))
             }
         }
-        _state.value = _state.value.copy(transaction = _state.value.transaction.copy(accountNumber = accountNumber))
+        _state.update { it.copy(transaction = it.transaction.copy(accountNumber = accountNumber)) }
         updateInputFieldValidationStatus(InputField.CardNumber, CardDetailsInputFieldsValidator.validateCardNumber(accountNumber))
     }
 
     private fun setBeneficiaryName(accountName: String) {
-        _state.value = _state.value.copy(transaction = _state.value.transaction.copy(accountName = accountName))
+        _state.update { it.copy(transaction = it.transaction.copy(accountName = accountName)) }
         updateInputFieldValidationStatus(InputField.RecipientName, CardDetailsInputFieldsValidator.validateRecipientName(accountName))
     }
 
     private fun selectCustomer(customer: CustomerUi) {
         viewModelScope.launch {
-            _state.emit(_state.value.copy(transaction = _state.value.transaction.copy(accountName = customer.name, accountNumber = customer.bankAccount.number)))
+            _state.update { it.copy(transaction = it.transaction.copy(accountName = customer.name, accountNumber = customer.bankAccount.number)) }
         }
     }
 
     private fun loadCustomers() {
         viewModelScope.launch {
-            _state.emit(_state.value.copy(customers = customerRepository.getAllCustomers().map { it.toCustomerUi() }))
+            _state.update { it.copy(customers = customerRepository.getAllCustomers().map { it.toCustomerUi() }) }
         }
     }
 
@@ -120,6 +121,6 @@ class TransferViewModel @Inject constructor(
             it[inputField] = validationResult
             it
         }
-        _state.value = _state.value.copy(inputFieldValidationStates = copyInputFieldValidationStates)
+        _state.update { it.copy(inputFieldValidationStates = copyInputFieldValidationStates) }
     }
 }

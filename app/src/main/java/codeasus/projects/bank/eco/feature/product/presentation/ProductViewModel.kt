@@ -8,6 +8,7 @@ import codeasus.projects.bank.eco.feature.product.presentation.states.ProductSta
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class ProductViewModel @Inject constructor(userRepository: UserRepository) : Bas
         viewModelScope.launch {
             user.collect {  user ->
                 if(user != null) {
-                    _state.emit(_state.value.copy(user = user))
+                    _state.update { it.copy(user = user) }
                 }
             }
         }

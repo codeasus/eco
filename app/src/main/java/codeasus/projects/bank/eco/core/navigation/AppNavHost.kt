@@ -22,18 +22,19 @@ fun AppNavHost(navController: NavHostController) {
         composable<BottomNavbarScreen.Home> {
             HomeScreenRoot(navigationManager = navigationManager)
         }
-        composable<Card> {
-            val args = it.toRoute<Card>()
-            CardScreenRoot(navigationManager = navigationManager, args.bankAccountId)
-        }
         composable<BottomNavbarScreen.Product> {
             ProductScreenRoot(navigationManager = navigationManager)
         }
         composable<BottomNavbarScreen.CryptoWallet> {
             TransferScreenRoot(navigationManager = navigationManager)
         }
+        composable<Card> {
+            val args = it.toRoute<Card>()
+            CardScreenRoot(navigationManager = navigationManager, args.bankAccountId)
+        }
         composable<SearchTransaction> {
-            SearchTransactionScreenRoot(navigationManager = navigationManager)
+            val args = it.toRoute<SearchTransaction>()
+            SearchTransactionScreenRoot(navigationManager = navigationManager, args.bankAccountId)
         }
         composable<SystemMessages> {
             SystemMessagesScreenRoot(navigationManager = navigationManager)

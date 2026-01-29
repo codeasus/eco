@@ -8,7 +8,7 @@ import kotlin.collections.iterator
 
 class GetTransactionsByTypeUseCase @Inject constructor(private val transactionRepository: TransactionRepository) {
     suspend operator fun invoke(accountId: String? = null, types: List<String>): List<TransactionListItem> {
-        val transactions = transactionRepository.getTransactionsByType(accountId = null, types = types)
+        val transactions = transactionRepository.getTransactionsByType(accountId = accountId, types = types)
 
         val result = mutableListOf<TransactionListItem>()
         var lastDate: String? = null

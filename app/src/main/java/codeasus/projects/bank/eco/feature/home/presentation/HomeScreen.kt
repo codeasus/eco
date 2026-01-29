@@ -56,12 +56,13 @@ fun HomeScreenRoot(navigationManager: NavigationManager) {
 
         HomeScreen(
             navigationManager = navigationManager,
-            state = state.value, onAction = vm::handleIntent,
+            state = state.value,
+            onAction = vm::handleIntent,
             onNavigateToCardScreen = {
                 navigationManager.navigateTo(Card(it))
             },
             onNavigateToSearchTransactionScreen = {
-                navigationManager.navigateTo(SearchTransaction)
+                navigationManager.navigateTo(SearchTransaction())
             }
         )
     }

@@ -126,7 +126,7 @@ fun SearchTopNavbar(
                         .padding(horizontal = 16.dp),
                 ) {
                     OutlinedTextField(
-                        value = searchTransactionState.searchText,
+                        value = searchTransactionState.searchParametersState.searchText,
                         onValueChange = { onSearchTextValueChange(it) },
                         placeholder = { Text(text = "Search transactions") },
                         shape = RoundedCornerShape(24.dp),

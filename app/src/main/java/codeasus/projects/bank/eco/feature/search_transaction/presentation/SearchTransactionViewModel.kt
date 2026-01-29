@@ -17,6 +17,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,18 +36,22 @@ class SearchTransactionViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        loadTransactionsBasedOnTransactionType()
-        loadTransactionsByKeyword()
+        observeSearchParameters()
     }
 
     fun handleIntent(intent: SearchTransactionIntent) {
         when (intent) {
+            is SearchTransactionIntent.ConfigureBankAccountId -> {
+                _state.update {
+                    it.copy(searchParametersState = it.searchParametersState.copy(bankAccountId = intent.accountId))
+                }
+            }
             is SearchTransactionIntent.ToggleSearchTextVisibility -> toggleSearchTextVisibility()
             is SearchTransactionIntent.SetSearchText -> setSearchText(intent.text)
             is SearchTransactionIntent.SelectTransactionType -> setTransactionType(intent.type)
             is SearchTransactionIntent.ShowBottomSheet -> {
                 showBottomSheet()
-                loadTransactionById(intent.transactionId)
+                getTransactionById(intent.transactionId)
             }
 
             is SearchTransactionIntent.HideBottomSheet -> {
@@ -52,110 +60,76 @@ class SearchTransactionViewModel @Inject constructor(
         }
     }
 
-    private fun toggleSearchTextVisibility() {
-        _state.value = _state.value.copy(isSearchTextVisible = !_state.value.isSearchTextVisible)
-    }
-
-    private fun setSearchText(text: String) {
-        _state.value = _state.value.copy(searchText = text)
-    }
-
-    private fun setTransactionType(transactionType: TransactionType) {
-        _state.value = _state.value.copy(
-            selectedTransactionTypes = _state.value.selectedTransactionTypes.toMutableMap().apply {
-                put(transactionType, !(this[transactionType] ?: false))
-            }
-        )
-        loadTransactionsBasedOnTransactionType()
-    }
-
-    private fun getSelectedTransactionTypes(): List<String> {
-        return _state.value.selectedTransactionTypes.filter { it.value }.map { it.key.name }
-    }
-
-    private fun loadTransactionById(id: String) {
+    fun observeSearchParameters () {
         viewModelScope.launch {
+            _state
+                .map { it.searchParametersState }
+                .distinctUntilChanged()
+                .debounce { 500L }
+                .collectLatest { searchParametersState ->
+                    fetchTransactions(searchParametersState.bankAccountId, searchParametersState.searchText, searchParametersState.selectedTransactionTypes)
+                }
+        }
+    }
+
+    private suspend fun fetchTransactions(accountId: String?, searchKeyword: String, types: List<String>) {
+        val transactions = when {
+            types.isEmpty() && searchKeyword.isEmpty() -> {
+                getAllTransactionsListItemsUseCase(accountId)
+            }
+            types.isNotEmpty() && searchKeyword.isNotEmpty() -> {
+                getAllTransactionsByKeywordAndTypeUseCase(accountId, types, searchKeyword)
+            }
+            types.isNotEmpty() && searchKeyword.isEmpty() -> {
+                getTransactionsByTypeUseCase(accountId, types)
+            }
+            else -> {
+                getTransactionByKeywordUseCase(accountId, searchKeyword)
+            }
+        }.map { it.toTransactionDateItemUI() }
+
+        _state.update { it.copy(transactions = transactions) }
+    }
+
+
+    private fun getTransactionById(id: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(transactionUiState = UiState.Loading) }
             val transaction = getTransactionByIdUseCase.invoke(id)
             delay(500L)
             if (transaction != null) {
-                _state.emit(_state.value.copy(transactionUiState = UiState.Success(transaction)))
+                _state.update { it.copy(transactionUiState = UiState.Success(transaction)) }
             }
         }
     }
 
-    private fun getAllTransactions() {
-        viewModelScope.launch {
-            val transactions = getAllTransactionsListItemsUseCase.invoke().map { it.toTransactionDateItemUI() }
-            _state.value = _state.value.copy(transactions = transactions)
-        }
+    private fun toggleSearchTextVisibility() {
+        _state.update { it.copy(isSearchTextVisible = !_state.value.isSearchTextVisible) }
     }
 
-    private fun getTransactionByType(types: List<String>) {
-        viewModelScope.launch {
-            val transactions = getTransactionsByTypeUseCase.invoke(types = types).map { it.toTransactionDateItemUI() }
-            _state.value = _state.value.copy(transactions = transactions)
-        }
+    private fun setSearchText(text: String) {
+        _state.update { it.copy(searchParametersState = it.searchParametersState.copy(searchText = text)) }
     }
 
-    private fun loadTransactionsBasedOnTransactionType() {
-        viewModelScope.launch {
-            _state.collectLatest { searchTransactionState ->
-                val types = searchTransactionState.selectedTransactionTypes
-                    .filter { it.value }
-                    .map { it.key.name }
-                val searchKeyword = searchTransactionState.searchText
-                when {
-                    types.isEmpty() && searchKeyword.isEmpty() -> {
-                        getAllTransactions()
-                    }
+    private fun setTransactionType(transactionType: TransactionType) {
+        _state.update { currentState ->
+            val newSelection = currentState.selectedTransactionTypes.toMutableMap()
 
-                    types.isNotEmpty() && searchKeyword.isNotEmpty() -> {
-                        val transactions = getAllTransactionsByKeywordAndTypeUseCase.invoke(searchKeyword = searchKeyword, types = types).map {it.toTransactionDateItemUI()}
-                        _state.value = _state.value.copy(transactions = transactions)
-                    }
+            val isSelected = newSelection[transactionType] ?: false
+            newSelection[transactionType] = !isSelected
 
-                    types.isNotEmpty() && searchKeyword.isEmpty() -> {
-                        getTransactionByType(types = types)
-                    }
-
-                    types.isEmpty() && searchKeyword.isNotEmpty() -> {
-                        val transactions = getTransactionByKeywordUseCase.invoke(searchKeyword = searchKeyword).map { it.toTransactionDateItemUI() }
-                        _state.value = _state.value.copy(transactions = transactions)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun loadTransactionsByKeyword() {
-        viewModelScope.launch {
-            _state.collectLatest { uiSearchState ->
-                delay(1000L)
-
-                if (uiSearchState.searchText.isEmpty() || !uiSearchState.isSearchTextVisible) {
-                    loadTransactionsBasedOnTransactionType()
-                    return@collectLatest
-                }
-
-                val types = getSelectedTransactionTypes()
-                val searchKeyword = uiSearchState.searchText
-
-                val transactions = if (types.isEmpty()) {
-                    getTransactionByKeywordUseCase.invoke(searchKeyword = searchKeyword)
-                } else {
-                    getAllTransactionsByKeywordAndTypeUseCase.invoke(searchKeyword = searchKeyword, types = types)
-                }.map { it.toTransactionDateItemUI() }
-
-                _state.value = _state.value.copy(transactions = transactions)
-            }
+            currentState.copy(
+                selectedTransactionTypes = newSelection,
+                searchParametersState = currentState.searchParametersState.copy(selectedTransactionTypes = newSelection.filter { it.value }.map { it.key.name })
+            )
         }
     }
 
     private fun showBottomSheet() {
-        _state.value = _state.value.copy(showBottomSheet = true, transactionUiState = UiState.Loading)
+        _state.update { it.copy(showBottomSheet = true, transactionUiState = UiState.Loading) }
     }
 
     private fun hideBottomSheet() {
-        _state.value = _state.value.copy(showBottomSheet = false, transactionUiState = UiState.Empty)
+        _state.update { it.copy(showBottomSheet = false, transactionUiState = UiState.Empty) }
     }
 }

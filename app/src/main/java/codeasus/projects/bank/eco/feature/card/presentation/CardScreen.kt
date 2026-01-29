@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
+import codeasus.projects.bank.eco.core.navigation.SearchTransaction
 import codeasus.projects.bank.eco.core.ui.shared.view.TextButton
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
@@ -69,14 +70,19 @@ fun CardScreenRoot(navigationManager: NavigationManager, accountId: String) {
         CardScreen(
             state = state.value,
             onAction = vm::handleIntent,
-            onNavigateUp = { navigationManager.navigateUp() }
+            onNavigateUp = { navigationManager.navigateUp() },
+            onNavigateToSearchTransactionScreen = { navigationManager.navigateTo(SearchTransaction(accountId)) }
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: () -> Unit = {}) {
+fun CardScreen(
+    state: CardState, onAction: (CardIntent) -> Unit,
+    onNavigateUp: () -> Unit = {},
+    onNavigateToSearchTransactionScreen: () -> Unit = {}
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scrollState = rememberScrollState()
     var fabExpanded by remember { mutableStateOf(false) }
@@ -225,7 +231,7 @@ fun CardScreen(state: CardState, onAction: (CardIntent) -> Unit, onNavigateUp: (
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = "Transactions")
-                    TextButton("View all") {  }
+                    TextButton("View all") { onNavigateToSearchTransactionScreen() }
                 }
                 LimitedTransactionsWithDates (state.transactions) { transactionId ->
                     onAction(CardIntent.ShowTransactionBottomSheet(transactionId))

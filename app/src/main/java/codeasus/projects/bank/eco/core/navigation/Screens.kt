@@ -6,8 +6,12 @@ interface Screen {
 }
 
 @Serializable
-data object SearchTransaction : Screen {
-    override val title: String = "Transactions"
+data class SearchTransaction(val bankAccountId: String? = null) : Screen {
+    override val title: String get() = TITLE
+
+    companion object {
+        const val TITLE = "Transactions"
+    }
 }
 
 @Serializable
