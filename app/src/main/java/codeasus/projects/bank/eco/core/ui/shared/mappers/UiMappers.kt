@@ -48,13 +48,13 @@ fun TransactionModel.toTransactionUi(fullDateTime: Boolean = false): Transaction
     )
 }
 
-fun CustomerModel.toCustomerUi(): CustomerUi {
+fun CustomerModel.toCustomerUi(formattedCardNumber: Boolean = true): CustomerUi {
     return CustomerUi(
         name = this.name,
         profileImg = this.profileImgResId,
         bankAccount = CustomerBankAccountUi(
             name = this.bankAccount.name,
-            number = formatBankAccountNumber(this.bankAccount.number)
+            number = if(formattedCardNumber) formatBankAccountNumber(this.bankAccount.number) else this.bankAccount.number
         )
     )
 }

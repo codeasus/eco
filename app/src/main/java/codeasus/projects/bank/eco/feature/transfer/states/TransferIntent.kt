@@ -8,5 +8,5 @@ sealed class TransferIntent {
     data class SetTransferAmount(val strAmount: String) : TransferIntent()
     data class SetBeneficiaryName(val beneficiaryName: String) : TransferIntent()
     data class SetAccountNumber(val accountNumber: String): TransferIntent()
-    data class SelectCustomer(val customerUi: CustomerUi): TransferIntent()
+    data class SelectFriend(val customerUi: CustomerUi): TransferIntent()
 }

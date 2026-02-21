@@ -20,6 +20,15 @@ data class Card(val bankAccountId: String) : Screen {
 }
 
 @Serializable
+data class Transfer(val bankAccountId: String) : Screen {
+    override val title: String get() = TITLE
+
+    companion object{
+        const val TITLE = "Transfer"
+    }
+}
+
+@Serializable
 data object SystemMessages : Screen {
     override val title: String = "System Messages"
 }

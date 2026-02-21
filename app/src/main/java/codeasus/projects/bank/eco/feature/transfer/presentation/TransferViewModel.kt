@@ -1,14 +1,14 @@
 package codeasus.projects.bank.eco.feature.transfer.presentation
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
-import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
+import codeasus.projects.bank.eco.domain.local.usecase.GetFriendsUseCase
 import codeasus.projects.bank.eco.domain.remote.usecase.GetBinLookupUseCase
 import codeasus.projects.bank.eco.domain.utils.DomainResult
 import codeasus.projects.bank.eco.feature.transfer.states.TransferIntent
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransferViewModel @Inject constructor(
     userRepository: UserRepository,
-    private val customerRepository: CustomerRepository,
+    private val getFriendsUseCase: GetFriendsUseCase,
     private val getBinLookupUseCase: GetBinLookupUseCase
 ) : BaseViewModel(userRepository) {
 
@@ -34,7 +34,7 @@ class TransferViewModel @Inject constructor(
 
     init {
         loadUser()
-        loadCustomers()
+        loadFriends()
     }
 
     fun handleIntent(intent: TransferIntent) {
@@ -43,7 +43,7 @@ class TransferViewModel @Inject constructor(
             is TransferIntent.SetTransferAmount -> setTransferAmount(intent.strAmount)
             is TransferIntent.SetBeneficiaryName -> setBeneficiaryName(intent.beneficiaryName)
             is TransferIntent.SetAccountNumber -> setAccountNumber(intent.accountNumber)
-            is TransferIntent.SelectCustomer -> selectCustomer(intent.customerUi)
+            is TransferIntent.SelectFriend -> selectFriend(intent.customerUi)
         }
     }
 
@@ -104,15 +104,17 @@ class TransferViewModel @Inject constructor(
         updateInputFieldValidationStatus(InputField.RecipientName, CardDetailsInputFieldsValidator.validateRecipientName(accountName))
     }
 
-    private fun selectCustomer(customer: CustomerUi) {
+    private fun selectFriend(customer: CustomerUi) {
         viewModelScope.launch {
             _state.update { it.copy(transaction = it.transaction.copy(accountName = customer.name, accountNumber = customer.bankAccount.number)) }
         }
     }
 
-    private fun loadCustomers() {
+    private fun loadFriends() {
         viewModelScope.launch {
-            _state.update { it.copy(customers = customerRepository.getAllCustomers().map { it.toCustomerUi() }) }
+            _state.update { it.copy(friends = UiState.Loading) }
+            val friends = getFriendsUseCase.invoke(false)
+            _state.update { it.copy(friends = UiState.Success(friends)) }
         }
     }
 

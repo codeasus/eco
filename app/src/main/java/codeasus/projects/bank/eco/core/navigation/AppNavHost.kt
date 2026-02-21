@@ -26,8 +26,9 @@ fun AppNavHost(navController: NavHostController) {
             ProductScreenRoot(navigationManager = navigationManager)
         }
         composable<BottomNavbarScreen.CryptoWallet> {
-            TransferScreenRoot(navigationManager = navigationManager)
+//            TransferScreenRoot(navigationManager = navigationManager)
         }
+
         composable<Card> {
             val args = it.toRoute<Card>()
             CardScreenRoot(navigationManager = navigationManager, args.bankAccountId)
@@ -35,6 +36,10 @@ fun AppNavHost(navController: NavHostController) {
         composable<SearchTransaction> {
             val args = it.toRoute<SearchTransaction>()
             SearchTransactionScreenRoot(navigationManager = navigationManager, args.bankAccountId)
+        }
+        composable<Transfer> {
+            val args = it.toRoute<Transfer>()
+            TransferScreenRoot(navigationManager = navigationManager, args.bankAccountId)
         }
         composable<SystemMessages> {
             SystemMessagesScreenRoot(navigationManager = navigationManager)

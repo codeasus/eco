@@ -33,6 +33,7 @@ import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.Card
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import codeasus.projects.bank.eco.core.navigation.SearchTransaction
+import codeasus.projects.bank.eco.core.navigation.Transfer
 import codeasus.projects.bank.eco.core.navigation.ui.BaseTopNavbar
 import codeasus.projects.bank.eco.core.navigation.ui.BottomNavbar
 import codeasus.projects.bank.eco.core.ui.shared.view.TextButton
@@ -64,6 +65,9 @@ fun HomeScreenRoot(navigationManager: NavigationManager) {
             },
             onNavigateToSearchTransactionScreen = {
                 navigationManager.navigateTo(SearchTransaction())
+            },
+            onNavigateToTransferScreen = {
+                navigationManager.navigateTo(Transfer(it))
             }
         )
     }
@@ -76,7 +80,8 @@ fun HomeScreen(
     state: HomeState,
     onAction: (HomeIntent) -> Unit,
     onNavigateToCardScreen: (String) -> Unit = {},
-    onNavigateToSearchTransactionScreen: () -> Unit = {}
+    onNavigateToSearchTransactionScreen: () -> Unit = {},
+    onNavigateToTransferScreen: (String) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scrollState = rememberScrollState()
@@ -137,7 +142,9 @@ fun HomeScreen(
                     CardInstantAction(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is BankAccountUiState.Success) {
                         onAction(HomeIntent.ShowRequestMoneyBottomBottomSheet)
                     }
-                    CardInstantAction(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is BankAccountUiState.Success) {}
+                    CardInstantAction(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is BankAccountUiState.Success) {
+                        onNavigateToTransferScreen(state.currentBankAccount.id)
+                    }
                     CardInstantAction(R.drawable.ic_location, "ATMs", true) {}
                 }
             }
