@@ -7,7 +7,7 @@ enum class Currency(val symbol: String, val code: String, @DrawableRes val icon:
     EUR("€", "EUR", R.drawable.ic_eur),
     USD("$", "USD", R.drawable.ic_usd),
     PLN("zł", "PLN", R.drawable.ic_pln),
-    UNKNOWN("", "", R.drawable.ic_question);
+    UNKNOWN("", "N/A", R.drawable.ic_question);
 
     companion object {
         fun fromCode(code: String): Currency {

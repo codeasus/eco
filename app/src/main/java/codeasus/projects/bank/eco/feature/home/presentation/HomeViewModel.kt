@@ -3,15 +3,21 @@ package codeasus.projects.bank.eco.feature.home.presentation
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
+import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import codeasus.projects.bank.eco.domain.local.usecase.GetAllTransactionsListItemsUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetFriendsUseCase
 import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionByIdUseCase
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
 import codeasus.projects.bank.eco.feature.home.presentation.states.toTransactionDateItemUI
+import codeasus.projects.bank.eco.feature.request_money.state.RequestMoneyState
+import codeasus.projects.bank.eco.feature.transfer.utils.CardDetailsInputFieldsValidator
 import codeasus.projects.bank.eco.feature.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -24,6 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     userRepository: UserRepository,
+    private val getFriendsUseCase: GetFriendsUseCase,
     private val bankAccountRepository: BankAccountRepository,
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
     private val getAllTransactionsListItemsUseCase: GetAllTransactionsListItemsUseCase
@@ -41,13 +48,29 @@ class HomeViewModel @Inject constructor(
     fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.RestackCards -> reStackCards()
-            is HomeIntent.ShowBottomSheet -> {
-                showBottomSheet()
+            is HomeIntent.ShowTransactionViewBottomSheet -> {
+                showTransactionViewBottomSheet()
                 loadTransactionById(intent.transactionId)
             }
-
-            is HomeIntent.HideBottomSheet -> {
-                hideBottomSheet()
+            is HomeIntent.HideTransactionBottomBottomSheet -> {
+                hideTransactionBottomBottomSheet()
+            }
+            is HomeIntent.ShowRequestMoneyBottomBottomSheet -> {
+                showRequestMoneyBottomBottomSheet()
+                loadFriends()
+                setBeneficiaryBankAccount(_state.value.currentBankAccount)
+            }
+            is HomeIntent.HideRequestMoneyBottomBottomSheet -> {
+                hideRequestMoneyBottomBottomSheet()
+            }
+            is HomeIntent.SelectFriend -> {
+                setFriend(intent.friend)
+            }
+            is HomeIntent.SetTransferAmount -> {
+                setTransferAmount(intent.strAmount)
+            }
+            is HomeIntent.SetBeneficiaryBankAccount -> {
+                setBeneficiaryBankAccount(intent.bankAccount)
             }
         }
     }
@@ -107,6 +130,7 @@ class HomeViewModel @Inject constructor(
                     last = temp
                 }
                 bankAccounts[bankAccounts.size - 1] = first
+
                 _state.update {
                     it.copy(
                         bankAccountsUiState = BankAccountUiState.Success(bankAccounts),
@@ -117,11 +141,54 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun showBottomSheet() {
-        _state.update { it.copy(showBottomSheet = true, transactionUiState = UiState.Loading) }
+    fun setFriend(friend: CustomerUi) {
+        _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(friend = friend)) }
     }
 
-    private fun hideBottomSheet() {
-        _state.update { it.copy(showBottomSheet = false, transactionUiState = UiState.Empty) }
+    fun setBeneficiaryBankAccount(bankAccountUi: BankAccountUi) {
+        _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(beneficiaryBankAccount = UiState.Success(bankAccountUi))) }
+    }
+
+    fun setTransferAmount(strAmount: String) {
+        val validationResponse = CardDetailsInputFieldsValidator.validateTransferAmount(strAmount)
+        when (validationResponse) {
+            is InputValidationResult.Valid -> {
+                _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(amount = validationResponse.data)) }
+            }
+            else -> {}
+        }
+        updateInputFieldValidationStatus(InputField.TransferAmount, validationResponse)
+    }
+
+    fun loadFriends() {
+        viewModelScope.launch {
+            _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(friends = UiState.Loading)) }
+            val friends = getFriendsUseCase.invoke()
+            _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(friends = UiState.Success(friends))) }
+        }
+    }
+
+    private fun updateInputFieldValidationStatus(inputField: InputField, validationResult: InputValidationResult<Any>) {
+        val newMap = _state.value.requestMoneyState.inputFieldValidationStates.toMutableMap()
+
+        newMap[inputField] = validationResult
+
+        _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(inputFieldValidationStates = newMap)) }
+    }
+
+    private fun showTransactionViewBottomSheet() {
+        _state.update { it.copy(showTransactionViewBottomSheet = true, transactionUiState = UiState.Loading) }
+    }
+
+    private fun hideTransactionBottomBottomSheet() {
+        _state.update { it.copy(showTransactionViewBottomSheet = false, transactionUiState = UiState.Empty) }
+    }
+
+    private fun showRequestMoneyBottomBottomSheet() {
+        _state.update { it.copy(showRequestMoneyBottomSheet = true) }
+    }
+
+    private fun hideRequestMoneyBottomBottomSheet() {
+        _state.update { it.copy(showRequestMoneyBottomSheet = false, requestMoneyState = RequestMoneyState()) }
     }
 }

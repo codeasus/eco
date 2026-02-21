@@ -44,10 +44,10 @@ import codeasus.projects.bank.eco.core.navigation.ui.BottomNavbar
 import codeasus.projects.bank.eco.core.ui.shared.view.Profiles
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
-import codeasus.projects.bank.eco.feature.transfer.states.InputField
 import codeasus.projects.bank.eco.feature.transfer.states.TransferIntent
 import codeasus.projects.bank.eco.feature.transfer.states.TransferState
 import codeasus.projects.bank.eco.feature.transfer.utils.CardNumberVisualTransformation
@@ -201,7 +201,7 @@ fun TransferScreen(
                     var transferAmountText by remember { mutableStateOf("") }
 
                     CurrencyDropDownList(
-                        Currency.entries.toTypedArray(),
+                        Currency.entries.filter { it != Currency.UNKNOWN }.toTypedArray(),
                         state.transaction.currency,
                     ) { currency -> onAction(TransferIntent.SelectCurrency(currency)) }
 

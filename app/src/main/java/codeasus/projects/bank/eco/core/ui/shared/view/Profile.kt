@@ -45,7 +45,7 @@ fun Profile(
             .then(
                 if (isSelected) {
                     Modifier.background(
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
                         shape = shape
                     )
                 } else {

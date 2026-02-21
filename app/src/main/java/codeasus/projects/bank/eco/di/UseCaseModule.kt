@@ -1,7 +1,9 @@
 package codeasus.projects.bank.eco.di
 
+import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepository
 import codeasus.projects.bank.eco.domain.local.repository.transaction.TransactionRepository
 import codeasus.projects.bank.eco.domain.local.usecase.GetAllTransactionsListItemsUseCase
+import codeasus.projects.bank.eco.domain.local.usecase.GetFriendsUseCase
 import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionByIdUseCase
 import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionsByKeywordAndTypeUseCase
 import codeasus.projects.bank.eco.domain.local.usecase.GetTransactionsByKeywordUseCase
@@ -44,5 +46,11 @@ object UseCaseModule {
     @Singleton
     fun provideGetTransactionByIdUseCase(transactionRepository: TransactionRepository): GetTransactionByIdUseCase {
         return GetTransactionByIdUseCase(transactionRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetFriendsUseCase(customerRepository: CustomerRepository): GetFriendsUseCase {
+        return GetFriendsUseCase(customerRepository)
     }
 }

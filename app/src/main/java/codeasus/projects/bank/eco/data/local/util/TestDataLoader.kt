@@ -42,6 +42,7 @@ class TestDataLoader @Inject constructor(
             ),
             CustomerModel(
                 name = "Bruce Wayne",
+                isFriend = true,
                 profileImgResId = R.drawable.bruce_wayne,
                 bankAccount =
                     CustomerBankAccountModel(
@@ -51,6 +52,7 @@ class TestDataLoader @Inject constructor(
             ),
             CustomerModel(
                 name = "Danny Fernandez",
+                isFriend = true,
                 profileImgResId = R.drawable.danny_fernandez,
                 bankAccount =
                     CustomerBankAccountModel(
@@ -87,11 +89,62 @@ class TestDataLoader @Inject constructor(
             ),
             CustomerModel(
                 name = "Kelly Robinson",
+                isFriend = true,
                 profileImgResId = R.drawable.kelly_robinson,
                 bankAccount =
                     CustomerBankAccountModel(
                         name = "Kelly Robinson",
                         number = "1234567800000007"
+                    )
+            ),
+            CustomerModel(
+                name = "Jessica Alba",
+                isFriend = true,
+                profileImgResId = R.drawable.jessica_alba,
+                bankAccount =
+                    CustomerBankAccountModel(
+                        name = "Jessica Alba",
+                        number = "6733456780340001"
+                    )
+            ),
+            CustomerModel(
+                name = "Douglas Lane",
+                isFriend = true,
+                profileImgResId = R.drawable.douglas_lane,
+                bankAccount =
+                    CustomerBankAccountModel(
+                        name = "Douglas Lane",
+                        number = "1984567800000843"
+                    )
+            ),
+            CustomerModel(
+                name = "Adam Holy",
+                isFriend = true,
+                profileImgResId = R.drawable.adam_holy,
+                bankAccount =
+                    CustomerBankAccountModel(
+                        name = "Adam Holy",
+                        number = "9924567800000475"
+                    )
+            ),
+            CustomerModel(
+                name = "Natalia Desmond",
+                isFriend = true,
+                profileImgResId = R.drawable.natalia_desmond,
+                bankAccount =
+                    CustomerBankAccountModel(
+                        name = "Natalia Desmond",
+                        number = "3344567800000665"
+                    )
+            ),
+            CustomerModel(
+                name = "Sarah Lopez",
+                isFriend = true,
+                profileImgResId = R.drawable.sarah_lopez,
+                bankAccount =
+                    CustomerBankAccountModel(
+                        name = "Sarah Lopez",
+                        number = "0094567800000308"
                     )
             )
         )

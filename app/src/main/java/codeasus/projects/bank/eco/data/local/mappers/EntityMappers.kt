@@ -21,6 +21,7 @@ import com.android.identity.util.UUID
 fun CustomerModel.toCustomerEntity(): CustomerEntity {
     return CustomerEntity(
         name = this.name,
+        isFriend = this.isFriend,
         profileImgResourceId = this.profileImgResId,
         bankAccountName = this.bankAccount.name,
         bankAccountNumber = this.bankAccount.number
@@ -30,6 +31,7 @@ fun CustomerModel.toCustomerEntity(): CustomerEntity {
 fun CustomerEntity.toCustomerModel(): CustomerModel {
     return CustomerModel(
         name = this.name,
+        isFriend = this.isFriend,
         profileImgResId = this.profileImgResourceId,
         bankAccount = CustomerBankAccountModel(
             name = this.name,

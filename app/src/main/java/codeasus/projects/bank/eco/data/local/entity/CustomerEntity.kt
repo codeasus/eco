@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "customers")
 data class CustomerEntity(
     @PrimaryKey val name: String,
+    val isFriend: Boolean,
     val profileImgResourceId: Int,
     val bankAccountName: String,
     val bankAccountNumber: String

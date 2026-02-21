@@ -17,6 +17,9 @@ interface CustomerDao {
     @Query("SELECT * FROM customers")
     suspend fun getAllCustomers(): List<CustomerEntity>
 
+    @Query("SELECT * FROM customers WHERE isFriend == 1")
+    suspend fun getFriends(): List<CustomerEntity>
+
     @Query("DELETE FROM customers")
     suspend fun deleteCustomers()
 }

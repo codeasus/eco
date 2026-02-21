@@ -6,5 +6,6 @@ interface CustomerRepository {
     suspend fun saveCustomer(customer: CustomerModel)
     suspend fun getCustomerByName(name: String): CustomerModel?
     suspend fun getAllCustomers(): List<CustomerModel>
+    suspend fun getFriends(): List<CustomerModel>
     suspend fun deleteCustomers()
 }

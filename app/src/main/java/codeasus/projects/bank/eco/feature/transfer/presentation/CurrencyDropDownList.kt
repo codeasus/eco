@@ -60,7 +60,7 @@ fun CurrencyDropDownList(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = selectedCurrency.name,
+                    text = selectedCurrency.code,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -73,6 +73,7 @@ fun CurrencyDropDownList(
 
         DropdownMenu(
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant),
+            shape = RoundedCornerShape(24.dp),
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
@@ -85,7 +86,7 @@ fun CurrencyDropDownList(
                         )
                     },
                     text = {
-                        Text(text = currency.name)
+                        Text(text = currency.code)
                     },
                     onClick = {
                         onCurrencySelected(currency)
@@ -101,7 +102,7 @@ fun CurrencyDropDownList(
 @Composable
 fun CurrencyDropDownListPreview() {
     EcoTheme {
-        CurrencyDropDownList(Currency.entries.toTypedArray(), Currency.PLN) {
+        CurrencyDropDownList(Currency.entries.toTypedArray(), Currency.UNKNOWN) {
 
         }
     }

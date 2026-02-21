@@ -6,5 +6,5 @@ data class TransactionState(
     val accountName: String = "",
     val accountNumber: String = "",
     var amount: Double = 0.0,
-    val currency: Currency  = Currency.USD
+    val currency: Currency  = Currency.UNKNOWN
 )

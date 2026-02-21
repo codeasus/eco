@@ -47,6 +47,7 @@ import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
+import codeasus.projects.bank.eco.feature.request_money.view.RequestMoneyBottomSheet
 import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
@@ -97,9 +98,7 @@ fun HomeScreen(
     ) {
         Column(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp).verticalScroll(scrollState), verticalArrangement = Arrangement.spacedBy(42.dp)) {
             Column(
-                modifier = Modifier
-                    .backgroundCards()
-                    .padding(16.dp),
+                modifier = Modifier.backgroundCards().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
                 Text(
@@ -112,15 +111,11 @@ fun HomeScreen(
                     is BankAccountUiState.NotFound -> {}
                     is BankAccountUiState.Loading -> {
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(12.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             BankCardUnknown(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(240.dp),
+                                modifier = Modifier.fillMaxWidth().height(240.dp),
                                 bankAccountUiState = state.bankAccountsUiState
                             )
                         }
@@ -139,7 +134,9 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CardInstantAction(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is BankAccountUiState.Success) {}
+                    CardInstantAction(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is BankAccountUiState.Success) {
+                        onAction(HomeIntent.ShowRequestMoneyBottomBottomSheet)
+                    }
                     CardInstantAction(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is BankAccountUiState.Success) {}
                     CardInstantAction(R.drawable.ic_location, "ATMs", true) {}
                 }
@@ -164,13 +161,23 @@ fun HomeScreen(
                     TextButton("View all") { onNavigateToSearchTransactionScreen() }
                 }
                 LimitedTransactionsWithDates(state.transactions) { transactionId ->
-                    onAction(HomeIntent.ShowBottomSheet(transactionId))
+                    onAction(HomeIntent.ShowTransactionViewBottomSheet(transactionId))
                 }
             }
 
-            TransactionBottomSheet(transactionUiState = state.transactionUiState, isVisible = state.showBottomSheet) {
-                onAction(HomeIntent.HideBottomSheet)
-            }
+            TransactionBottomSheet(
+                transactionUiState = state.transactionUiState,
+                isVisible = state.showTransactionViewBottomSheet,
+                onDismiss =  { onAction(HomeIntent.HideTransactionBottomBottomSheet) }
+            )
+
+            RequestMoneyBottomSheet(
+                requestMoneyState = state.requestMoneyState,
+                isVisible = state.showRequestMoneyBottomSheet,
+                onProfileSelected = { onAction(HomeIntent.SelectFriend(it))},
+                onSetTransferAmount = { onAction(HomeIntent.SetTransferAmount(it)) },
+                onDismiss = { onAction(HomeIntent.HideRequestMoneyBottomBottomSheet) }
+            )
         }
     }
 }

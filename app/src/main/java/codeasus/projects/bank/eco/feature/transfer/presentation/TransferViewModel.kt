@@ -3,6 +3,7 @@ package codeasus.projects.bank.eco.feature.transfer.presentation
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toCustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 import codeasus.projects.bank.eco.domain.local.model.enums.Currency
@@ -10,7 +11,6 @@ import codeasus.projects.bank.eco.domain.local.repository.customer.CustomerRepos
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
 import codeasus.projects.bank.eco.domain.remote.usecase.GetBinLookupUseCase
 import codeasus.projects.bank.eco.domain.utils.DomainResult
-import codeasus.projects.bank.eco.feature.transfer.states.InputField
 import codeasus.projects.bank.eco.feature.transfer.states.TransferIntent
 import codeasus.projects.bank.eco.feature.transfer.states.TransferState
 import codeasus.projects.bank.eco.feature.transfer.utils.CardDetailsInputFieldsValidator
@@ -40,7 +40,7 @@ class TransferViewModel @Inject constructor(
     fun handleIntent(intent: TransferIntent) {
         when (intent) {
             is TransferIntent.SelectCurrency -> selectCurrency(intent.currency)
-            is TransferIntent.SetTransferAmount -> setTransferAmount(intent.amount)
+            is TransferIntent.SetTransferAmount -> setTransferAmount(intent.strAmount)
             is TransferIntent.SetBeneficiaryName -> setBeneficiaryName(intent.beneficiaryName)
             is TransferIntent.SetAccountNumber -> setAccountNumber(intent.accountNumber)
             is TransferIntent.SelectCustomer -> selectCustomer(intent.customerUi)

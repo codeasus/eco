@@ -23,6 +23,10 @@ class CustomerRepositoryImpl @Inject constructor(
         return customerDao.getAllCustomers().map { it.toCustomerModel() }
     }
 
+    override suspend fun getFriends(): List<CustomerModel> {
+        return customerDao.getFriends().map { it.toCustomerModel() }
+    }
+
     override suspend fun deleteCustomers() {
         customerDao.deleteCustomers()
     }

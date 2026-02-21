@@ -4,15 +4,10 @@ import codeasus.projects.bank.eco.core.ui.shared.mappers.toUserUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.UserUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.domain.remote.model.banking.BinLookupModel
 import codeasus.projects.bank.eco.feature.utils.UiState
-
-enum class InputField {
-    CardNumber,
-    RecipientName,
-    TransferAmount
-}
 
 data class TransferState(
     val isLoading: Boolean = false,

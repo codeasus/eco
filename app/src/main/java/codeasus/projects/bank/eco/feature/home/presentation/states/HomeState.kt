@@ -10,7 +10,10 @@ import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.UserUi
 import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
+import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionListItem
+import codeasus.projects.bank.eco.feature.request_money.state.RequestMoneyState
 import codeasus.projects.bank.eco.feature.utils.UiState
 
 data class HomeState(
@@ -19,7 +22,9 @@ data class HomeState(
     val transactionUiState: UiState<TransactionUi> = UiState.Empty,
     val transactions: List<TransactionListItemUI> = emptyList(),
     val bankAccountsUiState: BankAccountUiState<List<BankAccountUi>> = BankAccountUiState.Idle,
-    val showBottomSheet: Boolean = false
+    val requestMoneyState: RequestMoneyState = RequestMoneyState(),
+    val showTransactionViewBottomSheet: Boolean = false,
+    val showRequestMoneyBottomSheet: Boolean = false,
 )
 
 sealed class TransactionListItemUI {
