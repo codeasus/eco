@@ -8,6 +8,7 @@ import codeasus.projects.bank.eco.feature.utils.UiState
 
 data class RequestMoneyState(
     val beneficiaryBankAccount: UiState<BankAccountUi> = UiState.Empty,
+    val accounts: UiState<List<BankAccountUi>> = UiState.Empty,
     val amount: Double = 0.0,
     val friend: CustomerUi? = null,
     val friends: UiState<List<CustomerUi>> = UiState.Empty,

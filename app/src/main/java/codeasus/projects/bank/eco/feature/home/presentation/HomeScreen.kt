@@ -41,7 +41,6 @@ import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.MainBaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactionsWithDates
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -49,6 +48,7 @@ import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAct
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
 import codeasus.projects.bank.eco.feature.request_money.view.RequestMoneyBottomSheet
+import codeasus.projects.bank.eco.feature.utils.UiState
 import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
@@ -112,9 +112,7 @@ fun HomeScreen(
                     style = TextStyle(fontSize = MaterialTheme.typography.headlineLarge.fontSize)
                 )
                 when (state.bankAccountsUiState) {
-                    is BankAccountUiState.Idle -> {}
-                    is BankAccountUiState.NotFound -> {}
-                    is BankAccountUiState.Loading -> {
+                    is UiState.Loading -> {
                         Box(
                             modifier = Modifier.fillMaxWidth().padding(12.dp),
                             contentAlignment = Alignment.Center
@@ -126,23 +124,24 @@ fun HomeScreen(
                         }
                     }
 
-                    is BankAccountUiState.Success -> {
+                    is UiState.Success -> {
                         Cards(
                             userBankAccounts = state.bankAccountsUiState.data,
                             onSelected = { bankAccount -> onNavigateToCardScreen(bankAccount.id) },
                             onSwiped = { onAction(HomeIntent.RestackCards) }
                         )
                     }
+                    is UiState.Empty, is UiState.Error -> {}
                 }
                 Row(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CardInstantAction(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is BankAccountUiState.Success) {
+                    CardInstantAction(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is UiState.Success) {
                         onAction(HomeIntent.ShowRequestMoneyBottomBottomSheet)
                     }
-                    CardInstantAction(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is BankAccountUiState.Success) {
+                    CardInstantAction(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is UiState.Success) {
                         onNavigateToTransferScreen(state.currentBankAccount.id)
                     }
                     CardInstantAction(R.drawable.ic_location, "ATMs", true) {}
@@ -183,6 +182,7 @@ fun HomeScreen(
                 isVisible = state.showRequestMoneyBottomSheet,
                 onProfileSelected = { onAction(HomeIntent.SelectFriend(it))},
                 onSetTransferAmount = { onAction(HomeIntent.SetTransferAmount(it)) },
+                setBeneficiaryBankAccount = { onAction(HomeIntent.SetBeneficiaryBankAccount(it)) },
                 onDismiss = { onAction(HomeIntent.HideRequestMoneyBottomBottomSheet) }
             )
         }
@@ -197,7 +197,7 @@ fun HomeScreenLightPreview() {
             navigationManager = NavigationManager(rememberNavController()),
             state = HomeState(
                 transactions =  DataSourceDefaults.getCustomerTransactions(),
-                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second)
+                bankAccountsUiState = UiState.Success(DataSourceDefaults.unknownUser.second)
             ),
             onAction = {}
         )
@@ -212,7 +212,7 @@ fun HomeScreenDarkPreview() {
             navigationManager = NavigationManager(rememberNavController()),
             state = HomeState(
                 transactions = DataSourceDefaults.getCustomerTransactions(),
-                bankAccountsUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second)
+                bankAccountsUiState = UiState.Success(DataSourceDefaults.unknownUser.second)
             ),
             onAction = {}
         )

@@ -35,7 +35,7 @@ fun TransactionActionButton(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(color = MaterialTheme.colorScheme.secondary)
+                .background(color = MaterialTheme.colorScheme.primary)
                 .clickable(
                     enabled = enabled,
                     onClick = onClick,
@@ -46,7 +46,7 @@ fun TransactionActionButton(
                 modifier = Modifier.size(28.dp),
                 painter = painterResource(id = iconResourceId),
                 contentDescription = actionName,
-                tint = MaterialTheme.colorScheme.onSecondary
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
         Spacer(modifier = Modifier.height(6.dp))

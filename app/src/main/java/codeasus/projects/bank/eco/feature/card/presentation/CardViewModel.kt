@@ -2,7 +2,6 @@ package codeasus.projects.bank.eco.feature.card.presentation
 
 import androidx.lifecycle.viewModelScope
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
 import codeasus.projects.bank.eco.domain.local.repository.user.BankAccountRepository
 import codeasus.projects.bank.eco.domain.local.repository.user.UserRepository
@@ -77,7 +76,7 @@ class CardViewModel @Inject constructor(
         viewModelScope.launch {
             _state.collectLatest { state ->
                 when(val bankAccountUiState = state.bankAccountUiState) {
-                    is BankAccountUiState.Success -> {
+                    is UiState.Success -> {
                         val bankAccount = bankAccountUiState.data
                         val transactions = getAllTransactionsListItemsUseCase.invoke(bankAccount.id).map { it.toTransactionDateItemUI() }
                         _state.update { it.copy(transactions = transactions) }
@@ -91,21 +90,21 @@ class CardViewModel @Inject constructor(
     private fun loadCard(bankAccountId: String) {
         val currentState = _state.value
         if (currentState.bankAccountId == bankAccountId &&
-            currentState.bankAccountUiState is BankAccountUiState.Success
+            currentState.bankAccountUiState is UiState.Success
         ) {
             return
         }
         viewModelScope.launch {
             _state.update { it.copy(bankAccountId = bankAccountId) }
-            _state.update { it.copy(bankAccountUiState = BankAccountUiState.Loading) }
+            _state.update { it.copy(bankAccountUiState = UiState.Loading) }
             delay(1000)
             val bankAccount = bankAccountRepository.getBankAccountForPublicById(bankAccountId)
 
             if (bankAccount == null) {
-                _state.update { it.copy(bankAccountUiState = BankAccountUiState.NotFound) }
+                _state.update { it.copy(bankAccountUiState = UiState.Empty) }
                 return@launch
             }
-            _state.update { it.copy(bankAccountUiState = BankAccountUiState.Success(bankAccount.toBankAccountUi())) }
+            _state.update { it.copy(bankAccountUiState = UiState.Success(bankAccount.toBankAccountUi())) }
         }
     }
 
@@ -113,17 +112,17 @@ class CardViewModel @Inject constructor(
         viewModelScope.launch {
             val bankAccountId = _state.value.bankAccountId
             if (bankAccountId != null) {
-                _state.update { it.copy(bankAccountPrivateDataUiState = BankAccountUiState.Loading) }
+                _state.update { it.copy(bankAccountPrivateDataUiState = UiState.Loading) }
                 delay(1200)
                 val bankAccount = bankAccountRepository.getBankAccountForPrivateById(bankAccountId)
 
                 if (bankAccount == null) {
-                    _state.update { it.copy(bankAccountPrivateDataUiState = BankAccountUiState.NotFound) }
+                    _state.update { it.copy(bankAccountPrivateDataUiState = UiState.Empty) }
                     return@launch
                 }
                 _state.update {
                     it.copy(
-                        bankAccountPrivateDataUiState = BankAccountUiState.Success(
+                        bankAccountPrivateDataUiState = UiState.Success(
                             bankAccount.toBankAccountUi()
                         )
                     )
@@ -133,7 +132,7 @@ class CardViewModel @Inject constructor(
     }
 
     private fun nullifyCardPrivateData() {
-        _state.update { it.copy(bankAccountPrivateDataUiState = BankAccountUiState.Idle) }
+        _state.update { it.copy(bankAccountPrivateDataUiState = UiState.Empty) }
     }
 
     private fun flipCard() {

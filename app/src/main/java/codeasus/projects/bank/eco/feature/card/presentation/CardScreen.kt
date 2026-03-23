@@ -46,7 +46,6 @@ import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScaffold
 import codeasus.projects.bank.eco.core.ui.shared.view.base.BaseScreen
 import codeasus.projects.bank.eco.core.ui.shared.view.card.BankCardUnknown
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactionsWithDates
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
@@ -56,6 +55,7 @@ import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItem
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItems
+import codeasus.projects.bank.eco.feature.utils.UiState
 import codeasus.projects.bank.eco.feature.view_transaction.view.TransactionBottomSheet
 
 @Composable
@@ -90,7 +90,7 @@ fun CardScreen(
     BaseScaffold(
         topBar = {
             CardTopNavbar(
-                title = if (state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) state.bankAccountUiState.data.name else "",
+                title = if (state.bankAccountUiState is UiState.Success<BankAccountUi>) state.bankAccountUiState.data.name else "",
                 color = darkerBankAccountContainerColor,
                 scrollBehavior = scrollBehavior
             ) {
@@ -129,8 +129,8 @@ fun CardScreen(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 when (val bankAccount = state.bankAccountUiState) {
-                    is BankAccountUiState.Idle -> {}
-                    is BankAccountUiState.Loading -> {
+                    is UiState.Error, is UiState.Empty -> {}
+                    is UiState.Loading -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -146,8 +146,7 @@ fun CardScreen(
                         }
                     }
 
-                    is BankAccountUiState.NotFound -> {}
-                    is BankAccountUiState.Success<BankAccountUi> -> {
+                    is UiState.Success<BankAccountUi> -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -167,10 +166,8 @@ fun CardScreen(
                 }
 
                 when (val bankAccountUiState = state.bankAccountUiState) {
-                    is BankAccountUiState.Idle -> {}
-                    is BankAccountUiState.Loading -> {}
-                    is BankAccountUiState.NotFound -> {}
-                    is BankAccountUiState.Success<BankAccountUi> -> {
+                    is UiState.Error, is UiState.Empty, is UiState.Loading -> {}
+                    is UiState.Success<BankAccountUi> -> {
                         val bankAccount = bankAccountUiState.data
                         Text(
                             text = "${bankAccount.type} \u2219 ${bankAccount.currency.code}",
@@ -200,19 +197,19 @@ fun CardScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                    CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.ShowCardDetailsBottomSheet)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_topup, "Top-up", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                    CardInstantAction(R.drawable.ic_topup, "Top-up", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.TopUp)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                    CardInstantAction(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.FlipCard)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_dots, "More", enabled = state.bankAccountUiState is BankAccountUiState.Success<BankAccountUi>) {
+                    CardInstantAction(R.drawable.ic_dots, "More", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.More)
                     }
                 }
@@ -252,7 +249,7 @@ fun CardScreenLightPreview() {
     EcoTheme {
         CardScreen(
             state = CardState(
-                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[0]),
+                bankAccountUiState = UiState.Success(DataSourceDefaults.unknownUser.second[0]),
                 transactions = DataSourceDefaults.getCustomerTransactions(),
                 cardFlipState = CardFlipState.FRONT,
             ),
@@ -269,7 +266,7 @@ fun CardScreenDarkPreview() {
     EcoTheme {
         CardScreen(
             state = CardState(
-                bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[1]),
+                bankAccountUiState = UiState.Success(DataSourceDefaults.unknownUser.second[1]),
                 transactions = DataSourceDefaults.getCustomerTransactions(),
                 cardFlipState = CardFlipState.FRONT,
             ),

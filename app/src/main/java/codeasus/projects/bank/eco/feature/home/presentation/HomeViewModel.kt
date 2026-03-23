@@ -1,10 +1,10 @@
 package codeasus.projects.bank.eco.feature.home.presentation
 
 import androidx.lifecycle.viewModelScope
+import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.shared.mappers.toBankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.shared.view.models.CustomerUi
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputField
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.InputValidationResult
 import codeasus.projects.bank.eco.core.ui.shared.viewmodel.base.BaseViewModel
@@ -58,6 +58,7 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.ShowRequestMoneyBottomBottomSheet -> {
                 showRequestMoneyBottomBottomSheet()
                 loadFriends()
+                setAccounts()
                 setBeneficiaryBankAccount(_state.value.currentBankAccount)
             }
             is HomeIntent.HideRequestMoneyBottomBottomSheet -> {
@@ -103,12 +104,12 @@ class HomeViewModel @Inject constructor(
 
     private fun loadCards() {
         viewModelScope.launch {
-            _state.update { it.copy(bankAccountsUiState = BankAccountUiState.Loading) }
+            _state.update { it.copy(bankAccountsUiState = UiState.Loading) }
             val bankAccounts = bankAccountRepository.getBankAccounts().map { it.toBankAccountUi() }
             delay(800L)
             _state.update {
                 it.copy(
-                    bankAccountsUiState = BankAccountUiState.Success(bankAccounts),
+                    bankAccountsUiState = UiState.Success(bankAccounts),
                     currentBankAccount = bankAccounts.first()
                 )
             }
@@ -117,8 +118,8 @@ class HomeViewModel @Inject constructor(
 
     private fun reStackCards() {
         viewModelScope.launch {
-            if (_state.value.bankAccountsUiState is BankAccountUiState.Success) {
-                val bankAccounts = (_state.value.bankAccountsUiState as BankAccountUiState.Success<List<BankAccountUi>>).data.toMutableList()
+            if (_state.value.bankAccountsUiState is UiState.Success) {
+                val bankAccounts = (_state.value.bankAccountsUiState as UiState.Success<List<BankAccountUi>>).data.toMutableList()
 
                 if (bankAccounts.isEmpty()) return@launch
 
@@ -133,7 +134,7 @@ class HomeViewModel @Inject constructor(
 
                 _state.update {
                     it.copy(
-                        bankAccountsUiState = BankAccountUiState.Success(bankAccounts),
+                        bankAccountsUiState = UiState.Success(bankAccounts),
                         currentBankAccount = bankAccounts.first()
                     )
                 }
@@ -147,6 +148,11 @@ class HomeViewModel @Inject constructor(
 
     fun setBeneficiaryBankAccount(bankAccountUi: BankAccountUi) {
         _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(beneficiaryBankAccount = UiState.Success(bankAccountUi))) }
+    }
+
+    fun setAccounts() {
+        val accounts = _state.value.bankAccountsUiState
+        _state.update { it.copy(requestMoneyState = it.requestMoneyState.copy(accounts = accounts)) }
     }
 
     fun setTransferAmount(strAmount: String) {

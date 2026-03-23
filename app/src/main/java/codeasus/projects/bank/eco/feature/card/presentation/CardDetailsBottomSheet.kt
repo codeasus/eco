@@ -32,12 +32,12 @@ import androidx.compose.ui.unit.sp
 import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.shared.view.models.BankAccountUi
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
+import codeasus.projects.bank.eco.feature.utils.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDetailsBottomSheet(
-    bankAccountUiState: BankAccountUiState<BankAccountUi>,
+    bankAccountUiState: UiState<BankAccountUi>,
     isVisible: Boolean,
     onDismiss: () -> Unit
 ) {
@@ -55,7 +55,7 @@ fun CardDetailsBottomSheet(
             dragHandle = { BottomSheetDefaults.DragHandle() }
         ) {
             when (bankAccountUiState) {
-                is BankAccountUiState.Success -> {
+                is UiState.Success -> {
                     val bankAccountUi = bankAccountUiState.data
                     Column(
                         modifier = Modifier
@@ -138,7 +138,7 @@ fun CardDetailsBottomSheet(
                         }
                     }
                 }
-                is BankAccountUiState.Loading -> {
+                is UiState.Loading -> {
                     Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
                         Column {
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -147,8 +147,7 @@ fun CardDetailsBottomSheet(
                         }
                     }
                 }
-                is BankAccountUiState.NotFound -> {}
-                is BankAccountUiState.Idle -> {}
+                is UiState.Empty, is UiState.Error -> {}
             }
         }
     }
@@ -171,7 +170,7 @@ fun CardDetailsBottomSheetPreview() {
     EcoTheme {
         CardDetailsBottomSheet(
 //            bankAccountUiState = BankAccountUiState.Success(DataSourceDefaults.unknownUser.second[0].toBankAccountUi()),
-            bankAccountUiState = BankAccountUiState.Loading,
+            bankAccountUiState = UiState.Loading,
             isVisible = true,
         ) {
 

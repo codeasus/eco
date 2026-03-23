@@ -43,7 +43,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountType
 import codeasus.projects.bank.eco.domain.local.model.enums.BankAccountScheme
-import codeasus.projects.bank.eco.core.ui.shared.view.states.BankAccountUiState
+import codeasus.projects.bank.eco.feature.utils.UiState
 
 @Composable
 fun BankCardFront(
@@ -227,7 +227,7 @@ fun BankCardBack(
 }
 
 @Composable
-fun BankCardUnknown(modifier: Modifier, bankAccountUiState: BankAccountUiState<BankAccountUi>) {
+fun BankCardUnknown(modifier: Modifier, bankAccountUiState: UiState<BankAccountUi>) {
     val themeColors = BankCardDefaults.UnknownCardColors
     Card(
         modifier = modifier.clip(RoundedCornerShape(BankCardDefaults.CORNER_RADIUS.dp)),
@@ -275,11 +275,11 @@ fun BankCardUnknown(modifier: Modifier, bankAccountUiState: BankAccountUiState<B
                 }
                 Box(modifier = Modifier.fillMaxSize(1.0f), contentAlignment = Alignment.Center) {
                     when(bankAccountUiState) {
-                        is BankAccountUiState.Idle, is BankAccountUiState.Success -> {}
-                        is BankAccountUiState.Loading -> {
+                        is UiState.Success, is UiState.Error -> {}
+                        is UiState.Loading -> {
                             CircularProgressIndicator(strokeWidth = 3.dp, color = themeColors.colorTextDarker)
                         }
-                        is BankAccountUiState.NotFound -> {
+                        is UiState.Empty -> {
                             Image(
                                 modifier = Modifier.width(32.dp),
                                 painter = painterResource(R.drawable.ic_not_found),
@@ -301,7 +301,7 @@ fun BankCardUnknowPreview() {
     EcoTheme {
         BankCardUnknown(
             modifier = Modifier.fillMaxWidth().height(240.dp),
-            BankAccountUiState.NotFound
+            bankAccountUiState =  UiState.Empty
         )
     }
 }
