@@ -32,10 +32,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import codeasus.projects.bank.eco.R
@@ -94,7 +100,6 @@ fun TransferScreen(
             BottomNavbar(navigationManager)
         }
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -212,8 +217,8 @@ fun TransferScreen(
                 var transferAmountText by remember { mutableStateOf("") }
 
                 CurrencyDropDownList(
-                    Currency.entries.filter { it != Currency.UNKNOWN }.toTypedArray(),
-                    state.transaction.currency,
+                    currencies = Currency.entries.filter { it != Currency.UNKNOWN }.toTypedArray(),
+                    selectedCurrency = state.transaction.currency,
                 ) { currency -> onAction(TransferIntent.SelectCurrency(currency)) }
 
                 OutlinedTextField(
@@ -250,11 +255,10 @@ fun TransferScreen(
                 )
             }
             Spacer(modifier = Modifier.weight(1.0f))
-            Button(
-                modifier = Modifier.fillMaxWidth(0.5f).align(Alignment.CenterHorizontally),
-                onClick = {}
-            ) {
-                Text(text = "Transfer")
+            Button(modifier = Modifier.fillMaxWidth(0.5f).align(Alignment.CenterHorizontally), onClick = {}) {
+                Text(text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(baselineShift = BaselineShift(0.15f))) { append("Transfer  ") }
+                    withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)) { append("${state.transaction.amount}${state.transaction.currency.symbol}") } })
             }
         }
     }

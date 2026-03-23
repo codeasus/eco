@@ -166,14 +166,9 @@ fun RequestMoneyBottomSheet(
                         },
                         isError = requestMoneyState.inputFieldValidationStates[InputField.TransferAmount] is InputValidationResult.Invalid,
                         supportingText = {
-                            Text(
-                                text = requestMoneyState.inputFieldValidationStates[InputField.TransferAmount].let {
-                                    when (it) {
-                                        is InputValidationResult.Invalid -> it.errorMessage
-                                        else -> ""
-                                    }
-                                }
-                            )
+                            requestMoneyState.inputFieldValidationStates[InputField.TransferAmount].let {
+                                if (it is InputValidationResult.Invalid) Text(it.errorMessage)
+                            }
                         },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
@@ -247,22 +242,8 @@ fun RequestMoneyBottomSheet(
                         is UiState.Success -> {
                             Button(onClick = {}) {
                                 Text(text = buildAnnotatedString {
-                                    withStyle(
-                                        style = SpanStyle(
-                                            baselineShift = BaselineShift(0.15f)
-                                        )
-                                    ) {
-                                        append("Request ")
-                                    }
-
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontSize = 18.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    ) {
-                                        append("${requestMoneyState.amount}${beneficiaryBankAccount.data.currency.symbol}")
-                                    }
+                                    withStyle(style = SpanStyle(baselineShift = BaselineShift(0.15f))) { append("Request ") }
+                                    withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)) { append("${requestMoneyState.amount}${beneficiaryBankAccount.data.currency.symbol}") }
                                 })
                             }
                         }
