@@ -42,10 +42,10 @@ import codeasus.projects.bank.eco.domain.local.model.enums.TransactionStatus
 fun TransactionListItem(customerTransactionPair: Pair<CustomerUi, TransactionUi>, onTransactionSelected: (String) -> Unit) {
 
     val statusColor = when (customerTransactionPair.second.status) {
-        TransactionStatus.PENDING -> TransactionUIItemColors.COLOR_PENDING
-        TransactionStatus.COMPLETED -> TransactionUIItemColors.COLOR_COMPLETED
-        TransactionStatus.FAILED -> TransactionUIItemColors.COLOR_FAILED
-        TransactionStatus.CANCELED -> TransactionUIItemColors.COLOR_CANCELED
+        TransactionStatus.PENDING -> UiItemColors.COLOR_PENDING
+        TransactionStatus.COMPLETED -> UiItemColors.COLOR_MATERIAL_GREEN
+        TransactionStatus.FAILED -> UiItemColors.COLOR_FAILED
+        TransactionStatus.CANCELED -> UiItemColors.COLOR_CANCELED
     }
 
     Surface(

@@ -10,11 +10,13 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.observer.ResponseObserver
+import io.ktor.client.request.accept
 import io.ktor.client.request.header
 import io.ktor.client.statement.request
 import io.ktor.client.utils.CacheControl
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -52,8 +54,8 @@ fun getHttpClient(): HttpClient {
             }
         }
         defaultRequest {
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-            header(HttpHeaders.Accept, ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
             header(HttpHeaders.CacheControl, CacheControl.NO_CACHE)
         }
     }

@@ -27,7 +27,7 @@ import codeasus.projects.bank.eco.R
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 
 @Composable
-fun CardInstantAction(
+fun InstantActionButton(
     @DrawableRes iconResourceId: Int,
     actionName: String,
     enabled: Boolean = false,
@@ -60,8 +60,8 @@ fun CardInstantAction(
 
 @Preview(showSystemUi = false, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun CardInstantActionPreview() {
+fun InstantActionButtonPreview() {
     EcoTheme {
-        CardInstantAction(iconResourceId = R.drawable.ic_flip, actionName = "Flip") { }
+        InstantActionButton(iconResourceId = R.drawable.ic_flip, actionName = "Flip") { }
     }
 }

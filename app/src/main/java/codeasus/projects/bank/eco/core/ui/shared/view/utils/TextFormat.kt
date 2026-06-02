@@ -2,13 +2,16 @@ package codeasus.projects.bank.eco.core.ui.shared.view.utils
 
 import androidx.compose.ui.graphics.Color
 import codeasus.projects.bank.eco.core.ui.shared.view.models.TransactionUi
-import codeasus.projects.bank.eco.core.ui.shared.view.transaction.TransactionUIItemColors
+import codeasus.projects.bank.eco.core.ui.shared.view.transaction.UiItemColors
+import codeasus.projects.bank.eco.domain.local.model.enums.Currency
 import codeasus.projects.bank.eco.domain.local.model.enums.TransactionType
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+
+data class PriceChange(val formattedChange: String, val color: Color)
 
 fun formatLocalDateTime(dateTime: LocalDateTime): String {
     val pattern = "dd MMM, HH:mm"
@@ -62,7 +65,7 @@ fun formatFullBankAccountNumber(cardNumber: String): String {
 
 fun defineTransactionAmountColor(transactionType: TransactionType): Color {
     return when (transactionType) {
-        TransactionType.TRANSFER, TransactionType.WITHDRAWAL, TransactionType.PAYMENT -> TransactionUIItemColors.COLOR_MATERIAL_RED
+        TransactionType.TRANSFER, TransactionType.WITHDRAWAL, TransactionType.PAYMENT -> UiItemColors.COLOR_MATERIAL_RED
         TransactionType.DEPOSIT, TransactionType.REFUND -> Color.Unspecified
     }
 }
@@ -85,9 +88,31 @@ fun formatTransactionRate(amount: Double): String {
     return format.format(amount)
 }
 
-fun ellipsisText(text: String): String {
-    if(text.length >= 9) {
-        return "${text.take(8)}..."
+
+fun formatCoinPrice(amount: Double, currency: String): String {
+    val format = DecimalFormat("#,#0.000", DecimalFormatSymbols(Locale.ENGLISH))
+    val formattedPrice =format.format(amount)
+    val currency = Currency.fromCode(currency)
+    return "$formattedPrice${currency.symbol}"
+}
+
+fun formatCoinPriceChange(changeInPercentage: Double): PriceChange {
+    val format = DecimalFormat("#,#0.000", DecimalFormatSymbols(Locale.ENGLISH))
+    val formattedChange = format.format(changeInPercentage)
+    var sign = ""
+    var color =UiItemColors.COLOR_MATERIAL_RED
+
+    if(changeInPercentage > 0.0) {
+        color = UiItemColors.COLOR_MATERIAL_GREEN
+        sign = "+"
+    }
+
+    return PriceChange("$sign$formattedChange%", color)
+}
+
+fun ellipsisText(text: String, length: Int = 9): String {
+    if(text.length >= length) {
+        return "${text.take(length)}..."
     }
     return text
 }

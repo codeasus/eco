@@ -288,6 +288,7 @@ fun BankCardUnknown(modifier: Modifier, bankAccountUiState: UiState<BankAccountU
                                 contentDescription = "Contactless Payment Sign",
                             )
                         }
+                        else -> {}
                     }
                 }
             }

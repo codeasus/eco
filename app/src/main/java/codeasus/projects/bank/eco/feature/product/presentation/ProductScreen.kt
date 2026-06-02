@@ -79,7 +79,7 @@ fun ProductScreenLightPreview() {
     EcoTheme {
         ProductScreen(
             navigationManager = NavigationManager(rememberNavController()),
-            state = ProductState(isLoading = false),
+            state = ProductState(),
             onAction = {}
         )
     }
@@ -91,7 +91,7 @@ fun ProductScreenDarkPreview() {
     EcoTheme {
         ProductScreen(
             navigationManager = NavigationManager(rememberNavController()),
-            state = ProductState(isLoading = false),
+            state = ProductState(),
             onAction = {}
         )
     }

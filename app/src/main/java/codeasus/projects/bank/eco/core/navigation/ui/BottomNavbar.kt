@@ -1,7 +1,6 @@
 package codeasus.projects.bank.eco.core.navigation.ui
 
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,12 +19,12 @@ import codeasus.projects.bank.eco.core.navigation.BottomNavbarScreen
 import codeasus.projects.bank.eco.core.navigation.NavigationManager
 import kotlin.reflect.KClass
 
-data class BottomNavbarScreen<T : Any>(val screen: T, @DrawableRes val icon: Int)
+data class BottomNavbarScreen<T : Any>(val screen: T, val icon: Int)
 
 object BottomNavBarScreens {
     val items = arrayOf(
         BottomNavbarScreen(BottomNavbarScreen.Home, R.drawable.ic_home),
-        BottomNavbarScreen(BottomNavbarScreen.CryptoWallet, R.drawable.ic_wallet),
+        BottomNavbarScreen(BottomNavbarScreen.Coin, R.drawable.ic_coin),
         BottomNavbarScreen(BottomNavbarScreen.Product, R.drawable.ic_product),
     )
 }

@@ -208,8 +208,7 @@ fun TransactionBottomSheet(
                     }
                 }
 
-                is UiState.Empty -> {}
-                is UiState.Error -> {}
+                is UiState.Empty, is UiState.Error, is UiState.Idle -> {}
             }
         }
     }

@@ -5,7 +5,5 @@ import codeasus.projects.bank.eco.core.ui.shared.view.models.UserUi
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 
 data class ProductState(
-    val user: UserUi = DataSourceDefaults.unknownUser.first.toUserUi(),
-    val isLoading: Boolean = false,
-    val error: String? = null
+    val user: UserUi = DataSourceDefaults.unknownUser.first.toUserUi()
 )

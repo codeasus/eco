@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "codeasus.projects.bank.eco"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "codeasus.projects.bank.eco"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -42,13 +42,18 @@ android {
         }
     }
 
+    kotlin {
+        jvmToolchain(17)
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
     buildFeatures {
         compose = true
     }
@@ -65,6 +70,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.identity.jvm)
     implementation(libs.androidx.adaptive.android)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -103,6 +109,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
+    // Extended-Icons
+    implementation(libs.androidx.material.icons.extended)
+
     // Google Fonts
     implementation(libs.google.fonts)
 
@@ -119,4 +128,8 @@ dependencies {
 
     // Compose Foundation
     implementation(libs.compose.foundation)
+
+    // # Vico - Chart Library
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
 }

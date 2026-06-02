@@ -1,6 +1,6 @@
 package codeasus.projects.bank.eco.data.remote.mappers
 
-import codeasus.projects.bank.eco.data.remote.model.BinLookupResponseDto
+import codeasus.projects.bank.eco.data.remote.model.banking.BinLookupResponseDto
 import codeasus.projects.bank.eco.domain.remote.model.banking.BinLookupModel
 import codeasus.projects.bank.eco.domain.remote.model.banking.Country
 

@@ -1,4 +1,4 @@
-package codeasus.projects.bank.eco.data.remote.model
+package codeasus.projects.bank.eco.data.remote.model.banking
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

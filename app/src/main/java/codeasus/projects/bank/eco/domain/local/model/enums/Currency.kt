@@ -11,7 +11,7 @@ enum class Currency(val symbol: String, val code: String, @DrawableRes val icon:
 
     companion object {
         fun fromCode(code: String): Currency {
-            return Currency.entries.find { it.code == code } ?: throw IllegalArgumentException("Invalid currency code: $code")
+            return Currency.entries.find { it.code.equals(code, true) } ?: throw IllegalArgumentException("Invalid currency code: $code")
         }
 
         fun toCode(currency: Currency): String {

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import codeasus.projects.bank.eco.feature.card.presentation.CardScreenRoot
+import codeasus.projects.bank.eco.feature.crypto.presentation.CoinScreenRoot
 import codeasus.projects.bank.eco.feature.home.presentation.HomeScreenRoot
 import codeasus.projects.bank.eco.feature.product.presentation.ProductScreenRoot
 import codeasus.projects.bank.eco.feature.profile.presentation.ProfileScreenRoot
@@ -25,10 +26,9 @@ fun AppNavHost(navController: NavHostController) {
         composable<BottomNavbarScreen.Product> {
             ProductScreenRoot(navigationManager = navigationManager)
         }
-        composable<BottomNavbarScreen.CryptoWallet> {
-//            TransferScreenRoot(navigationManager = navigationManager)
+        composable<BottomNavbarScreen.Coin> {
+            CoinScreenRoot(navigationManager = navigationManager)
         }
-
         composable<Card> {
             val args = it.toRoute<Card>()
             CardScreenRoot(navigationManager = navigationManager, args.bankAccountId)

@@ -162,7 +162,7 @@ fun TransferScreen(
                                     }
                                 }
 
-                                is UiState.Empty, UiState.Loading, is UiState.Error -> {
+                                is UiState.Empty, UiState.Loading, is UiState.Error, is UiState.Idle -> {
                                     R.drawable.ic_card
                                 }
                             }

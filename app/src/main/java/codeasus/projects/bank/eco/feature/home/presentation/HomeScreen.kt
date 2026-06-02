@@ -44,7 +44,7 @@ import codeasus.projects.bank.eco.core.ui.shared.view.card.Cards
 import codeasus.projects.bank.eco.core.ui.shared.view.transaction.LimitedTransactionsWithDates
 import codeasus.projects.bank.eco.core.ui.shared.view.utils.DataSourceDefaults
 import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
-import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
+import codeasus.projects.bank.eco.feature.card.presentation.utils.InstantActionButton
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeIntent
 import codeasus.projects.bank.eco.feature.home.presentation.states.HomeState
 import codeasus.projects.bank.eco.feature.request_money.view.RequestMoneyBottomSheet
@@ -131,20 +131,20 @@ fun HomeScreen(
                             onSwiped = { onAction(HomeIntent.RestackCards) }
                         )
                     }
-                    is UiState.Empty, is UiState.Error -> {}
+                    is UiState.Empty, is UiState.Error, is UiState.Idle -> {}
                 }
                 Row(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CardInstantAction(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is UiState.Success) {
+                    InstantActionButton(R.drawable.ic_topup, "Top-up", state.bankAccountsUiState is UiState.Success) {
                         onAction(HomeIntent.ShowRequestMoneyBottomBottomSheet)
                     }
-                    CardInstantAction(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is UiState.Success) {
+                    InstantActionButton(R.drawable.ic_transfer, "Transfer", state.bankAccountsUiState is UiState.Success) {
                         onNavigateToTransferScreen(state.currentBankAccount.id)
                     }
-                    CardInstantAction(R.drawable.ic_location, "ATMs", true) {}
+                    InstantActionButton(R.drawable.ic_location, "ATMs", true) {}
                 }
             }
 

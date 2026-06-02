@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -52,7 +51,7 @@ import codeasus.projects.bank.eco.core.ui.theme.EcoTheme
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardFlipState
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardIntent
 import codeasus.projects.bank.eco.feature.card.presentation.states.CardState
-import codeasus.projects.bank.eco.feature.card.presentation.utils.CardInstantAction
+import codeasus.projects.bank.eco.feature.card.presentation.utils.InstantActionButton
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItem
 import codeasus.projects.bank.eco.feature.card.presentation.utils.CardMenuItems
 import codeasus.projects.bank.eco.feature.utils.UiState
@@ -129,7 +128,7 @@ fun CardScreen(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 when (val bankAccount = state.bankAccountUiState) {
-                    is UiState.Error, is UiState.Empty -> {}
+                    is UiState.Error, is UiState.Empty, is UiState.Idle -> {}
                     is UiState.Loading -> {
                         Box(
                             modifier = Modifier
@@ -166,7 +165,7 @@ fun CardScreen(
                 }
 
                 when (val bankAccountUiState = state.bankAccountUiState) {
-                    is UiState.Error, is UiState.Empty, is UiState.Loading -> {}
+                    is UiState.Error, is UiState.Empty, is UiState.Loading, is UiState.Idle -> {}
                     is UiState.Success<BankAccountUi> -> {
                         val bankAccount = bankAccountUiState.data
                         Text(
@@ -193,23 +192,20 @@ fun CardScreen(
                 }
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CardInstantAction(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
+                    InstantActionButton(R.drawable.ic_reveal, "Reveal", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.ShowCardDetailsBottomSheet)
                     }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_topup, "Top-up", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
+                    InstantActionButton(R.drawable.ic_topup, "Top-up", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.TopUp)
                     }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
+                    InstantActionButton(R.drawable.ic_flip, "Flip", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.FlipCard)
                     }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    CardInstantAction(R.drawable.ic_dots, "More", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
+                    InstantActionButton(R.drawable.ic_dots, "More", enabled = state.bankAccountUiState is UiState.Success<BankAccountUi>) {
                         onAction(CardIntent.More)
                     }
                 }

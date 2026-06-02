@@ -20,6 +20,7 @@ import codeasus.projects.bank.eco.domain.local.model.system_message.SystemMessag
 import codeasus.projects.bank.eco.domain.local.model.transaction.TransactionModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserBankAccountModel
 import codeasus.projects.bank.eco.domain.local.model.user.UserModel
+import codeasus.projects.bank.eco.domain.remote.model.crypto.Coin
 import codeasus.projects.bank.eco.feature.home.presentation.states.TransactionListItemUI
 import com.android.identity.util.UUID
 import java.time.LocalDateTime
@@ -379,5 +380,19 @@ object DataSourceDefaults {
         )
 
         return transactions
+    }
+
+    fun getCoins(): List<Coin> {
+        return listOf(
+            Coin(id="bitcoin", symbol="btc", name="Bitcoin", currentPrice=75320.0,priceChangePercentage24h=2.5, imageUrl="https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"),
+            Coin(id="ethereum", symbol="eth", name="Ethereum", currentPrice=2357.65,priceChangePercentage24h=-1.1, imageUrl="https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628"),
+            Coin(id="tether", symbol="usdt", name="Tether", currentPrice=1.0, priceChangePercentage24h=-0.6,imageUrl="https://coin-images.coingecko.com/coins/images/325/large/Tether.png?1696501661"),
+            Coin(id="ripple", symbol="xrp", name="XRP", currentPrice=1.46, priceChangePercentage24h=43.23,imageUrl="https://coin-images.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1696501442"),
+            Coin(id="binancecoin", symbol="bnb", name="BNB", currentPrice=636.58,priceChangePercentage24h=-0.001, imageUrl="https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png?1696501970"),
+            Coin(id="usd-coin", symbol="usdc", name="USDC", currentPrice=0.999838,priceChangePercentage24h=8.3, imageUrl="https://coin-images.coingecko.com/coins/images/6319/large/USDC.png?1769615602"),
+            Coin(id="solana", symbol="sol", name="Solana", currentPrice=90.16,priceChangePercentage24h=0.12, imageUrl="https://coin-images.coingecko.com/coins/images/4128/large/solana.png?1718769756"),
+            Coin(id="tron", symbol="trx", name="TRON", currentPrice=0.326453, priceChangePercentage24h=3.6, imageUrl="https://coin-images.coingecko.com/coins/images/1094/large/photo_2026-04-13_09-59-16.png?1776048311"),
+            Coin(id="figure-heloc", symbol="figr_heloc", name="Figure Heloc", currentPrice=1.029, priceChangePercentage24h=1.8, imageUrl="https://coin-images.coingecko.com/coins/images/68480/large/figure.png?1755863954")
+        )
     }
 }
