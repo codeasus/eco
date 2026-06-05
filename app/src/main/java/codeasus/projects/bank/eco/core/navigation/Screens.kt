@@ -1,4 +1,5 @@
 package codeasus.projects.bank.eco.core.navigation
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 interface Screen {
@@ -6,7 +7,7 @@ interface Screen {
 }
 
 @Serializable
-data class SearchTransaction(val bankAccountId: String? = null) : Screen {
+data class SearchTransaction(val bankAccountId: String? = null) : Screen, NavKey {
     override val title: String get() = TITLE
 
     companion object {
