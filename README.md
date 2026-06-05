@@ -16,37 +16,37 @@ A modern Android banking application UI concept, designed to demonstrate clean m
   <tr>
     <td align="center">
       <img src="assets/1.png" width="200"/><br/>
-      <sub><b>Splash / Onboarding</b></sub>
+      <sub><b>Cards/Main</b></sub>
     </td>
     <td align="center">
       <img src="assets/2.png" width="200"/><br/>
-      <sub><b>Login Screen</b></sub>
+      <sub><b>Transactions</b></sub>
     </td>
     <td align="center">
       <img src="assets/3.png" width="200"/><br/>
-      <sub><b>Dashboard / Home</b></sub>
+      <sub><b>Money Request</b></sub>
     </td>
     <td align="center">
       <img src="assets/4.png" width="200"/><br/>
-      <sub><b>Account Overview</b></sub>
+      <sub><b>Account/Card Details</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center">
       <img src="assets/5.png" width="200"/><br/>
-      <sub><b>Transaction History</b></sub>
+      <sub><b>Transaction Details</b></sub>
     </td>
     <td align="center">
       <img src="assets/6.png" width="200"/><br/>
-      <sub><b>Transfer / Payments</b></sub>
+      <sub><b>Profile</b></sub>
     </td>
     <td align="center">
       <img src="assets/7.png" width="200"/><br/>
-      <sub><b>Card Management</b></sub>
+      <sub><b>Crypto Coins</b></sub>
     </td>
     <td align="center">
       <img src="assets/8.png" width="200"/><br/>
-      <sub><b>Settings / Profile</b></sub>
+      <sub><b>Crypto Coins Overview</b></sub>
     </td>
   </tr>
 </table>
