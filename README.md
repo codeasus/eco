@@ -55,19 +55,6 @@ A modern Android banking application UI concept, designed to demonstrate clean m
 
 ---
 
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Language | Kotlin |
-| UI | XML Layouts / Jetpack Compose |
-| Build System | Gradle (Kotlin DSL) |
-| Min SDK | Android 7.0 (API 24)+ |
-| Target SDK | Android 14 (API 34) |
-
-
----
-
 ## 🌐 API Integrations
 
 Despite being a visual prototype, the app integrates two free public APIs to demonstrate real data fetching:
@@ -80,7 +67,7 @@ Despite being a visual prototype, the app integrates two free public APIs to dem
 
 ### 🏦 Bank Account Origin Lookup
 - **Purpose:** Identifies the country and bank of origin from the first 8 digits of a bank account number (BIN/IIN lookup)
-- **Usage in app:** Shown on the transfer screen — entering an account number surfaces the issuing bank name and country flag
+- **Usage in app:** Shown on the transfer screen - entering an account number surfaces the issuing bank name and country flag
 - **Note:** Only the first 8 digits are used; no full account data is ever stored or transmitted
 
 > These integrations are used **solely for UI demonstration**. No user data is collected, stored, or processed in any meaningful way.
@@ -89,10 +76,9 @@ Despite being a visual prototype, the app integrates two free public APIs to dem
 
 ## ✨ UI Features Showcased
 
-- Onboarding / splash flow
-- Login & PIN entry screens
-- Home dashboard with account balance cards and live crypto prices
-- Transaction history list with categorisation
+- Home dashboard with account balance cards
+- Crypto coin features that shows historical data, charts and so on
+- Transaction history list with categorization
 - Fund transfer & payment UI with bank origin detection
 - Card management screen
 - Profile and settings panel
@@ -102,8 +88,8 @@ Despite being a visual prototype, the app integrates two free public APIs to dem
 
 ## ⚠️ Important Notes
 
-- **No real data** — all account numbers, balances, and names are fictional placeholders.
-- **No security** — this app does not implement encryption, biometric auth, or certificate pinning. **Do not treat this as a secure implementation.**
+- **No real data** - all account numbers, balances, and names are fictional placeholders.
+- **No security** - this app does not implement encryption, biometric auth, or certificate pinning. **Do not treat this as a secure implementation.**
 - **Not production-ready** — this is a UI/UX portfolio piece only. The API integrations are for visual effect and demo purposes.
 
 ---
